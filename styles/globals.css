@@ -21,3 +21,10 @@ a {
 * {
   box-sizing: border-box;
 }
+div.DraftEditor-root {
+  overflow-y: auto;
+  height: 450px;
+}
+div.DraftEditor-editorContainer,div.public-DraftEditor-content {
+  height: 100%;
+}
