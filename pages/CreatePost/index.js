@@ -291,22 +291,6 @@ const CreatePost = ({ Tags }) => {
           </Box>
         </Grid>
       </Grid>
-      {/* <Autocomplete
-        freeSolo
-        disableClearable
-        id="free-solo-2-demo"
-        options={Tags.map((option) => option.Name)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Search input"
-            InputProps={{
-              ...params.InputProps,
-              type: 'search',
-            }}
-          />
-        )}
-      /> */}
     </Container>
   )
 }
