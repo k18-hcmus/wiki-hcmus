@@ -4,6 +4,7 @@ import { useAutocomplete } from '@mui/base/AutocompleteUnstyled'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import { styled } from '@mui/material/styles'
+import { Button, Grid } from '@mui/material'
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -156,8 +157,7 @@ const Listbox = styled('ul')(
   }
 `
 )
-
-export default function CustomizedHook({ Tags }) {
+export default function CustomizedHook(props) {
   const {
     getRootProps,
     getInputLabelProps,
@@ -171,15 +171,18 @@ export default function CustomizedHook({ Tags }) {
     setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
-    defaultValue: [Tags[1]],
+    defaultValue: props.TagsArr,
     multiple: true,
-    options: Tags,
+    options: props.Tags,
     getOptionLabel: (option) => option.Name,
   })
+  const handleTagSave = () => {
+    props.handleTag(value)
+  }
   return (
     <Root>
       <div {...getRootProps()}>
-        <Label {...getInputLabelProps()}>Customized hook</Label>
+        <Label {...getInputLabelProps()}>Search Tag</Label>
         <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
           {value.map((option, index) => (
             <StyledTag
@@ -202,6 +205,25 @@ export default function CustomizedHook({ Tags }) {
           ))}
         </Listbox>
       ) : null}
+      <Grid
+        mt={1}
+        container
+        direction="row"
+        justifyContent="center"
+        alignContent="center"
+        spacing={2}
+      >
+        <Grid item>
+          <Button variant="contained" size="small" disabled>
+            Create tag
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" size="small" onClick={handleTagSave}>
+            Save
+          </Button>
+        </Grid>
+      </Grid>
     </Root>
   )
 }

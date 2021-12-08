@@ -22,6 +22,7 @@ import {
   ListItemButton,
   ListItemText,
   Autocomplete,
+  Popover,
 } from '@mui/material'
 import { styled } from '@mui/styles'
 import faker from 'faker'
@@ -30,11 +31,12 @@ import { EditorState } from 'draft-js'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
 import axiosClient from '../../axiosClient'
-import { showErrMsg } from '../../utils/Notifications'
+import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
 import { convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import TagSearch from './TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import AddIcon from '@mui/icons-material/Add'
 const Editor = dynamic(
   () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
   { ssr: false }
@@ -42,7 +44,7 @@ const Editor = dynamic(
 let TagData = [
   {
     id: 1,
-    name: 'Mon Hinh Hoa',
+    Name: 'Mon Hinh Hoa',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
     posts: faker.datatype.number(),
@@ -52,7 +54,7 @@ let TagData = [
   },
   {
     id: 2,
-    name: 'Truong Toan Thinh',
+    Name: 'Truong Toan Thinh',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
     posts: faker.datatype.number(),
@@ -62,7 +64,57 @@ let TagData = [
   },
   {
     id: 3,
-    name: 'Qua mon cap toc',
+    Name: 'Qua mon cap toc',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+    posts: faker.datatype.number(),
+    votes: faker.datatype.number(),
+    iconTag: '/static/avatars/avatar_1.jpg',
+    createdAt: faker.date.past(),
+  },
+  {
+    id: 4,
+    Name: 'Qua mon cap toc4',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+    posts: faker.datatype.number(),
+    votes: faker.datatype.number(),
+    iconTag: '/static/avatars/avatar_1.jpg',
+    createdAt: faker.date.past(),
+  },
+  {
+    id: 5,
+    Name: 'Qua mon cap toc5',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+    posts: faker.datatype.number(),
+    votes: faker.datatype.number(),
+    iconTag: '/static/avatars/avatar_1.jpg',
+    createdAt: faker.date.past(),
+  },
+  {
+    id: 6,
+    Name: 'Qua mon cap toc6',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+    posts: faker.datatype.number(),
+    votes: faker.datatype.number(),
+    iconTag: '/static/avatars/avatar_1.jpg',
+    createdAt: faker.date.past(),
+  },
+  {
+    id: 7,
+    Name: 'Qua mon cap toc7',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+    posts: faker.datatype.number(),
+    votes: faker.datatype.number(),
+    iconTag: '/static/avatars/avatar_1.jpg',
+    createdAt: faker.date.past(),
+  },
+  {
+    id: 8,
+    Name: 'Qua mon cap toc8',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
     posts: faker.datatype.number(),
@@ -124,17 +176,28 @@ const CreatePost = ({ Tags }) => {
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [tagArr, setTagArr] = useState([])
+  const handleTagArr = (tags) => {
+    setTagArr(tags)
+  }
+  const handlePopoverClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+  }
   const handleSubmit = (event) => {
     event.preventDefault()
     const body = JSON.stringify(content)
-    const html = draftToHtml(content)
-    console.log('Content', content)
-    console.log('html', html)
     try {
       const response = axiosClient.post('posts', {
         Title: title,
         Content: body,
+        Tags: tagArr,
       })
+      response && setMsg({ err: '', success: 'Create post succeed' })
     } catch (error) {
       setMsg({ err: error.message, success: '' })
     }
@@ -147,8 +210,8 @@ const CreatePost = ({ Tags }) => {
     setShowTagDetail(true)
     setSelectedTag(getTag)
   }
-  const handleDeleteTag = () => {
-    console.log('Deleted tag')
+  const handleDeleteTag = (tagToDelete) => () => {
+    setTagArr((tags) => tags.filter((tag) => tag.id !== tagToDelete))
   }
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
@@ -191,6 +254,7 @@ const CreatePost = ({ Tags }) => {
             <Typography variant="h5">Create a post</Typography>
             <Divider />
             {msg.err && showErrMsg(msg.err)}
+            {msg.success && showSuccessMsg(msg.success)}
             <FormBox component="form" onSubmit={handleSubmit} noValidate>
               <TextField
                 fullWidth
@@ -237,18 +301,51 @@ const CreatePost = ({ Tags }) => {
                   }}
                 />
               </Card>
-              <Stack sx={{ mt: 2, mb: 2 }} direction="row" spacing={1}>
-                {TagData.map((tags) => (
+              <Grid container sx={{ mt: 2, mb: 2 }} direction="row" spacing={1}>
+                {tagArr &&
+                  tagArr.map((tags) => (
+                    <Grid item key={tags.id}>
+                      <Chip
+                        key={tags.id}
+                        id={tags.id}
+                        label={tags.Name}
+                        variant="outlined"
+                        onClick={handleClickTag}
+                        onDelete={handleDeleteTag(tags.id)}
+                      />
+                    </Grid>
+                  ))}
+                <Grid item>
                   <Chip
-                    key={tags.id}
-                    id={tags.id}
-                    label={tags.name}
+                    icon={<AddIcon />}
+                    label="Add tag"
                     variant="outlined"
-                    onClick={handleClickTag}
-                    onDelete={handleDeleteTag}
+                    onClick={handlePopoverClick}
                   />
-                ))}
-              </Stack>
+                </Grid>
+                <Popover
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={handlePopoverClose}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 300,
+                      height: 250,
+                    }}
+                  >
+                    <TagSearch
+                      Tags={Tags} // All tags data
+                      TagsArr={tagArr} // Tag array added
+                      handleTag={handleTagArr}
+                    />
+                  </Box>
+                </Popover>
+              </Grid>
               <Divider />
               <Grid
                 container
