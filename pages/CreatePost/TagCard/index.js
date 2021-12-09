@@ -53,9 +53,8 @@ const InfoStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function BlogTagCard({ tag }) {
-  const { name, posts, votes, iconTag, createdAt, description } = tag[0]
-  console.log(tag)
-
+  const { Name, Posts, iconTag, created_at, Description } = tag[0]
+  console.log(tag[0], Posts.length)
   return (
     <Card sx={{ position: 'relative' }}>
       <CardMediaStyle
@@ -82,7 +81,7 @@ export default function BlogTagCard({ tag }) {
             position: 'absolute',
           }}
         />
-        <AvatarStyle alt={name} src={iconTag} />
+        <AvatarStyle alt={Name} src={iconTag} />
       </CardMediaStyle>
 
       <CardContent>
@@ -91,32 +90,32 @@ export default function BlogTagCard({ tag }) {
           variant="caption"
           sx={{ color: 'text.disabled', display: 'block' }}
         >
-          Created At {fDate(createdAt)}
+          Created At {fDate(created_at)}
         </Typography>
 
         <NameStyle color="inherit" variant="subName2" underline="hover">
-          {name}
+          {Name}
         </NameStyle>
         <Typography
           gutterBottom
           variant="caption"
           sx={{ color: 'text.disabled', display: 'block' }}
         >
-          {description}
+          {Description}
         </Typography>
         <InfoStyle>
           <Box sx={{ mr: 1 }}>
             <PostAddIcon sx={{ width: 16, height: 16, mr: 0.5 }} />
             <Typography start variant="caption">
-              {fShortenNumber(posts)}
+              {fShortenNumber(Posts.length)}
             </Typography>
           </Box>
-          <Box>
+          {/* <Box>
             <ThumbUpIcon sx={{ width: 16, height: 16, mr: 0.5 }} />
             <Typography start variant="caption">
               {fShortenNumber(votes)}
             </Typography>
-          </Box>
+          </Box> */}
         </InfoStyle>
       </CardContent>
     </Card>
