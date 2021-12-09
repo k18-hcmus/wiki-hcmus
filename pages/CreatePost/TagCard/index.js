@@ -54,7 +54,6 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 export default function BlogTagCard({ tag }) {
   const { Name, Posts, iconTag, created_at, Description } = tag[0]
-  console.log(tag[0], Posts.length)
   return (
     <Card sx={{ position: 'relative' }}>
       <CardMediaStyle
