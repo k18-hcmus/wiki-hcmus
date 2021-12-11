@@ -1,5 +1,4 @@
-import { 
-  Avatar,
+import {
   Box,
   Card,
   CardContent,
@@ -7,16 +6,15 @@ import {
   LinearProgress,
   Typography
 } from '@mui/material';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import levelSystem from '../../data/level-system';
+import { CONTRIBUTION_CONST } from '../../../shared/constants';
 
 const TotalContribution = (props) => {
   const {totalCP} = props;
   var currentTier = 'Untiered';
   var nextTierCP = 0;
-  for (const tierName in levelSystem.tier) {
-    if (totalCP < levelSystem.tier[tierName]) {
-      nextTierCP = levelSystem.tier[tierName];
+  for (const tierName in CONTRIBUTION_CONST.TIER) {
+    if (totalCP < CONTRIBUTION_CONST.TIER[tierName]) {
+      nextTierCP = CONTRIBUTION_CONST.TIER[tierName];
       break;
     }
     else
@@ -51,17 +49,6 @@ const TotalContribution = (props) => {
               {currentTier} Tier
             </Typography>
           </Grid>
-          {/* <Grid item>
-            <Avatar
-              sx={{
-                backgroundColor: 'success.main',
-                height: 56,
-                width: 56
-              }}
-            >
-              <ControlPointIcon />
-            </Avatar>
-          </Grid> */}
         </Grid>
         <Box sx={{ pt: 3 }}>
           <Typography

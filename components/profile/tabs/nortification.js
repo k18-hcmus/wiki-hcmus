@@ -1,14 +1,8 @@
 import React from 'react'
-import { 
-    Container
-} from '@mui/material';
+import { Container } from '@mui/material'
 
 const Nortification = () => {
-    return (
-        <Container>
-            This is nortification tab
-        </Container>
-    )
+  return <Container>This is nortification tab</Container>
 }
 
 export default Nortification
