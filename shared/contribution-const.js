@@ -1,4 +1,4 @@
-const levelSystem = {
+const ContributionConst = {
     tier: {
         Iron: 15,
         Bronze: 50,
@@ -17,4 +17,4 @@ const levelSystem = {
     }
 }
 
-export default levelSystem
+export { ContributionConst }

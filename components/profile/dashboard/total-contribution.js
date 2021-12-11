@@ -8,15 +8,15 @@ import {
   Typography
 } from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import levelSystem from '../../data/level-system';
+import {ContributionConst} from '../../../shared/contribution-const';
 
 const TotalContribution = (props) => {
   const {totalCP} = props;
   var currentTier = 'Untiered';
   var nextTierCP = 0;
-  for (const tierName in levelSystem.tier) {
-    if (totalCP < levelSystem.tier[tierName]) {
-      nextTierCP = levelSystem.tier[tierName];
+  for (const tierName in ContributionConst.tier) {
+    if (totalCP < ContributionConst.tier[tierName]) {
+      nextTierCP = ContributionConst.tier[tierName];
       break;
     }
     else
