@@ -26,7 +26,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/styles'
 import faker from 'faker'
-import TagCard from './TagCard'
+import TagCard from '../../components/CreatePost/TagCard'
 import { EditorState } from 'draft-js'
 import dynamic from 'next/dynamic'
 import axios from 'axios'

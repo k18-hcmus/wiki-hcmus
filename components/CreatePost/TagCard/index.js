@@ -1,7 +1,5 @@
-import { Icon } from '@iconify/react'
 import PostAddIcon from '@mui/icons-material/PostAdd'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
-// material
 import { alpha, styled } from '@mui/material/styles'
 import {
   Grid,
@@ -12,10 +10,8 @@ import {
   Typography,
   CardContent,
 } from '@mui/material'
-// utils
 import { fDate } from '../../../utils/formatTime'
 import { fShortenNumber } from '../../../utils/formatNumber'
-//
 import SvgIconStyle from './SvgIconStyle'
 
 // ----------------------------------------------------------------------
