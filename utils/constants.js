@@ -1,0 +1,8 @@
+export const ACCOUNT_STATUS = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+}
+export const POST_STATUS = {
+  UNPUBLISH: 'UNPUBLISH',
+  PUBLISH: 'PUBLISH',
+}
