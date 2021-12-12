@@ -38,10 +38,9 @@ import { POST_STATUS } from '../../utils/constants'
 import TagSearch from './TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import AddIcon from '@mui/icons-material/Add'
-const Editor = dynamic(
-  () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
-  { ssr: false }
-)
+const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
+  ssr: false,
+})
 
 let Rules = [
   {
@@ -122,12 +121,10 @@ const CreatePost = ({ Tags }) => {
     } catch (error) {
       setMsg({ err: error.message, success: '' })
     }
-    //setDisabled(true)
+    setDisabled(true)
   }
   const handleClickTag = (event) => {
-    const getTag = Tags.filter(
-      (tag) => tag.id.toString() === event.currentTarget.id
-    )
+    const getTag = Tags.filter((tag) => tag.id.toString() === event.currentTarget.id)
     setShowTagDetail(true)
     setSelectedTag(getTag)
   }
@@ -147,10 +144,7 @@ const CreatePost = ({ Tags }) => {
     formData.append('file', file)
     formData.append('upload_preset', 'wiki-hcmus')
     try {
-      const respone = await axios.post(
-        `${process.env.NEXT_PUBLIC_CLOUDINARY_URL}`,
-        formData
-      )
+      const respone = await axios.post(`${process.env.NEXT_PUBLIC_CLOUDINARY_URL}`, formData)
       return Promise.resolve({
         data: {
           link: `${respone.data.secure_url}`,
@@ -163,13 +157,7 @@ const CreatePost = ({ Tags }) => {
   }
   return (
     <Container maxWidth="lg">
-      <Grid
-        container
-        direction="row"
-        alignContent="center"
-        justifyContent="center"
-        spacing="30"
-      >
+      <Grid container direction="row" alignContent="center" justifyContent="center" spacing="30">
         <Grid item xs={8}>
           <Box sx={{ mt: 8 }} direction="column">
             <Typography variant="h5">Create a post</Typography>
@@ -268,12 +256,7 @@ const CreatePost = ({ Tags }) => {
                 </Popover>
               </Grid>
               <Divider />
-              <Grid
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignContent="center"
-              >
+              <Grid container direction="row" justifyContent="space-between" alignContent="center">
                 <Grid item />
                 <Grid item>
                   <Button
