@@ -47,7 +47,43 @@ export const posts = [
       username: 'hmnguyen',
       avatar:
         'https://afamilycdn.com/zoom/700_438/150157425591193600/2021/9/6/24121895339333583934367873509344090633983106n-1630904358921280128775-270-0-704-828-crop-16309043649071713624437.jpg'
-    }
+    },
+    Tags: [
+      {
+        id: 2,
+        name: 'Truong Toan Thinh',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam leo nulla, dignissim sed diam imperdiet, placerat ullamcorper mi. Donec euismod, urna id tincidunt luctus, neque nibh congue arcu, quis efficitur justo ipsum sit amet nisi. Aliquam enim turpis, fermentum ac pretium sed, eleifend quis est. Vestibulum ultricies sed mi ut gravida. Vivamus aliquet enim eu diam accumsan rhoncus. Mauris consectetur magna et mattis sagittis.',
+        posts: 1230,
+        votes: 9999,
+        iconTag: '/static/avatars/avatar_1.jpg',
+        createdAt: new Date().toString()
+      }
+    ],
+    Comments: [
+      {
+        id: 1,
+        Content: 'Bài này hay quá',
+        User: {
+          id: 1,
+          username: 'hmnguyen',
+          avatar:
+            'https://afamilycdn.com/zoom/700_438/150157425591193600/2021/9/6/24121895339333583934367873509344090633983106n-1630904358921280128775-270-0-704-828-crop-16309043649071713624437.jpg'
+        },
+        createdAt: new Date().toString()
+      },
+      {
+        id: 2,
+        Content: ' Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        User: {
+          id: 1,
+          username: 'hmnguyen',
+          avatar:
+            'https://afamilycdn.com/zoom/700_438/150157425591193600/2021/9/6/24121895339333583934367873509344090633983106n-1630904358921280128775-270-0-704-828-crop-16309043649071713624437.jpg'
+        },
+        createdAt: new Date().toString()
+      }
+    ]
   },
   {
     id: 2,
