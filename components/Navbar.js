@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { styled, alpha } from '@mui/material/styles'
 import {
   AppBar,
@@ -9,31 +9,30 @@ import {
   InputBase,
   Badge,
   MenuItem,
-  Menu
+  Menu,
 } from '@mui/material'
 import {
-  Menu as MenuIcon,
   Search as SearchIcon,
   AccountCircle,
-  Mail as MailIcon,
   Notifications as NotificationsIcon,
-  MoreVert as MoreIcon
+  MoreVert as MoreIcon,
 } from '@mui/icons-material'
+import CustomLink from './CustomLink'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25)
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(3),
-    width: 'auto'
-  }
+    width: 'auto',
+  },
 }))
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -43,7 +42,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   pointerEvents: 'none',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center'
+  justifyContent: 'center',
 }))
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -55,14 +54,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '20ch'
-    }
-  }
+      width: '20ch',
+    },
+  },
 }))
 
 export default function PrimarySearchAppBar() {
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -88,21 +87,23 @@ export default function PrimarySearchAppBar() {
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
+      id={menuId}
+      sx={{ mt: '40px' }}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
-      id={menuId}
       keepMounted
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
     </Menu>
   )
 
@@ -112,31 +113,19 @@ export default function PrimarySearchAppBar() {
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
+        <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
           <Badge badgeContent={17} color="error">
             <NotificationsIcon />
           </Badge>
@@ -158,19 +147,15 @@ export default function PrimarySearchAppBar() {
     </Menu>
   )
 
+  const pages = [
+    { page: 'Home', href: '/' },
+    { page: 'Create Post', href: '/CreatePost' },
+  ]
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+        <Toolbar sx={{ mx: 2 }}>
           <Typography
             variant="h6"
             noWrap
@@ -184,18 +169,19 @@ export default function PrimarySearchAppBar() {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
+            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
           </Search>
-          <Box sx={{ flexGrow: 1 }} />
+
+          {/* TODO: Link Button to direct page */}
+          <Box style={{ marginLeft: 'auto' }} sx={{ display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <CustomLink key={page.page} href={page.href} page={page.page} />
+            ))}
+          </Box>
+
+          {/* Desktop Nav */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
+            <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
               </Badge>
@@ -212,6 +198,8 @@ export default function PrimarySearchAppBar() {
               <AccountCircle />
             </IconButton>
           </Box>
+
+          {/* Mobile Nav */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
