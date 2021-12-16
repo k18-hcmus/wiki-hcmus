@@ -149,13 +149,14 @@ export default function PrimarySearchAppBar() {
 
   const pages = [
     { page: 'Home', href: '/' },
-    { page: 'Create Post', href: '/CreatePost' },
+    { page: 'Teacher', href: '/' },
+    { page: 'Subject', href: '/' },
   ]
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar sx={{ mx: 2 }}>
+        <Toolbar>
           <Typography
             variant="h6"
             noWrap
@@ -173,10 +174,15 @@ export default function PrimarySearchAppBar() {
           </Search>
 
           {/* TODO: Link Button to direct page */}
-          <Box style={{ marginLeft: 'auto' }} sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box style={{ marginRight: 'auto' }} sx={{ display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <CustomLink key={page.page} href={page.href} page={page.page} />
             ))}
+          </Box>
+
+          {/* Create New Post Link Button */}
+          <Box>
+            <CustomLink href="/CreatePost" page="Create Post" />
           </Box>
 
           {/* Desktop Nav */}
