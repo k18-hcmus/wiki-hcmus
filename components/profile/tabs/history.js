@@ -20,14 +20,36 @@ const History = () => {
       HISTORY_CONST.TARGET.PROFILE.label,
     ],
   }
+  const timeFilterOptions = [
+    {
+      context: 'Last 7 Days',
+      dateValue: new Date(new Date().setDate(new Date().getDate() - 7)),
+    },
+    {
+      context: 'Last 14 Days',
+      dateValue: new Date(new Date().setDate(new Date().getDate() - 14)),
+    },
+    {
+      context: 'Last 30 Days',
+      dateValue: new Date(new Date().setDate(new Date().getDate() - 30)),
+    },
+    {
+      context: 'All Time',
+      dateValue: null,
+    },
+  ]
   const [totalData, setTotalData] = useState([])
   const [historyData, setHistoryData] = useState([])
   const [filterOptions, setFilterOptions] = useState({ actors: [], actions: [], targets: [] })
+  const [timeFilter, setTimeFilter] = useState(timeFilterOptions[0])
   const myDisplayName = 'Zhāng Zhōng Réin'
   const onFilterOptionsChange = (options) => {
     setFilterOptions(options)
   }
-  const updateHistoryData = (options) => {
+  const onTimeFilterChange = (timeFilter) => {
+    setTimeFilter(timeFilter)
+  }
+  const updateHistoryData = () => {
     const refinedData = totalData.filter((record) => {
       return (
         filterOptions.actors[record.actorId] &&
@@ -35,7 +57,10 @@ const History = () => {
         filterOptions.targets[record.targetId]
       )
     })
-    setHistoryData(refinedData)
+    var timeFilteredData = refinedData.filter(
+      (record) => new Date(record.created_at) > timeFilter.dateValue
+    )
+    setHistoryData(timeFilteredData)
   }
   useEffect(() => {
     async function fetchData() {
@@ -62,8 +87,8 @@ const History = () => {
     fetchData()
   }, [])
   useEffect(() => {
-    updateHistoryData(filterOptions)
-  }, [filterOptions])
+    updateHistoryData(filterOptions, timeFilter)
+  }, [filterOptions, timeFilter])
   return (
     <Box
       component="main"
@@ -77,7 +102,12 @@ const History = () => {
             <FilterTab sx={{ height: '100%' }} option={option} callback={onFilterOptionsChange} />
           </Grid>
           <Grid item lg={8} md={12} xl={9} xs={12}>
-            <HistoryTab data={historyData} />
+            <HistoryTab
+              data={historyData}
+              timeFilter={timeFilter}
+              timeFilterOptions={timeFilterOptions}
+              callback={onTimeFilterChange}
+            />
           </Grid>
         </Grid>
       </Container>

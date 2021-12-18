@@ -1,5 +1,11 @@
 import axiosClient from '../axiosClient'
 
+
+// Example: User Update Profile
+// addHistory(
+//   { const: HISTORY_CONST.ACTOR.SELF, id: newUserData.id },
+//   { const: HISTORY_CONST.ACTION.UPDATE },
+//   { const: HISTORY_CONST.TARGET.PROFILE, id: newUserData.id }
 export const addHistory = async (actor, action, target) => {
   const actorResult = await axiosClient.get(`${actor.const.url}?id=${actor.id}`)
   const targetResult = await axiosClient.get(`${target.const.url}?id=${target.id}`)
