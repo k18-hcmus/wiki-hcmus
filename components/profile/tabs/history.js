@@ -40,14 +40,53 @@ const History = () => {
   ]
   const [totalData, setTotalData] = useState([])
   const [historyData, setHistoryData] = useState([])
+  const [cachedHistoryData, setCachedHistoryData] = useState([])
+  const [deleteHistoryData, setDeleteHistoryData] = useState([])
   const [filterOptions, setFilterOptions] = useState({ actors: [], actions: [], targets: [] })
   const [timeFilter, setTimeFilter] = useState(timeFilterOptions[0])
   const myDisplayName = 'Zhāng Zhōng Réin'
+  const [checkboxStatus, setCheckboxStatus] = useState([])
+  const [checkedAll, setCheckedAll] = useState(false)
   const onFilterOptionsChange = (options) => {
     setFilterOptions(options)
   }
   const onTimeFilterChange = (timeFilter) => {
     setTimeFilter(timeFilter)
+  }
+  const handleSetCheckBox = (checkboxId, checked) => {
+    const newCheckboxStatus = checkboxStatus
+    newCheckboxStatus[checkboxId] = checked
+    setCheckboxStatus([...newCheckboxStatus])
+    if (newCheckboxStatus.find((status) => status === false) === undefined) {
+      setCheckedAll(true)
+    } else {
+      setCheckedAll(false)
+    }
+  }
+  const handleCheckAll = (checked) => {
+    setCheckedAll(checked)
+    const newCheckboxStatus = checkboxStatus.map(() => checked)
+    setCheckboxStatus([...newCheckboxStatus])
+  }
+  const handleDelete = () => {
+    setCachedHistoryData(historyData)
+    setDeleteHistoryData(historyData.filter((record, index) => checkboxStatus[index]))
+    setHistoryData(historyData.filter((record, index) => !checkboxStatus[index]))
+    setCheckedAll(false)
+  }
+  const handleSave = () => {
+    // Todo: add a alert to nortify whether the deletion was successful or not
+    deleteHistoryData.every((record) => axiosClient.delete(`/history-details/${record.id}`))
+    setCachedHistoryData([])
+    setDeleteHistoryData([])
+  }
+  const handleCancel = () => {
+    setHistoryData(cachedHistoryData)
+    setCachedHistoryData([])
+    setDeleteHistoryData([])
+  }
+  const handleGoto = (history) => {
+    // Todo: redirect to target (post/comment/profile...) page
   }
   const updateHistoryData = () => {
     const refinedData = totalData.filter((record) => {
@@ -70,6 +109,7 @@ const History = () => {
         const data = results.data
         const refinedData = data.map((record) => {
           return {
+            id: record.id,
             actor: record.User.DisplayName === myDisplayName ? 'You' : record.User.DisplayName,
             action: record.Action,
             created_at: record.created_at,
@@ -86,6 +126,9 @@ const History = () => {
     }
     fetchData()
   }, [])
+  useEffect(() => {
+    setCheckboxStatus(historyData.map(() => false))
+  }, [historyData])
   useEffect(() => {
     updateHistoryData(filterOptions, timeFilter)
   }, [filterOptions, timeFilter])
@@ -106,7 +149,15 @@ const History = () => {
               data={historyData}
               timeFilter={timeFilter}
               timeFilterOptions={timeFilterOptions}
-              callback={onTimeFilterChange}
+              checkboxStatus={checkboxStatus}
+              checkedAll={checkedAll}
+              callbackSetTimeFilter={onTimeFilterChange}
+              callbackSetCheckBox={handleSetCheckBox}
+              callbackCheckAll={handleCheckAll}
+              callbackDelete={handleDelete}
+              callbackSave={handleSave}
+              callbackCancel={handleCancel}
+              callbackGoto={handleGoto}
             />
           </Grid>
         </Grid>

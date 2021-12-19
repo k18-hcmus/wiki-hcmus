@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -7,14 +8,50 @@ import {
   Select,
   FormControl,
   InputLabel,
+  FormControlLabel,
+  Checkbox,
+  Button,
 } from '@mui/material'
 import HistoryCell from '../history/history-cell'
 
 const HistoryTab = (props) => {
-  const { data, timeFilter, timeFilterOptions, callback } = props
+  const {
+    data,
+    timeFilter,
+    timeFilterOptions,
+    checkboxStatus,
+    checkedAll,
+    callbackSetTimeFilter,
+    callbackSetCheckBox,
+    callbackCheckAll,
+    callbackDelete,
+    callbackSave,
+    callbackCancel,
+    callbackGoto 
+  } = props
+  const [deleteStage, setDeleteStage] = useState(false)
   const handleTimeFilterChange = (event) => {
     const selectedTimeFilter = timeFilterOptions.find((item) => item.context === event.target.value)
-    callback(selectedTimeFilter)
+    callbackSetTimeFilter(selectedTimeFilter)
+  }
+  const handleDelete = () => {
+    if (checkboxStatus.find(status => status) === undefined) {
+      return
+    }
+    setDeleteStage(true)
+    callbackDelete()
+  }
+  const handleSave = () => {
+    setDeleteStage(false)
+    callbackSave()
+  }
+  const handleCancel = () => {
+    setDeleteStage(false)
+    callbackCancel()
+  }
+  const handleGotoHistory = (history) => {}
+  const handleCheckAll = (event) => {
+    callbackCheckAll(event.target.checked)
   }
   return (
     <Card>
@@ -47,9 +84,39 @@ const HistoryTab = (props) => {
       <Divider />
       <List>
         {data.map((record, i) => (
-          <HistoryCell data={record} />
+          <HistoryCell
+            id={i}
+            data={record}
+            callbackGoto={handleGotoHistory}
+            checkBoxStatus={checkboxStatus[i]}
+            onCheckCallBack={callbackSetCheckBox}
+            callbackGoto={callbackGoto}
+          />
         ))}
       </List>
+      <Divider />
+      <FormControlLabel
+        sx={{ pl: 5 }}
+        label="All"
+        control={
+          <Checkbox sx={{ pl: 1 }} checked={checkedAll || false} onChange={handleCheckAll} />
+        }
+      />
+      {!deleteStage && (
+        <Button variant="outlined" onClick={handleDelete}>
+          Delete
+        </Button>
+      )}
+      {deleteStage && (
+        <Button variant="outlined" onClick={handleSave}>
+          Save
+        </Button>
+      )}
+      {deleteStage && (
+        <Button variant="outlined" onClick={handleCancel}>
+          Cancel
+        </Button>
+      )}
     </Card>
   )
 }
