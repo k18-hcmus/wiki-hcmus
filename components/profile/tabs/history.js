@@ -4,6 +4,7 @@ import FilterTab from '../history/filter-tab'
 import HistoryTab from '../history/history-tab'
 import axiosClient from '../../../axiosClient'
 import { HISTORY_CONST } from '../../../shared/constants'
+import { getHistoryString, getHistoryUrl } from '../../../utils/history-utils'
 
 const History = () => {
   const option = {
@@ -111,7 +112,8 @@ const History = () => {
           return {
             id: record.id,
             actor: record.User.DisplayName === myDisplayName ? 'You' : record.User.DisplayName,
-            action: record.Action,
+            action: getHistoryString(record, true, myDisplayName),
+            gotoUrl: getHistoryUrl(record),
             created_at: record.created_at,
             actorId: record.ActorId,
             actionId: record.ActionId,

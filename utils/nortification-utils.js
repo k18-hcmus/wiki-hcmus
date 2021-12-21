@@ -12,8 +12,8 @@ import { NORTIFICATION_CONST } from '../shared/constants'
 //   linked to a Post record (Type: 'Admin')
 
 // Problem: Current Nortification implementation based on History
-// data and it's not stable (e.g. history can be deleted) and 
-// ActionString mostly viewed in different POV (i.e. You edited 
+// data and it's not stable (e.g. history can be deleted) and
+// ActionString mostly viewed in different POV (i.e. You edited
 // post -> [Yourname] edited post)
 
 export const addNortification = async (type, userId, dataId) => {

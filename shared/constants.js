@@ -35,7 +35,7 @@ export const HISTORY_CONST = {
       label: 'Others',
       property: 'User',
       context: 'Someone',
-      url: '/',
+      url: '/account-users',
     },
   },
   ACTION: {
@@ -60,6 +60,7 @@ export const HISTORY_CONST = {
       id: 0,
       label: 'Post',
       property: 'Post',
+      contextProperty: 'Title',
       context: 'Post',
       url: '/posts',
     },
@@ -67,6 +68,7 @@ export const HISTORY_CONST = {
       id: 1,
       label: 'Comment',
       property: 'Comment',
+      contextProperty: 'Content',
       context: 'Comment',
       url: '/comments',
     },
@@ -74,17 +76,25 @@ export const HISTORY_CONST = {
       id: 2,
       label: 'Tag',
       property: 'Tag',
+      contextProperty: 'DisplayName',
       context: 'Tag',
-      url: 'tags',
+      url: '/tags',
     },
     PROFILE: {
       id: 3,
       label: 'Profile',
       property: 'RelatedUser',
+      contextProperty: 'DisplayName',
       context: 'Profile',
       url: '/account-users',
     },
   },
+}
+
+export const HISTORY_LIST = {
+  ACTOR: [HISTORY_CONST.ACTOR.SELF, HISTORY_CONST.ACTOR.OTHER],
+  ACTION: [HISTORY_CONST.ACTION.CREATE, HISTORY_CONST.ACTION.UPDATE, HISTORY_CONST.ACTION.DELETE],
+  TARGET: [HISTORY_CONST.TARGET.POST, HISTORY_CONST.TARGET.COMMENT, HISTORY_CONST.TARGET.TAG, HISTORY_CONST.TARGET.PROFILE]
 }
 
 export const NORTIFICATION_CONST = {
