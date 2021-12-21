@@ -1,6 +1,10 @@
 import axiosClient from '../axiosClient'
 import { addNortification } from './nortification-utils'
+<<<<<<< HEAD
 import { NORTIFICATION_CONST, HISTORY_LIST, HISTORY_CONST } from '../shared/constants'
+=======
+import { NORTIFICATION_CONST } from '../shared/constants'
+>>>>>>> 439f4bc (Thoughts and Init Nortification)
 
 // Example: User Update Profile
 // addHistory(
