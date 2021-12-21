@@ -1,4 +1,6 @@
 import axiosClient from '../axiosClient'
+import { addNortification } from './nortification-utils'
+import { NORTIFICATION_CONST } from '../shared/constants'
 
 // Example: User Update Profile
 // addHistory(
@@ -37,5 +39,10 @@ export const addHistory = async (actor, action, target) => {
     ActionId: action.const.id,
     TargetId: target.const.id,
   }
-  axiosClient.post('/history-details', data)
+  const historyResult = await axiosClient.post('/history-details', data);
+  // Add nortification records
+  addNortification(NORTIFICATION_CONST.TYPE.SELF, actor.id, historyResult.data.id);
+  actorData.FollowedByUsers.forEach(user => {
+    addNortification(NORTIFICATION_CONST.TYPE.SELF, user.id, historyResult.data.id);
+  })
 }

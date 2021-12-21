@@ -86,3 +86,11 @@ export const HISTORY_CONST = {
     },
   },
 }
+
+export const NORTIFICATION_CONST = {
+  TYPE: {
+    SELF: 'Self',
+    OTHER: 'Other',
+    ADMIN: 'Admin'
+  }
+}
