@@ -24,8 +24,7 @@ const CenteredGrid = styled(Grid)({
   justifyContent: 'center',
 })
 
-const HistoryCell = (props) => {
-  const { id, data, checkBoxStatus, onCheckCallBack, callbackGoto } = props
+const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {

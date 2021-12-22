@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Card, CardHeader, Divider, Checkbox, FormGroup, FormControlLabel } from '@mui/material'
-const FilterTab = (props) => {
-  const { option, callback } = props
-  const [actorChecked, setActorChecked] = useState(option.actors.map((actor) => true))
-  const [actionChecked, setActionChecked] = useState(option.actions.map((action) => true))
-  const [targetChecked, setTargetChecked] = useState(option.targets.map((target) => true))
+const FilterTab = ({ option, callback }) => {
+  const [actorChecked, setActorChecked] = useState([])
+  const [actionChecked, setActionChecked] = useState([])
+  const [targetChecked, setTargetChecked] = useState([])
+  if (actorChecked.length !== option.actors.length || !actorChecked.every(checked => checked === true))
+    setActorChecked(option.actors.map((checked) => true))
+  if (actionChecked.length !== option.actions.length || !actionChecked.every(checked => checked === true))
+    setActionChecked(option.actions.map((checked) => true))
+  if (targetChecked.length !== option.targets.length || !targetChecked.every(checked => checked === true))
+    setTargetChecked(option.targets.map((checked) => true))
   const handleCheckActor = (event) => {
     var newActorChecked = actorChecked
     newActorChecked[event.target.id] = event.target.checked
@@ -63,6 +68,7 @@ const FilterTab = (props) => {
         />
         {option.actors.map((actor, index) => (
           <FormControlLabel
+            key={index}
             sx={{ pl: 4 }}
             center
             control={
@@ -92,6 +98,7 @@ const FilterTab = (props) => {
         />
         {option.actions.map((action, index) => (
           <FormControlLabel
+            key={index}
             sx={{ pl: 4 }}
             control={
               <Checkbox
@@ -120,6 +127,7 @@ const FilterTab = (props) => {
         />
         {option.targets.map((target, index) => (
           <FormControlLabel
+            key={index}
             sx={{ pl: 4 }}
             control={
               <Checkbox

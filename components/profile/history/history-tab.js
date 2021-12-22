@@ -14,28 +14,27 @@ import {
 } from '@mui/material'
 import HistoryCell from '../history/history-cell'
 
-const HistoryTab = (props) => {
-  const {
-    data,
-    timeFilter,
-    timeFilterOptions,
-    checkboxStatus,
-    checkedAll,
-    callbackSetTimeFilter,
-    callbackSetCheckBox,
-    callbackCheckAll,
-    callbackDelete,
-    callbackSave,
-    callbackCancel,
-    callbackGoto 
-  } = props
+const HistoryTab = ({
+  data,
+  timeFilter,
+  timeFilterOptions,
+  checkboxStatus,
+  checkedAll,
+  callbackSetTimeFilter,
+  callbackSetCheckBox,
+  callbackCheckAll,
+  callbackDelete,
+  callbackSave,
+  callbackCancel,
+  callbackGoto,
+}) => {
   const [deleteStage, setDeleteStage] = useState(false)
   const handleTimeFilterChange = (event) => {
     const selectedTimeFilter = timeFilterOptions.find((item) => item.context === event.target.value)
     callbackSetTimeFilter(selectedTimeFilter)
   }
   const handleDelete = () => {
-    if (checkboxStatus.find(status => status) === undefined) {
+    if (checkboxStatus.find((status) => status) === undefined) {
       return
     }
     setDeleteStage(true)
