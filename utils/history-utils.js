@@ -1,10 +1,6 @@
 import axiosClient from '../axiosClient'
 import { addNortification } from './nortification-utils'
-<<<<<<< HEAD
 import { NORTIFICATION_CONST, HISTORY_LIST, HISTORY_CONST } from '../shared/constants'
-=======
-import { NORTIFICATION_CONST } from '../shared/constants'
->>>>>>> 439f4bc (Thoughts and Init Nortification)
 
 // Example: User Update Profile
 // addHistory(
@@ -32,10 +28,7 @@ export const addHistory = async (actor, action, target) => {
   }
   const actorData = actorResult.data[0]
   const targetData = targetResult.data[0]
-  // const actionString =
-  //   actor.const.context + ' has ' + action.const.context + ' ' + target.const.context
   const data = {
-    //Action: actionString,
     Description: '',
     [actor.const.property]: actorData,
     [target.const.property]: targetData,

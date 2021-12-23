@@ -37,6 +37,7 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
     onCheckCallBack(id, event.target.checked)
   }
   const handleGoto = () => {
+    setAnchorEl(null)
     callbackGoto(data)
   }
   return (
@@ -58,12 +59,12 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
           </CenteredGrid>
         </Grid>
         <CenteredGrid item lg={2} md={2} xl={2} xs={6}>
-          <Typography sx={{ ml: 1 }} align="left" variant="caption">
+          <Typography sx={{ ml: 1 }} align="left" variant="body2">
             {data.actor}
           </Typography>
         </CenteredGrid>
         <CenteredGrid item lg={4} md={4} xl={4} xs={7}>
-          <Typography align="left" variant="body2">
+          <Typography align="left" variant="caption">
             {data.action}
           </Typography>
         </CenteredGrid>
