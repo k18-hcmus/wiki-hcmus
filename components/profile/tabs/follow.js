@@ -88,7 +88,10 @@ const Follow = () => {
             displayName: record.DisplayName,
             followerNum: record.FollowerNum,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
+<<<<<<< HEAD
             avatarURL: record.Avatar
+=======
+>>>>>>> 8bf1257 (Complete Follow layout and interaction)
           }
         })
         setFollowData(refinedFollowData)
