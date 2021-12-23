@@ -3,7 +3,7 @@ import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
 import LazyLoad from 'react-lazyload'
 import Information from '../../components/profile/tabs/information.js'
 import History from '../../components/profile/tabs/history.js'
-import Nortification from '../../components/profile/tabs/nortification.js'
+import Follow from '../../components/profile/tabs/follow.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
 
@@ -45,7 +45,7 @@ const Profile = () => {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Dashboard" {...allyProps(0)} />
           <Tab label="Information" {...allyProps(1)} />
-          <Tab label="Nortifications" {...allyProps(2)} />
+          <Tab label="Follows" {...allyProps(2)} />
           <Tab label="History" {...allyProps(3)} />
           <Tab label="Settings" {...allyProps(4)} />
         </Tabs>
@@ -63,17 +63,12 @@ const Profile = () => {
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={2}>
-            <Nortification />
+            <Follow />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={3}>
             <History />
-          </TabPanel>
-        </LazyLoad>
-        <LazyLoad once={true}>
-          <TabPanel value={value} index={4}>
-            <Nortification />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
