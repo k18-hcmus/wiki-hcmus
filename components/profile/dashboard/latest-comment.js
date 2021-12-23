@@ -1,4 +1,4 @@
-import { formatDistanceToNow, subHours } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 import {
   Box,
   Button,

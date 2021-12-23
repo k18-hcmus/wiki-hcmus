@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Container,
-} from '@mui/material'
-import EditSelect from '../information/edit-select';
-import EditTextInput from '../information/edit-text-input';
-import ProfileCell from '../information/profile-cell';
+import { Container } from '@mui/material'
+import EditSelect from '../information/edit-select'
+import EditTextInput from '../information/edit-text-input'
+import ProfileCell from '../information/profile-cell'
 import axiosClient from '../../../axiosClient'
-import { INFORMATION_CONST } from '../../../shared/constants';
+import { INFORMATION_CONST, HISTORY_CONST } from '../../../shared/constants'
+import { addHistory } from '../../../utils/history-utils'
 
 const Information = () => {
   const [userData, setUserData] = useState({
@@ -17,24 +16,25 @@ const Information = () => {
     Phone: null,
     UserType: null,
   })
-  const handleUserDataChange = (property, value) => {
+  const handleUserDataChange = async (property, value) => {
     const newUserData = {
       ...userData,
       [property]: value,
     }
     setUserData(newUserData)
-    axiosClient({
+    const result = await axiosClient({
       method: 'put',
       url: `/account-users/${newUserData.id}`,
       data: newUserData,
       headers: {},
     })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (result) {
+      addHistory(
+        { const: HISTORY_CONST.ACTOR.SELF, id: newUserData.id },
+        { const: HISTORY_CONST.ACTION.UPDATE },
+        { const: HISTORY_CONST.TARGET.PROFILE, id: newUserData.id }
+      )
+    }
   }
   useEffect(() => {
     async function fetchData() {
@@ -74,7 +74,11 @@ const Information = () => {
         value={userData.Gender}
         setValue={handleUserDataChange}
         BaseEditComponent={
-          <EditSelect label="Gender" currentValue={userData.Gender} values={INFORMATION_CONST.GENDER} />
+          <EditSelect
+            label="Gender"
+            currentValue={userData.Gender}
+            values={INFORMATION_CONST.GENDER}
+          />
         }
       />
       <ProfileCell

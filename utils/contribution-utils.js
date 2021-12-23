@@ -35,6 +35,8 @@ function contributionListToChartData(data, startDate) {
   return result
 }
 
+// Example: User Add a new post (published)
+// addContribution(userId, CONTRIBUTION_CONST.RECIEVED_PTS.postReview)
 async function addContribution(userId, value) {
   const userResult = await axiosClient.get(`/account-users?id=${userId}`)
   if (userResult.data.length > 0) {
