@@ -3,7 +3,7 @@ import { Box, Container, Tab, Tabs } from '@mui/material'
 import axiosClient from '../../../axiosClient'
 import LazyLoad from 'react-lazyload'
 import FollowTab from '../follow/follow-tab'
-import TabPanel from '../follow/tab-pannel'
+import TabPanel from '../commons/tab-pannel'
 import { addHistory } from '../../../utils/history-utils'
 import { HISTORY_CONST } from '../../../shared/constants'
 

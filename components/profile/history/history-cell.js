@@ -44,8 +44,8 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
   }
   const handleImgError = () => {
     if (!imgErr) {
-      setAvatarURL('/public/static/avatars/avatar_1.jpg')
-      imgErr = true
+      setAvatarURL('/static/avatars/avatar_1.jpg')
+      setImgErr(true)
     }
   }
   return (
