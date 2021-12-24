@@ -3,23 +3,14 @@ import { Container, Box, Grid } from '@mui/material'
 import FilterTab from '../history/filter-tab'
 import HistoryTab from '../history/history-tab'
 import axiosClient from '../../../axiosClient'
-import { HISTORY_CONST } from '../../../shared/constants'
+import { HISTORY_CONST, HISTORY_LIST } from '../../../shared/constants'
 import { getHistoryString, getHistoryUrl } from '../../../utils/history-utils'
 
 const History = () => {
   const option = {
-    actors: [HISTORY_CONST.ACTOR.SELF.label, HISTORY_CONST.ACTOR.OTHER.label],
-    actions: [
-      HISTORY_CONST.ACTION.CREATE.label,
-      HISTORY_CONST.ACTION.UPDATE.label,
-      HISTORY_CONST.ACTION.DELETE.label,
-    ],
-    targets: [
-      HISTORY_CONST.TARGET.POST.label,
-      HISTORY_CONST.TARGET.COMMENT.label,
-      HISTORY_CONST.TARGET.TAG.label,
-      HISTORY_CONST.TARGET.PROFILE.label,
-    ],
+    actors: HISTORY_LIST.ACTOR.map((actor) => actor.label),
+    actions: HISTORY_LIST.ACTION.map((action) => action.label),
+    targets: HISTORY_LIST.TARGET.map((target) => target.label),
   }
   const timeFilterOptions = [
     {
@@ -48,6 +39,9 @@ const History = () => {
   const myDisplayName = 'Zhāng Zhōng Réin'
   const [checkboxStatus, setCheckboxStatus] = useState([])
   const [checkedAll, setCheckedAll] = useState(false)
+  const [actorChecked, setActorChecked] = useState(option.actors.map((actor) => true))
+  const [actionChecked, setActionChecked] = useState(option.actions.map((action) => true))
+  const [targetChecked, setTargetChecked] = useState(option.targets.map((target) => true))
   const onFilterOptionsChange = (options) => {
     setFilterOptions(options)
   }
@@ -77,7 +71,18 @@ const History = () => {
   }
   const handleSave = () => {
     // Todo: add a alert to nortify whether the deletion was successful or not
-    deleteHistoryData.every((record) => axiosClient.delete(`/history-details/${record.id}`))
+    deleteHistoryData.every((record) => {
+      const newData = {
+        Deleted: true
+      }
+      axiosClient({
+        method: 'put',
+        url: `/history-details/${record.id}`,
+        data: newData,
+        headers: {},
+      })
+  })
+
     setCachedHistoryData([])
     setDeleteHistoryData([])
   }
@@ -106,11 +111,12 @@ const History = () => {
     async function fetchData() {
       const userId = 1
       try {
-        const results = await axiosClient.get(`/history-details?User.id=${userId}`)
+        const results = await axiosClient.get(`/history-details?Deleted=false&User.id=${userId}&`)
         const data = results.data
         const refinedData = data.map((record) => {
           return {
             id: record.id,
+            avatarURL: record.User.AvatarURL,
             actor: record.User.DisplayName === myDisplayName ? 'You' : record.User.DisplayName,
             action: getHistoryString(record, true, myDisplayName),
             gotoUrl: getHistoryUrl(record),
@@ -143,10 +149,20 @@ const History = () => {
     >
       <Container maxWidth={false}>
         <Grid container spacing={3}>
-          <Grid item lg={4} md={6} xl={3} xs={12}>
-            <FilterTab sx={{ height: '100%' }} option={option} callback={onFilterOptionsChange} />
+          <Grid item lg={3} md={12} xl={3} xs={12}>
+            <FilterTab
+              sx={{ height: '100%' }}
+              option={option}
+              callback={onFilterOptionsChange}
+              actorChecked={actorChecked}
+              actionChecked={actionChecked}
+              targetChecked={targetChecked}
+              setActorChecked={setActorChecked}
+              setActionChecked={setActionChecked}
+              setTargetChecked={setTargetChecked}
+            />
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
+          <Grid item lg={9} md={12} xl={9} xs={12}>
             <HistoryTab
               data={historyData}
               timeFilter={timeFilter}

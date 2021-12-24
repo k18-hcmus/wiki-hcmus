@@ -18,13 +18,12 @@ const Information = () => {
   })
   const handleUserDataChange = async (property, value) => {
     const newUserData = {
-      ...userData,
       [property]: value,
     }
-    setUserData(newUserData)
+    setUserData({ ...userData, [property]: value })
     const result = await axiosClient({
       method: 'put',
-      url: `/account-users/${newUserData.id}`,
+      url: `/account-users/${userData.id}`,
       data: newUserData,
       headers: {},
     })

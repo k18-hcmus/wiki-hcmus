@@ -14,8 +14,9 @@ const CenteredGrid = styled(Grid)({
   justifyContent: 'center',
 })
 
-const FollowCell = ({ data, callbackDelete }) => {
+const FollowCell = ({ type, data, callbackDelete }) => {
   const [anchorEl, setAnchorEl] = useState(null)
+  const [avatarURL, setAvatarURL] = useState(data.avatarURL || '/static/avatars/avatar_1.jpg')
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -27,6 +28,12 @@ const FollowCell = ({ data, callbackDelete }) => {
     setAnchorEl(null)
     callbackDelete(data)
   }
+  const handleImgError = () => {
+    if (!imgErr) {
+      setAvatarURL('/public/static/avatars/avatar_1.jpg')
+      imgErr = true
+    }
+  }
   return (
     <Grid container>
       <CenteredGrid item lg={3} md={3} xl={3} xs={6}>
@@ -37,23 +44,25 @@ const FollowCell = ({ data, callbackDelete }) => {
               width: 50,
             }}
           >
-            <img src="https://via.placeholder.com/100" />
+            <img src={avatarURL} onerror={handleImgError}/>
           </Avatar>
         </Link>
       </CenteredGrid>
-      <Grid container lg={7} md={7} xl={7} xs={7}>
-        <CenteredGrid item lg={12} md={12} xl={12} xs={12}>
-          <Link href={data.gotoUrl} underline="hover">
-            <Typography align="left" color="text.primary" variant="body2">
-              {data.displayName}
+      <Grid item lg={7} md={7} xl={7} xs={7}>
+        <Grid container>
+          <CenteredGrid item lg={12} md={12} xl={12} xs={12}>
+            <Link href={data.gotoUrl} underline="hover">
+              <Typography align="left" color="text.primary" variant="body2">
+                {data.displayName}
+              </Typography>
+            </Link>
+          </CenteredGrid>
+          <CenteredGrid item lg={12} md={12} xl={12} xs={12}>
+            <Typography align="left" color="text.secondary" variant="caption">
+              {data.followerNum} followers
             </Typography>
-          </Link>
-        </CenteredGrid>
-        <CenteredGrid item lg={12} md={12} xl={12} xs={12}>
-          <Typography align="left" color="text.secondary" variant="caption">
-            {data.followerNum} followers
-          </Typography>
-        </CenteredGrid>
+          </CenteredGrid>
+        </Grid>
       </Grid>
       <CenteredGrid item lg={2} md={2} xl={2} xs={2}>
         <MoreButton>
@@ -79,7 +88,8 @@ const FollowCell = ({ data, callbackDelete }) => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={handleDelete}>Unfollow</MenuItem>
+            {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
+            {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
           </Menu>
         </MoreButton>
       </CenteredGrid>

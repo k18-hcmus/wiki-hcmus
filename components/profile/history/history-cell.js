@@ -26,6 +26,8 @@ const CenteredGrid = styled(Grid)({
 
 const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }) => {
   const [anchorEl, setAnchorEl] = useState(null)
+  const [avatarURL, setAvatarURL] = useState(data.avatarURL || '/static/avatars/avatar_1.jpg')
+  const [imgErr, setImgErr] = useState(false)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -40,25 +42,33 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
     setAnchorEl(null)
     callbackGoto(data)
   }
+  const handleImgError = () => {
+    if (!imgErr) {
+      setAvatarURL('/public/static/avatars/avatar_1.jpg')
+      imgErr = true
+    }
+  }
   return (
     <ListItem sx={{ px: 4 }}>
       <Grid container spacing={1}>
-        <Grid container lg={2} md={2} xl={2} xs={6}>
-          <CenteredGrid item lg={6} md={6} xl={6} xs={6}>
-            <Checkbox align="left" checked={checkBoxStatus || false} onChange={handleCheck} />
-          </CenteredGrid>
-          <CenteredGrid item lg={6} md={6} xl={6} xs={6}>
-            <Avatar
-              sx={{
-                height: 50,
-                width: 50,
-              }}
-            >
-              <img src="https://via.placeholder.com/100" />
-            </Avatar>
-          </CenteredGrid>
+        <Grid item lg={2} md={2} xl={2} xs={6}>
+          <Grid container>
+            <CenteredGrid item lg={6} md={6} xl={6} xs={6}>
+              <Checkbox align="left" checked={checkBoxStatus || false} onChange={handleCheck} />
+            </CenteredGrid>
+            <CenteredGrid item lg={6} md={6} xl={6} xs={6}>
+              <Avatar
+                sx={{
+                  height: 50,
+                  width: 50,
+                }}
+              >
+                <img src={avatarURL} onerror={handleImgError}/>
+              </Avatar>
+            </CenteredGrid>
+          </Grid>
         </Grid>
-        <CenteredGrid item lg={2} md={2} xl={2} xs={6}>
+        <CenteredGrid item lg={3} md={3} xl={3} xs={6}>
           <Typography sx={{ ml: 1 }} align="left" variant="body2">
             {data.actor}
           </Typography>
@@ -68,7 +78,7 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
             {data.action}
           </Typography>
         </CenteredGrid>
-        <CenteredGrid item lg={3} md={3} xl={3} xs={4}>
+        <CenteredGrid item lg={2} md={2} xl={2} xs={4}>
           <Typography align="right" color="textSecondary" variant="caption">
             {formatDistanceToNow(new Date(data.created_at))}
           </Typography>

@@ -37,7 +37,7 @@ const FollowTab = ({ data, callbackDelete, type }) => {
       <Grid container spacing={3}>
         {data.map((record, index) => (
           <Grid item key={index} item lg={6} md={6} xl={6} xs={12}>
-            <FollowCell data={record} callbackDelete={handleDelete} />
+            <FollowCell type={type} data={record} callbackDelete={handleDelete} />
           </Grid>
         ))}
       </Grid>
