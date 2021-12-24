@@ -72,7 +72,10 @@ export const getHistoryUrl = (history) => {
 
 export const getHistoryString = (history, checkActorName, actorName) => {
   var actorContext
-  if (checkActorName && HISTORY_LIST.ACTOR[history.ActorId].context === HISTORY_CONST.ACTOR.OTHER.context)
+  if (
+    checkActorName &&
+    HISTORY_LIST.ACTOR[history.ActorId].context === HISTORY_CONST.ACTOR.OTHER.context
+  )
     actorContext = history.User.DisplayName === actorName ? 'You' : history.User.DisplayName
   else actorContext = history.User.DisplayName
   const actionContext = HISTORY_LIST.ACTION[history.ActionId].context
