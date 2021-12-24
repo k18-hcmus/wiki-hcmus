@@ -16,16 +16,25 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu({ UserDetail }) {
+export default function UserMoreMenu({ UserDetail, allUsers, handleDelUser }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const { id } = UserDetail;
   const router = useRouter();
-  // const {id} = router.query;
+
   const handleClick = (e) => {
     e.preventDefault();
     router.push(`http://localhost:3000/admin/usersActive/${id}`);
   };
+  const handleClickDelUser = (id) => {
+    let deleteUser = allUsers.filter((user) => user.id !== id);
+    let userDel = allUsers.filter((user) => user.id === id);
+    console.log("userDEl", userDel);
+    handleDelUser(deleteUser, userDel);
+
+    console.log("handleDellUser:", deleteUser);
+  };
+
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -42,7 +51,10 @@ export default function UserMoreMenu({ UserDetail }) {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem sx={{ color: "text.secondary" }}>
+        <MenuItem
+          sx={{ color: "text.secondary" }}
+          onClick={() => handleClickDelUser(id)}
+        >
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>

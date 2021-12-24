@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@mui/material";
-
+import { Button, Grid } from "@mui/material";
 const ContentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -35,6 +34,10 @@ function Dashboard() {
     e.preventDefault();
     router.push("http://localhost:3000/admin/UsersActive");
   };
+  const handleClickPost = (e) => {
+    e.preventDefault();
+    router.push("http://localhost:3000/admin/post");
+  };
   return (
     <ContentContainer>
       <ContentWrapper>
@@ -43,7 +46,7 @@ function Dashboard() {
             <h2>Users</h2>
           </Categories>
         </Tabs>
-        <Tabs>
+        <Tabs onClick={handleClickPost}>
           <Categories>
             <h2>Post</h2>
           </Categories>

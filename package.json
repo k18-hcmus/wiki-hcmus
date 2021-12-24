@@ -14,15 +14,21 @@
     "@iconify/icons-eva": "^1.1.0",
     "@iconify/icons-ic": "^1.1.17",
     "@iconify/react": "^3.1.0",
+    "@mui/icons-material": "^5.2.1",
     "@mui/material": "^5.2.2",
+    "@mui/x-data-grid": "^5.1.0",
     "axios": "^0.24.0",
+    "chart.js": "^3.6.2",
     "next": "11.1.2",
+    "notistack": "^2.0.3",
     "react": "17.0.2",
+    "react-chartjs-2": "^4.0.0",
     "react-dom": "17.0.2",
-    "react-lazyload": "^3.2.0"
+    "react-lazyload": "^3.2.0",
+    "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
-    "eslint": "8.0.1",
+    "eslint": "^8.4.1",
     "eslint-config-next": "11.1.2"
   }
 }

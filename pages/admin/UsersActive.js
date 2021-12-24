@@ -14,9 +14,14 @@ import UserListToolbar from "./usersActive/components/UserListToolbar";
 import { TablePagination } from "@mui/material";
 import { Card } from "@mui/material";
 
-import axios from "axios";
 import axiosClient from "../../axiosClient";
 import { useEffect } from "react";
+import styled from "@emotion/styled";
+import ListPost from "./post";
+
+const CustomPagination = styled.div`
+  display: "flex";
+`;
 export default function Users() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState("asc");
@@ -25,10 +30,20 @@ export default function Users() {
   const [filterName, setFilterName] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [userList, setUserList] = useState([]);
-  const [quantityUser, setquantityUser] = useState(null);
+  const [disable, setDisable] = useState(true);
+  const [user, setUser] = useState({});
+  const [userCached, setUserCached] = useState();
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
+    if (filterName.length > 0) {
+      let temp = userList.filter((user) => {
+        return user.DisplayName.match(filterName);
+      });
+      setUserList(temp);
+      console.log("temp:", temp);
+    }
   };
+  console.log("filterName:", filterName);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -37,41 +52,61 @@ export default function Users() {
     setPage(0);
   };
 
+  const handleDelUser = (data, userDel) => {
+    setUserList(data);
+    setDisable(false);
+    setUser(userDel);
+  };
+  const handleSubmitDelUser = async () => {
+    console.log("id", user[0].id);
+    const response = await axiosClient.delete(`/account-users/${user[0].id}`);
+    console.log(response);
+    setDisable(true);
+  };
+  const handleUndo = () => {
+    setUserList(userCached);
+    setDisable(false);
+    setDisable(true);
+  };
   useEffect(() => {
     async function FetchUser() {
       try {
         const response = await axiosClient.get("/account-users");
-        //userList.map(setUserList);
         setUserList(response.data);
+        setUserCached(response.data);
       } catch (error) {
         console.log(error);
       }
     }
+
     FetchUser();
   }, []);
-  console.log(userList);
+  function search(rows) {
+    if (filterName.length > 0) {
+      let temp = userList.filter((user) => {
+        return user.DisplayName.match(filterName);
+      });
+      console.log("temp:", temp);
+    }
+  }
   return (
     <div>
-      {/* <div>
-        <Button variant="outlined">Outlined</Button>
-        <Button variant="outlined">Outlined</Button>
-      </div> */}
       <Card sx={{ mt: 5 }}>
         <UserListToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
         />
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TableCell align="left">DisplayName</TableCell>
                 <TableCell>Username</TableCell>
-                <TableCell align="right">FirstName</TableCell>
-                <TableCell align="right">LastName</TableCell>
-                <TableCell align="right">Email</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right">Action</TableCell>
+                <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Status</TableCell>
+                <TableCell align="left">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -83,22 +118,26 @@ export default function Users() {
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {user.Username}
+                      {user.DisplayName}
                     </TableCell>
-                    <TableCell align="right">{user.FirstName}</TableCell>
-                    <TableCell align="right">{user.LastName}</TableCell>
-                    <TableCell align="right">{user.Email}</TableCell>
-                    <TableCell align="right">{user.Status}</TableCell>
-                    <TableCell align="right">
-                      <UserMoreMenu UserDetail={user} key={user.id} />
+                    <TableCell align="left">{user.Username}</TableCell>
+                    <TableCell align="left">{user.Email}</TableCell>
+                    <TableCell align="left">{user.Status}</TableCell>
+                    <TableCell align="left">
+                      <UserMoreMenu
+                        UserDetail={user}
+                        key={user.id}
+                        allUsers={userList}
+                        handleDelUser={handleDelUser}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
-          sx={{ mt: 2 }}
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={25}
@@ -108,6 +147,22 @@ export default function Users() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         ></TablePagination>
       </Card>
+      <Button
+        variant="outlined"
+        sx={{ mt: 3, ml: 2 }}
+        disabled={disable}
+        onClick={handleSubmitDelUser}
+      >
+        SAVE
+      </Button>
+      <Button
+        variant="outlined"
+        sx={{ mt: 3, ml: 2 }}
+        disabled={disable}
+        onClick={handleUndo}
+      >
+        undo
+      </Button>
     </div>
   );
 }
