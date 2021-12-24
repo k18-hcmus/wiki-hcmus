@@ -90,11 +90,16 @@ const FollowCell = ({ type, data, callbackDelete }) => {
             }}
           >
 <<<<<<< HEAD
+<<<<<<< HEAD
             {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
             {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
 =======
             <MenuItem onClick={handleDelete}>Unfollow</MenuItem>
 >>>>>>> 8bf1257 (Complete Follow layout and interaction)
+=======
+            {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
+            {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
+>>>>>>> 0b0191c (Add avatar & re-design history, follow tab & mechanics)
           </Menu>
         </MoreButton>
       </CenteredGrid>
