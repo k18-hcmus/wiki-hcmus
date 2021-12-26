@@ -6,25 +6,8 @@ import History from '../../components/profile/tabs/history.js'
 import Follow from '../../components/profile/tabs/follow.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
+import TabPanel from '../../components/profile/commons/tab-panel'
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  )
-}
 
 function allyProps(index) {
   return {
@@ -40,7 +23,6 @@ const Profile = () => {
   }
   return (
     <Container>
-      <Typography variant="h5">User settings</Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Dashboard" {...allyProps(0)} />

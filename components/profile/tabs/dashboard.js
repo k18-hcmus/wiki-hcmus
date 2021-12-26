@@ -8,29 +8,43 @@ import TotalUpvoteDownvote from '../dashboard/total-upvote-downvote'
 import TotalContribution from '../dashboard/total-contribution'
 import TotalPostComment from '../dashboard/total-post-comment'
 import axiosClient from '../../../axiosClient'
+import { userId } from '../../../mock/data'
+import { getTotalContribution, getMonthlyContribution } from '../../../utils/contribution-utils'
+import { getTotalVote } from '../../../utils/vote-utils'
 
 const Dashboard = () => {
-  const [cPLastMonth, setCPLastMonth] = useState(101)
-  const [cPThisMonth, setCPThisMonth] = useState(129)
-  const [totalCP, setTotalCP] = useState(1432)
-  const [totalUpvote, setTotalUpvote] = useState(213)
-  const [totalDownvote, setTotalDownvote] = useState(56)
-  const [totalPost, setTotalPost] = useState(19)
-  const [totalComment, setTotalComment] = useState(43)
+  const [cPLastMonth, setCPLastMonth] = useState(0)
+  const [cPThisMonth, setCPThisMonth] = useState(0)
+  const [totalCP, setTotalCP] = useState(0)
+  const [totalUpvote, setTotalUpvote] = useState(0)
+  const [totalDownvote, setTotalDownvote] = useState(0)
+  const [totalPost, setTotalPost] = useState(0)
+  const [totalComment, setTotalComment] = useState(0)
   const [commentData, setCommentData] = useState([])
   const contributionRef = useRef()
   const [cPRawData, setCPRawData] = useState(null)
   useEffect(() => {
     async function fetchData() {
-      const id = 1
       try {
-        const cPResult = await axiosClient.get(`/contributions?User.id=${id}`)
+        const cPResult = await axiosClient.get(`/contributions?User.id=${userId}`)
         const cPRawData = cPResult.data
         setCPRawData(cPRawData)
         contributionRef.current.updateChartData()
-        const commentDataResult = await axiosClient.get(`/comments?User.id=${id}`)
+        const commentDataResult = await axiosClient.get(`/comments?User.id=${userId}`)
         const commentRawData = commentDataResult.data
         setCommentData(commentRawData)
+        const userData = await axiosClient.get(`/account-users?id=${userId}`)
+        const userObject = userData.data[0]
+        const totalCP = await getTotalContribution('object', userObject)
+        setTotalCP(totalCP)
+        const [lastMonthCP, thisMonthCP] = await getMonthlyContribution('object', userObject)
+        setCPLastMonth(lastMonthCP)
+        setCPThisMonth(thisMonthCP)
+        const [upvoteSum, downvoteSum] = await getTotalVote('object', userObject)
+        setTotalUpvote(upvoteSum)
+        setTotalDownvote(downvoteSum)
+        setTotalPost(userObject.Posts.length)
+        setTotalComment(userObject.Comments.length)
       } catch (error) {
         console.log(error)
       }
