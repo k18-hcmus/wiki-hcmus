@@ -6,6 +6,7 @@ import FollowTab from '../follow/follow-tab'
 import TabPanel from '../commons/tab-pannel'
 import { addHistory } from '../../../utils/history-utils'
 import { HISTORY_CONST } from '../../../shared/constants'
+import { userId } from '../../../mock/data'
 
 const Follow = () => {
   const [followData, setFollowData] = useState([])
@@ -13,7 +14,6 @@ const Follow = () => {
   const [rawFollowData, setRawFollowData] = useState([])
   const [rawFollowerData, setRawFollowerData] = useState([])
   const [value, setValue] = React.useState(0)
-  const userId = 1
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -67,9 +67,8 @@ const Follow = () => {
   }
   useEffect(() => {
     async function fetchData() {
-      const id = 1
       try {
-        const result = await axiosClient.get(`/account-users?id=${id}`)
+        const result = await axiosClient.get(`/account-users?id=${userId}`)
         const data = result.data[0]
         setRawFollowData(data.FollowUsers)
         setRawFollowerData(data.FollowedByUsers)
@@ -77,9 +76,9 @@ const Follow = () => {
           return {
             id: index,
             displayName: record.DisplayName,
-            followerNum: record.FollowerNum,
+            followerNum: record.FollowedByUsers ? record.FollowedByUsers.length : 0,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar
+            avatarURL: record.Avatar,
           }
         })
         const refinedFollowerData = data.FollowedByUsers.map((record, index) => {
@@ -88,7 +87,7 @@ const Follow = () => {
             displayName: record.DisplayName,
             followerNum: record.FollowerNum,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar
+            avatarURL: record.Avatar,
           }
         })
         setFollowData(refinedFollowData)

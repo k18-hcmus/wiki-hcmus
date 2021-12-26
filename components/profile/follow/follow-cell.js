@@ -45,7 +45,7 @@ const FollowCell = ({ type, data, callbackDelete }) => {
               width: 50,
             }}
           >
-            <img src={avatarURL} onerror={handleImgError}/>
+            <img src={avatarURL} onError={handleImgError}/>
           </Avatar>
         </Link>
       </CenteredGrid>
@@ -89,17 +89,9 @@ const FollowCell = ({ type, data, callbackDelete }) => {
               horizontal: 'left',
             }}
           >
-<<<<<<< HEAD
-<<<<<<< HEAD
             {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
             {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
-=======
             <MenuItem onClick={handleDelete}>Unfollow</MenuItem>
->>>>>>> 8bf1257 (Complete Follow layout and interaction)
-=======
-            {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
-            {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
->>>>>>> 0b0191c (Add avatar & re-design history, follow tab & mechanics)
           </Menu>
         </MoreButton>
       </CenteredGrid>

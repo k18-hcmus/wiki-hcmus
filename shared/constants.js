@@ -199,3 +199,15 @@ export const BUTTON_POST = {
     label: 'Delete',
   },
 }
+export const VOTE_CONST = {
+  TYPE: {
+    POST: {
+      context: 'Post',
+      url: '/posts',
+    },
+    COMMENT: {
+      context: 'Comment',
+      url: '/comments',
+    },
+  },
+}

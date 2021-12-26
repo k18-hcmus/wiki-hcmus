@@ -8,6 +8,7 @@ import { INFORMATION_CONST, HISTORY_CONST } from '../../../shared/constants'
 import { addHistory } from '../../../utils/history-utils'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import axios from 'axios'
+import { userId } from '../../../mock/data'
 
 const Information = () => {
   const [userData, setUserData] = useState({
@@ -41,10 +42,9 @@ const Information = () => {
   const handleUserDataChange = (property, value) => {
     saveChangeInfomation(property, value)
   }
-  const handleAvatarChange = async(evt) => {
+  const handleAvatarChange = async (evt) => {
     const files = evt.target.files
-    if (!files || !files.length) 
-      return
+    if (!files || !files.length) return
     const formData = new FormData()
     formData.append('file', files[0])
     formData.append('upload_preset', 'wiki-hcmus')
@@ -54,14 +54,13 @@ const Information = () => {
       saveChangeInfomation('AvatarURL', respone.data.secure_url)
     } catch (e) {
       console.log('caught error')
-      console.error(e)
+      console.log(e)
     }
   }
   useEffect(() => {
     async function fetchData() {
-      const id = 1
       try {
-        const results = await axiosClient.get(`/account-users?id=${id}`)
+        const results = await axiosClient.get(`/account-users?id=${userId}`)
         const data = results.data[0]
         setAvatarURL(data.AvatarURL || '/static/avatars/avatar_1.jpg')
         setUserData(data)
@@ -83,17 +82,12 @@ const Information = () => {
                   overlap="circular"
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   badgeContent={
-                  <Button
-                    component="label"
-                  >
-                    <Avatar><AddPhotoAlternateIcon /></Avatar>
-                    <input
-                      accept="image/*"
-                      type="file"
-                      onChange={handleAvatarChange}
-                      hidden
-                    />
-                  </Button>
+                    <Button component="label">
+                      <Avatar>
+                        <AddPhotoAlternateIcon />
+                      </Avatar>
+                      <input accept="image/*" type="file" onChange={handleAvatarChange} hidden />
+                    </Button>
                   }
                 >
                   <Avatar
@@ -106,9 +100,7 @@ const Information = () => {
               }
             />
           </Box>
-          <CardContent>
-            
-          </CardContent>
+          <CardContent></CardContent>
         </Card>
       </Grid>
       <Grid item lg={8} md={8} xl={8} xs={12}>

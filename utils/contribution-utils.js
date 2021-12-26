@@ -73,4 +73,59 @@ async function addContribution(userId, value) {
   } else console.log(`AddContribution Error: User.id=${userId} not found`)
 }
 
-export { contributionListToChartData, addContribution }
+async function getMonthlyContribution(type, user) {
+  var data
+  if (type === 'id') {
+    const userResult = await axiosClient.get(`/account-users?id=${user}`)
+    if (!userResult || userResult.data.length === 0) {
+      console.log(`Cannot found user with id=${user}`)
+      return
+    }
+    data = userResult.data[0]
+  } else {
+    data = user
+  }
+  const today = new Date()
+  const previousMonth = new Date(new Date().setMonth(today.getMonth() - 1))
+  var resultLastMonth = 0
+  var resultThisMonth = 0
+  data.Contributions.forEach((con) => {
+    const dateValue = new Date(con.date)
+    if (today.getMonth() === dateValue.getMonth() && today.getYear() === dateValue.getYear()) {
+      resultThisMonth += con.value
+    }
+    if (
+      today.getMonth() === previousMonth.getMonth() &&
+      today.getYear() === previousMonth.getYear()
+    ) {
+      resultLastMonth += con.value
+    }
+  })
+  return [resultLastMonth, resultThisMonth]
+}
+
+async function getTotalContribution(type, user) {
+  var data
+  if (type === 'id') {
+    const userResult = await axiosClient.get(`/account-users?id=${user}`)
+    if (!userResult || userResult.data.length === 0) {
+      console.log(`Cannot found user with id=${user}`)
+      return
+    }
+    data = userResult.data[0]
+  } else {
+    data = user
+  }
+  var result = 0
+  data.Contributions.forEach((con) => {
+    result += con.value
+  })
+  return result
+}
+
+export {
+  contributionListToChartData,
+  addContribution,
+  getMonthlyContribution,
+  getTotalContribution,
+}

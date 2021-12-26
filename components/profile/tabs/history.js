@@ -5,6 +5,7 @@ import HistoryTab from '../history/history-tab'
 import axiosClient from '../../../axiosClient'
 import { HISTORY_CONST, HISTORY_LIST } from '../../../shared/constants'
 import { getHistoryString, getHistoryUrl } from '../../../utils/history-utils'
+import { userId } from '../../../mock/data'
 
 const History = () => {
   const option = {
@@ -73,7 +74,7 @@ const History = () => {
     // Todo: add a alert to nortify whether the deletion was successful or not
     deleteHistoryData.every((record) => {
       const newData = {
-        Deleted: true
+        Deleted: true,
       }
       axiosClient({
         method: 'put',
@@ -81,7 +82,7 @@ const History = () => {
         data: newData,
         headers: {},
       })
-  })
+    })
 
     setCachedHistoryData([])
     setDeleteHistoryData([])
@@ -109,7 +110,6 @@ const History = () => {
   }
   useEffect(() => {
     async function fetchData() {
-      const userId = 1
       try {
         const results = await axiosClient.get(`/history-details?Deleted=false&User.id=${userId}&`)
         const data = results.data

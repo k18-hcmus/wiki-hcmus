@@ -63,7 +63,7 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
                   width: 50,
                 }}
               >
-                <img src={avatarURL} onerror={handleImgError}/>
+                <img src={avatarURL} onError={handleImgError}/>
               </Avatar>
             </CenteredGrid>
           </Grid>
