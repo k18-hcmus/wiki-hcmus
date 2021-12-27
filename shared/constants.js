@@ -86,3 +86,13 @@ export const HISTORY_CONST = {
     },
   },
 }
+export const STATES_CONST = [
+  {
+    value: 'ACTIVE',
+    label: 'ACTIVE',
+  },
+  {
+    value: 'PENDING',
+    label: 'PENDING',
+  },
+]

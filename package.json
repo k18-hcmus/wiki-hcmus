@@ -28,6 +28,7 @@
         "faker": "^5.5.3",
         "lodash": "^4.17.21",
         "next": "11.1.2",
+        "notistack": "^2.0.3",
         "numeral": "^2.0.6",
         "prettier": "^2.5.0",
         "prop-types": "^15.7.2",

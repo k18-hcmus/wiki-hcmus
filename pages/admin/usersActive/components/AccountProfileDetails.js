@@ -1,67 +1,47 @@
-import { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
-import { useRouter } from "next/router";
-import axiosClient from "../../../../axiosClient";
-const states = [
-  {
-    value: "ACTIVE",
-    label: "ACTIVE",
-  },
-  {
-    value: "PENDING",
-    label: "PENDING",
-  },
-];
+import { useState, useEffect } from 'react'
+import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@mui/material'
+//import { useSnackbar } from 'notistack'
+import { useRouter } from 'next/router'
+import axiosClient from '../../../../axiosClient'
+import { STATES_CONST } from '../../../../shared/constants'
 
 export const AccountProfileDetails = (props) => {
-  const router = useRouter();
-  const [user, setUser] = useState({});
-  //const { enqueueSnackbar } = useSnackbar();
-  const { id } = router.query;
+  const router = useRouter()
+  const [user, setUser] = useState({})
+  //const { enqueueSnackbar } = useSnackbar()
+  const { id } = router.query
 
   useEffect(() => {
     async function FetchUser() {
-      const response = await axiosClient.get(`/account-users/${id}`);
-      setUser(response.data);
+      const response = await axiosClient.get(`/account-users/${id}`)
+      setUser(response.data)
     }
-    FetchUser();
-  }, []);
+    FetchUser()
+  }, [])
   const handleClickVariant = (variant) => () => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar("This is a success message!", { variant });
-  };
+    enqueueSnackbar('This is a success message!', { variant })
+  }
 
   const handleChange = (e) => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const response = await axiosClient.put(`/account-users/${id}`, {
+      await axiosClient.put(`/account-users/${id}`, {
         DisplayName: user.DisplayName,
         Status: user.Status,
         Email: user.Email,
         Phone: user.Phone,
-      });
-      console.log("update:", response);
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
-  console.log(user);
+  }
   return (
     <form autoComplete="off" noValidate {...props} onSubmit={handleSubmit}>
       <Card>
@@ -125,7 +105,7 @@ export const AccountProfileDetails = (props) => {
                 value={user.Status}
                 variant="outlined"
               >
-                {states.map((option) => (
+                {STATES_CONST.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -137,8 +117,8 @@ export const AccountProfileDetails = (props) => {
         <Divider />
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "flex-end",
+            display: 'flex',
+            justifyContent: 'flex-end',
             p: 2,
           }}
         >
@@ -147,7 +127,7 @@ export const AccountProfileDetails = (props) => {
             variant="contained"
             sx={{ mr: 3 }}
             onClick={() => {
-              router.push("http://localhost:3000/admin/UsersActive");
+              router.push('/admin/UsersActive')
             }}
           >
             Back
@@ -163,5 +143,5 @@ export const AccountProfileDetails = (props) => {
         </Box>
       </Card>
     </form>
-  );
-};
+  )
+}

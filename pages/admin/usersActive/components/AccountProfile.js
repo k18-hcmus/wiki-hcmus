@@ -7,40 +7,31 @@ import {
   CardContent,
   Divider,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import axiosClient from "../../../../axiosClient";
-const user = {
-  avatar: "/static/images/avatars/avatar_6.png",
-  city: "Los Angeles",
-  country: "USA",
-  jobTitle: "Senior Developer",
-  name: "Katarina Smith",
-  timezone: "GTM-7",
-};
+} from '@mui/material'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import axiosClient from '../../../../axiosClient'
 
 export const AccountProfile = (props) => {
-  const [user, setUser] = useState([]);
-  const router = useRouter();
-  const { id } = router.query;
+  const [user, setUser] = useState([])
+  const router = useRouter()
+  const { id } = router.query
   useEffect(() => {
     async function FetchUser() {
-      const response = await axiosClient.get(`/account-users/${id}`);
-      setUser(response.data);
+      const response = await axiosClient.get(`/account-users/${id}`)
+      setUser(response.data)
     }
-    FetchUser();
-  }, []);
-  console.log("id:", id);
+    FetchUser()
+  }, [])
   return (
     <Card {...props}>
       <CardContent>
         <Box
           sx={{
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "column",
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           <Avatar
@@ -69,5 +60,5 @@ export const AccountProfile = (props) => {
         </Button>
       </CardActions>
     </Card>
-  );
-};
+  )
+}

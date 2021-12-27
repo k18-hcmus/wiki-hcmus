@@ -1,43 +1,43 @@
-import styled from "@emotion/styled";
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
-import { Button, Grid } from "@mui/material";
+import styled from '@emotion/styled'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { Button, Grid } from '@mui/material'
 const ContentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: 100px;
-`;
+`
 const ContentWrapper = styled.div`
   display: flex;
   padding: 20px;
   gap: 40px;
-`;
+`
 const Tabs = styled(Button)({
-  display: "flex",
-  justifyContent: "spaceEvenly",
-  alignItems: "center",
-  width: "250px",
-  height: "100px",
-  backgroundColor: "#dad4d4",
-  borderRadius: "10px",
-  cursor: "pointer",
-  boxShadow: "3px 0px 6px 0px rgba(246, 246, 246, 0.75)",
-});
+  display: 'flex',
+  justifyContent: 'spaceEvenly',
+  alignItems: 'center',
+  width: '250px',
+  height: '100px',
+  backgroundColor: '#dad4d4',
+  borderRadius: '10px',
+  cursor: 'pointer',
+  boxShadow: '3px 0px 6px 0px rgba(246, 246, 246, 0.75)',
+})
 
 const Categories = styled.div`
   color: rgb(70, 105, 70);
-`;
+`
 
 function Dashboard() {
-  const router = useRouter();
+  const router = useRouter()
   const handleClickUser = (e) => {
-    e.preventDefault();
-    router.push("http://localhost:3000/admin/UsersActive");
-  };
+    e.preventDefault()
+    router.push('/admin/UsersActive')
+  }
   const handleClickPost = (e) => {
-    e.preventDefault();
-    router.push("http://localhost:3000/admin/post");
-  };
+    e.preventDefault()
+    router.push('/admin/post')
+  }
   return (
     <ContentContainer>
       <ContentWrapper>
@@ -63,7 +63,7 @@ function Dashboard() {
         </Tabs>
       </ContentWrapper>
     </ContentContainer>
-  );
+  )
 }
 
-export default Dashboard;
+export default Dashboard
