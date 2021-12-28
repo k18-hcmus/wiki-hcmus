@@ -84,6 +84,7 @@ const HistoryTab = ({
       <List>
         {data.map((record, i) => (
           <HistoryCell
+            key={i}
             id={i}
             data={record}
             callbackGoto={handleGotoHistory}
@@ -113,7 +114,7 @@ const HistoryTab = ({
       )}
       {deleteStage && (
         <Button variant="outlined" onClick={handleCancel}>
-          Cancel
+          Undo
         </Button>
       )}
     </Card>

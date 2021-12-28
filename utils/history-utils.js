@@ -1,4 +1,6 @@
 import axiosClient from '../axiosClient'
+import { addNortification } from './nortification-utils'
+import { NORTIFICATION_CONST, HISTORY_LIST, HISTORY_CONST } from '../shared/constants'
 
 // Example: User Update Profile
 // addHistory(
@@ -13,7 +15,13 @@ import axiosClient from '../axiosClient'
 
 // Problem 2: ActionString needs enhance for a better semantic
 
-export const addHistory = async (actor, action, target) => {
+export const addHistory = async (
+  actor,
+  action,
+  target,
+  notifySelf = true,
+  notifyFollower = false
+) => {
   const actorResult = await axiosClient.get(`${actor.const.url}?id=${actor.id}`)
   const targetResult = await axiosClient.get(`${target.const.url}?id=${target.id}`)
   if (actorResult.data.length === 0) {
@@ -26,10 +34,7 @@ export const addHistory = async (actor, action, target) => {
   }
   const actorData = actorResult.data[0]
   const targetData = targetResult.data[0]
-  const actionString =
-    actor.const.context + ' has ' + action.const.context + ' ' + target.const.context
   const data = {
-    Action: actionString,
     Description: '',
     [actor.const.property]: actorData,
     [target.const.property]: targetData,
@@ -37,5 +42,30 @@ export const addHistory = async (actor, action, target) => {
     ActionId: action.const.id,
     TargetId: target.const.id,
   }
-  axiosClient.post('/history-details', data)
+  const historyResult = await axiosClient.post('/history-details', data)
+  // Add nortification records
+  if (notifySelf) addNortification(NORTIFICATION_CONST.TYPE.SELF, actor.id, historyResult.data.id)
+  if (notifyFollower)
+    actorData.FollowedByUsers.forEach((user) => {
+      addNortification(NORTIFICATION_CONST.TYPE.OTHER, user.id, historyResult.data.id)
+    })
+}
+
+export const getHistoryString = (history, checkActorName, actorName) => {
+  var actorContext
+  if (
+    checkActorName &&
+    HISTORY_LIST.ACTOR[history.ActorId].context === HISTORY_CONST.ACTOR.OTHER.context
+  )
+    actorContext = history.User.DisplayName === actorName ? 'You' : history.User.DisplayName
+  else actorContext = history.User.DisplayName
+  const actionContext = HISTORY_LIST.ACTION[history.ActionId].context
+  const targetConst = HISTORY_LIST.TARGET[history.TargetId]
+  const targetContext = history[targetConst.property][targetConst.contextProperty]
+  return actorContext + ' ' + actionContext + ' ' + targetConst.context + " '" + targetContext + "'"
+}
+
+export const getHistoryUrl = (history) => {
+  const targetConst = HISTORY_LIST.TARGET[history.TargetId]
+  return targetConst.url + history[targetConst.property].id
 }
