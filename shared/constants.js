@@ -149,3 +149,13 @@ export const NORTIFICATION_CONST = {
     ADMIN: 'Admin',
   },
 }
+export const STATES_CONST = [
+  {
+    value: 'ACTIVE',
+    label: 'ACTIVE',
+  },
+  {
+    value: 'PENDING',
+    label: 'PENDING',
+  },
+]
