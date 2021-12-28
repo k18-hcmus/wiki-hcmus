@@ -38,6 +38,8 @@ import { POST_STATUS } from '../../utils/constants'
 import TagSearch from '../../components/CreatePost/TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import AddIcon from '@mui/icons-material/Add'
+import { useSelector } from 'react-redux'
+import { getUser } from '../../redux/slices/userSlice'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
@@ -97,10 +99,12 @@ const CreatePost = ({ Tags }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [tagArr, setTagArr] = useState([])
+  const user = useSelector(getUser)
   const handleTagArr = (tags) => {
     setTagArr(tags)
   }
   const handlePopoverClick = (event) => {
+    console.log('user', user)
     setAnchorEl(event.currentTarget)
   }
 
@@ -116,6 +120,7 @@ const CreatePost = ({ Tags }) => {
         Content: body,
         Tags: tagArr,
         Status: POST_STATUS.PUBLISH, // Waiting approve post function
+        User: user.DetailUser,
       })
       response && setMsg({ err: '', success: 'Create post succeed' })
     } catch (error) {
@@ -124,6 +129,7 @@ const CreatePost = ({ Tags }) => {
     setDisabled(true)
   }
   const handleClickTag = (event) => {
+    console.log('user', user)
     const getTag = Tags.filter((tag) => tag.id.toString() === event.currentTarget.id)
     setShowTagDetail(true)
     setSelectedTag(getTag)

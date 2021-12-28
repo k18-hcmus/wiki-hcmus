@@ -18,7 +18,7 @@ const Comment = ({ comment }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <Avatar alt="Remy Sharp" src={user.avatar} />
@@ -26,9 +26,7 @@ const Comment = ({ comment }) => {
         </Grid>
         <Grid justifyContent="left" item xs zeroMinWidth>
           <h4 style={{ margin: 0, textAlign: 'left' }}>{user.username}</h4>
-          <p style={{ margin: 0, textAlign: 'left', color: 'gray' }}>
-            {createdAt}
-          </p>
+          <p style={{ margin: 0, textAlign: 'left', color: 'gray' }}>{createdAt}</p>
           <p style={{ textAlign: 'left' }}>{content}</p>
         </Grid>
       </Grid>

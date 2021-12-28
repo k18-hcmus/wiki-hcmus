@@ -86,3 +86,9 @@ export const HISTORY_CONST = {
     },
   },
 }
+export const ROLE_AUTH_ID = {
+  GUEST: 2,
+  USER: 1,
+  MODERATOR: 4,
+  ADMINSTRATOR: 5,
+}

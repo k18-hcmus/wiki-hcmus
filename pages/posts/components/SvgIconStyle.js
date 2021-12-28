@@ -14,7 +14,7 @@ export default function SvgIconStyle({ src, color = 'inherit', sx }) {
         ...(color === 'action' && { bgcolor: 'action.active' }),
         ...(color === 'disabled' && { bgcolor: 'action.disabled' }),
         ...(color === 'paper' && { bgcolor: 'background.paper' }),
-        ...sx
+        ...sx,
       }}
     />
   )
