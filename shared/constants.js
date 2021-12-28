@@ -227,3 +227,30 @@ export {
   FEATURE_MESSAGE,
   REPORT_CONST,
 }
+
+
+export const TAG_DETAIL = {
+  HEADER: {
+    OFFSET: '400',
+    BACK_TO_TOP: 'Back to Top'
+  },
+  SIDEBAR_DETAIL: {
+    ABOUT: {
+      TITLE: 'About',
+      POST: 'Reviews',
+      VOTE: 'Votes',
+      CREATED_AT: 'Created'
+    },
+    RELATED_TAG: {
+      TITLE: 'Related Tags',
+      EXPAND: 'Expand',
+      REDUCE: 'Reduce',
+      OVERFLOW_NUM: 5
+    },
+    EXTRA_TITLE: 'Extras',
+  }
+}
+
+export const COLOR_SET = {
+  BLUE: '#1976D2'
+}
