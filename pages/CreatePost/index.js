@@ -130,7 +130,6 @@ const CreatePost = ({ Tags }) => {
     setDisabled(true)
   }
   const handleClickTag = (event) => {
-    console.log('user', user)
     const getTag = Tags.filter((tag) => tag.id.toString() === event.currentTarget.id)
     setShowTagDetail(true)
     setSelectedTag(getTag)
