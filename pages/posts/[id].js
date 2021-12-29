@@ -1,13 +1,4 @@
-import {
-  Container,
-  Typography,
-  Avatar,
-  Button,
-  Grid,
-  Divider,
-  TextField,
-  Box
-} from '@mui/material'
+import { Container, Typography, Avatar, Button, Grid, Divider, TextField, Box } from '@mui/material'
 import { Add as AddIcon } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import { posts } from '../../mock/data'
@@ -85,11 +76,7 @@ const Post = ({ post }) => {
 
             {/* User info section */}
             <UserSection>
-              <Avatar
-                alt="Remy Sharp"
-                src={user.avatar}
-                sx={{ width: 56, height: 56, mr: 2 }}
-              />
+              <Avatar alt="Remy Sharp" src={user.avatar} sx={{ width: 56, height: 56, mr: 2 }} />
               <Username>{user.username}</Username>
               <FollowButton variant="contained">
                 <AddIcon />
@@ -153,8 +140,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      post
-    } // will be passed to the page component as props
+      post,
+    }, // will be passed to the page component as props
   }
 }
 

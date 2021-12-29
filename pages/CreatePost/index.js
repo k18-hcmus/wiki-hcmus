@@ -38,6 +38,9 @@ import { POST_STATUS } from '../../utils/constants'
 import TagSearch from '../../components/CreatePost/TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import AddIcon from '@mui/icons-material/Add'
+import { useSelector } from 'react-redux'
+import { getUser } from '../../redux/slices/userSlice'
+import AuthRoute from '../../utils/ProtectedRoute'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
@@ -97,6 +100,7 @@ const CreatePost = ({ Tags }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [tagArr, setTagArr] = useState([])
+  const user = useSelector(getUser)
   const handleTagArr = (tags) => {
     setTagArr(tags)
   }
@@ -116,6 +120,7 @@ const CreatePost = ({ Tags }) => {
         Content: body,
         Tags: tagArr,
         Status: POST_STATUS.PUBLISH, // Waiting approve post function
+        User: user.DetailUser,
       })
       response && setMsg({ err: '', success: 'Create post succeed' })
     } catch (error) {
@@ -156,144 +161,150 @@ const CreatePost = ({ Tags }) => {
     }
   }
   return (
-    <Container maxWidth="lg">
-      <Grid container direction="row" alignContent="center" justifyContent="center" spacing="30">
-        <Grid item xs={8}>
-          <Box sx={{ mt: 8 }} direction="column">
-            <Typography variant="h5">Create a post</Typography>
-            <Divider />
-            {msg.err && showErrMsg(msg.err)}
-            {msg.success && showSuccessMsg(msg.success)}
-            <FormBox component="form" onSubmit={handleSubmit} noValidate>
-              <TextField
-                fullWidth
-                required
-                size="small"
-                margin="normal"
-                label="Title"
-                onChange={handleTitleChange}
-              />
-              <Card sx={{ height: 450 }}>
-                <Editor
-                  editorState={editorState}
-                  wrapperClassName="wrapper-class"
-                  editorClassName="editor-class"
-                  toolbarClassName="toolbar-class"
-                  onEditorStateChange={onEditorStateChange}
-                  // toolbarOnFocus
-                  toolbar={{
-                    options: [
-                      'inline',
-                      'blockType',
-                      'fontSize',
-                      'fontFamily',
-                      'list',
-                      'textAlign',
-                      'image',
-                      'emoji',
-                      'colorPicker',
-                      'link',
-                      'history',
-                    ],
-                    inline: { inDropdown: true },
-                    list: { inDropdown: true },
-                    textAlign: { inDropdown: true },
-                    link: { inDropdown: true },
-                    history: { inDropdown: true },
-                    image: {
-                      urlEnabled: true,
-                      uploadEnabled: true,
-                      uploadCallback: uploadImageCallBack,
-                      previewImage: true,
-                      alt: { present: false, mandatory: false },
-                    },
-                  }}
+    <AuthRoute>
+      <Container maxWidth="lg">
+        <Grid container direction="row" alignContent="center" justifyContent="center" spacing="30">
+          <Grid item xs={8}>
+            <Box sx={{ mt: 8 }} direction="column">
+              <Typography variant="h5">Create a post</Typography>
+              <Divider />
+              {msg.err && showErrMsg(msg.err)}
+              {msg.success && showSuccessMsg(msg.success)}
+              <FormBox component="form" onSubmit={handleSubmit} noValidate>
+                <TextField
+                  fullWidth
+                  required
+                  size="small"
+                  margin="normal"
+                  label="Title"
+                  onChange={handleTitleChange}
                 />
-              </Card>
-              <Grid container sx={{ mt: 2, mb: 2 }} direction="row" spacing={1}>
-                {tagArr &&
-                  tagArr.map((tags) => (
-                    <Grid item key={tags.id}>
-                      <Chip
-                        key={tags.id}
-                        id={tags.id}
-                        label={tags.Name}
-                        variant="outlined"
-                        onClick={handleClickTag}
-                        onDelete={handleDeleteTag(tags.id)}
-                      />
-                    </Grid>
-                  ))}
-                <Grid item>
-                  <Chip
-                    icon={<AddIcon />}
-                    label="Add tag"
-                    variant="outlined"
-                    onClick={handlePopoverClick}
+                <Card sx={{ height: 450 }}>
+                  <Editor
+                    editorState={editorState}
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class"
+                    toolbarClassName="toolbar-class"
+                    onEditorStateChange={onEditorStateChange}
+                    // toolbarOnFocus
+                    toolbar={{
+                      options: [
+                        'inline',
+                        'blockType',
+                        'fontSize',
+                        'fontFamily',
+                        'list',
+                        'textAlign',
+                        'image',
+                        'emoji',
+                        'colorPicker',
+                        'link',
+                        'history',
+                      ],
+                      inline: { inDropdown: true },
+                      list: { inDropdown: true },
+                      textAlign: { inDropdown: true },
+                      link: { inDropdown: true },
+                      history: { inDropdown: true },
+                      image: {
+                        urlEnabled: true,
+                        uploadEnabled: true,
+                        uploadCallback: uploadImageCallBack,
+                        previewImage: true,
+                        alt: { present: false, mandatory: false },
+                      },
+                    }}
                   />
-                </Grid>
-                <Popover
-                  open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={handlePopoverClose}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 300,
-                      height: 250,
+                </Card>
+                <Grid container sx={{ mt: 2, mb: 2 }} direction="row" spacing={1}>
+                  {tagArr &&
+                    tagArr.map((tags) => (
+                      <Grid item key={tags.id}>
+                        <Chip
+                          key={tags.id}
+                          id={tags.id}
+                          label={tags.Name}
+                          variant="outlined"
+                          onClick={handleClickTag}
+                          onDelete={handleDeleteTag(tags.id)}
+                        />
+                      </Grid>
+                    ))}
+                  <Grid item>
+                    <Chip
+                      icon={<AddIcon />}
+                      label="Add tag"
+                      variant="outlined"
+                      onClick={handlePopoverClick}
+                    />
+                  </Grid>
+                  <Popover
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    onClose={handlePopoverClose}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
                     }}
                   >
-                    <TagSearch
-                      Tags={Tags} // All tags data
-                      TagsArr={tagArr} // Tag array added
-                      handleTag={handleTagArr}
-                    />
-                  </Box>
-                </Popover>
-              </Grid>
-              <Divider />
-              <Grid container direction="row" justifyContent="space-between" alignContent="center">
-                <Grid item />
-                <Grid item>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    disabled={disabled}
-                  >
-                    POST
-                  </Button>
+                    <Box
+                      sx={{
+                        width: 300,
+                        height: 250,
+                      }}
+                    >
+                      <TagSearch
+                        Tags={Tags} // All tags data
+                        TagsArr={tagArr} // Tag array added
+                        handleTag={handleTagArr}
+                      />
+                    </Box>
+                  </Popover>
                 </Grid>
-              </Grid>
-            </FormBox>
-          </Box>
+                <Divider />
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignContent="center"
+                >
+                  <Grid item />
+                  <Grid item>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                      disabled={disabled}
+                    >
+                      POST
+                    </Button>
+                  </Grid>
+                </Grid>
+              </FormBox>
+            </Box>
+          </Grid>
+          <Grid item xs={3}>
+            <Box sx={{ mt: 8 }} direction="column">
+              {showTagDetail && <TagCard tag={selectedTag} />}
+              <Card>
+                <CardHeader
+                  avatar={<Avatar src="/static/icons/ruleIcon.png" />}
+                  title="Rules create a post"
+                />
+                {Rules.map((rule) => (
+                  <CardContent sx={{ mt: -2 }} key={rule.id}>
+                    <CardContentText>
+                      {rule.id}. {rule.detail}
+                    </CardContentText>
+                    <Divider />
+                  </CardContent>
+                ))}
+              </Card>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <Box sx={{ mt: 8 }} direction="column">
-            {showTagDetail && <TagCard tag={selectedTag} />}
-            <Card>
-              <CardHeader
-                avatar={<Avatar src="/static/icons/ruleIcon.png" />}
-                title="Rules create a post"
-              />
-              {Rules.map((rule) => (
-                <CardContent sx={{ mt: -2 }} key={rule.id}>
-                  <CardContentText>
-                    {rule.id}. {rule.detail}
-                  </CardContentText>
-                  <Divider />
-                </CardContent>
-              ))}
-            </Card>
-          </Box>
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </AuthRoute>
   )
 }
-
 export default CreatePost

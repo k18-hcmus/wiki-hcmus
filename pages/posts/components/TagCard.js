@@ -8,7 +8,7 @@ import SvgIconStyle from './SvgIconStyle'
 
 const CardMediaStyle = styled('div')({
   position: 'relative',
-  paddingTop: 'calc(100% * 3 / 4)'
+  paddingTop: 'calc(100% * 3 / 4)',
 })
 
 const NameStyle = styled(Link)({
@@ -16,7 +16,7 @@ const NameStyle = styled(Link)({
   overflow: 'hidden',
   WebkitLineClamp: 2,
   display: '-webkit-box',
-  WebkitBoxOrient: 'vertical'
+  WebkitBoxOrient: 'vertical',
 })
 
 const AvatarStyle = styled(Avatar)(({ theme }) => ({
@@ -25,7 +25,7 @@ const AvatarStyle = styled(Avatar)(({ theme }) => ({
   height: 32,
   position: 'absolute',
   left: theme.spacing(3),
-  bottom: theme.spacing(-2)
+  bottom: theme.spacing(-2),
 }))
 
 const InfoStyle = styled('div')(({ theme }) => ({
@@ -33,7 +33,7 @@ const InfoStyle = styled('div')(({ theme }) => ({
   flexWrap: 'wrap',
   justifyContent: 'flex-end',
   marginTop: theme.spacing(3),
-  color: theme.palette.text.disabled
+  color: theme.palette.text.disabled,
 }))
 
 const CoverImgStyle = styled('img')({
@@ -41,7 +41,7 @@ const CoverImgStyle = styled('img')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  position: 'absolute'
+  position: 'absolute',
 })
 
 export default function TagCard({ tag }) {
@@ -58,8 +58,8 @@ export default function TagCard({ tag }) {
             width: '100%',
             height: '100%',
             position: 'absolute',
-            bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72)
-          }
+            bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+          },
         }}
       >
         <SvgIconStyle
@@ -70,7 +70,7 @@ export default function TagCard({ tag }) {
             height: 36,
             zIndex: 9,
             bottom: -15,
-            position: 'absolute'
+            position: 'absolute',
           }}
         />
         <AvatarStyle alt={name} src={iconTag} />

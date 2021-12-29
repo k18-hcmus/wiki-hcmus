@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled, alpha } from '@mui/material/styles'
 import {
   AppBar,
@@ -10,15 +10,23 @@ import {
   Badge,
   MenuItem,
   Menu,
+  Button,
+  Grid,
 } from '@mui/material'
 import {
   Search as SearchIcon,
   AccountCircle,
   Notifications as NotificationsIcon,
   MoreVert as MoreIcon,
+  Warning,
 } from '@mui/icons-material'
 import CustomLink from './CustomLink'
-
+import Login from './Login'
+import Register from './Register'
+import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUser, userLogout } from '../../redux/slices/userSlice'
+import axiosClient from '../../axiosClient'
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -62,10 +70,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
-
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-
+  const [isAuth, setIsAuth] = useState(false)
+  const router = useRouter()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsAuth(!!localStorage.getItem('token')) //Check authenticate
+    }
+  }, [])
+  const handleOpenLogin = (event) => {
+    event.preventDefault()
+    setIsLoginOpen(true)
+  }
+  const handleCloseLogin = () => {
+    setIsAuth(!!localStorage.getItem('token'))
+    setIsLoginOpen(false)
+  }
+  const handleOpenRegister = (event) => {
+    event.preventDefault()
+    setIsRegisterOpen(true)
+  }
+  const handleCloseRegister = () => {
+    setIsRegisterOpen(false)
+  }
+  const handleLogOut = () => {
+    localStorage.clear()
+    setIsAuth(!!localStorage.getItem('token'))
+    axiosClient.defaults.headers.common['Authorization'] = ``
+    router.push('/')
+    dispatch(userLogout())
+    handleMenuClose()
+  }
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -103,7 +142,7 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   )
 
@@ -155,6 +194,8 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <Login open={isLoginOpen} handleClose={handleCloseLogin} />
+      <Register open={isRegisterOpen} handleClose={handleCloseRegister} />
       <AppBar position="static">
         <Toolbar>
           <Typography
@@ -181,43 +222,60 @@ export default function PrimarySearchAppBar() {
           </Box>
 
           {/* Create New Post Link Button */}
-          <Box>
-            <CustomLink href="/CreatePost" page="Create Post" />
-          </Box>
-
-          {/* Desktop Nav */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-
-          {/* Mobile Nav */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          {!isAuth ? (
+            <Box>
+              <Grid container direction="row" spacing={2}>
+                <Grid item>
+                  <Button variant="contained" onClick={handleOpenLogin}>
+                    LOGIN
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained" color="warning" onClick={handleOpenRegister}>
+                    SIGN UP
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          ) : (
+            <>
+              <Box>
+                <CustomLink href="/CreatePost" page="Create Post" />
+              </Box>
+              {/* Desktop Nav */}
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
+                  <Badge badgeContent={17} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              {/* Mobile Nav */}
+              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}

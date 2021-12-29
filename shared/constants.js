@@ -121,7 +121,12 @@ export const HISTORY_CONST = {
     },
   },
 }
-
+export const ROLE_AUTH_ID = {
+  GUEST: 2,
+  USER: 1,
+  MODERATOR: 4,
+  ADMINSTRATOR: 5,
+}
 export const HISTORY_LIST = {
   ACTOR: [HISTORY_CONST.ACTOR.SELF, HISTORY_CONST.ACTOR.OTHER],
   ACTION: [
