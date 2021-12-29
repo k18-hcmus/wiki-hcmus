@@ -86,8 +86,7 @@ export default function PrimarySearchAppBar() {
     event.preventDefault()
     setIsLoginOpen(true)
   }
-  const handleCloseLogin = (event) => {
-    event.preventDefault()
+  const handleCloseLogin = () => {
     setIsAuth(!!localStorage.getItem('token'))
     setIsLoginOpen(false)
   }
@@ -95,8 +94,7 @@ export default function PrimarySearchAppBar() {
     event.preventDefault()
     setIsRegisterOpen(true)
   }
-  const handleCloseRegister = (event) => {
-    event.preventDefault()
+  const handleCloseRegister = () => {
     setIsRegisterOpen(false)
   }
   const handleLogOut = () => {

@@ -81,7 +81,15 @@ export default function Login({ open, handleClose }) {
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={(event, reason) => {
+        console.log(loading)
+        if (reason === 'backdropClick' && !loading) {
+          handleClose()
+        }
+      }}
+    >
       <BoxForm
         sx={{
           marginTop: 8,
