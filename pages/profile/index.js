@@ -6,7 +6,6 @@ import History from '../../components/profile/tabs/history.js'
 import Nortification from '../../components/profile/tabs/nortification.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
-import AuthRoute from '../../utils/ProtectedRoute.js'
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props
@@ -40,52 +39,50 @@ const Profile = () => {
     setValue(newValue)
   }
   return (
-    <AuthRoute>
-      <Container>
-        <Typography variant="h5">User settings</Typography>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-            <Tab label="Dashboard" {...allyProps(0)} />
-            <Tab label="Information" {...allyProps(1)} />
-            <Tab label="Nortifications" {...allyProps(2)} />
-            <Tab label="History" {...allyProps(3)} />
-            <Tab label="Settings" {...allyProps(4)} />
-          </Tabs>
-        </Box>
-        <Box pt={4}>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={0}>
-              <Dashboard />
-            </TabPanel>
-          </LazyLoad>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={1}>
-              <Information />
-            </TabPanel>
-          </LazyLoad>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={2}>
-              <Nortification />
-            </TabPanel>
-          </LazyLoad>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={3}>
-              <History />
-            </TabPanel>
-          </LazyLoad>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={4}>
-              <Nortification />
-            </TabPanel>
-          </LazyLoad>
-          <LazyLoad once={true}>
-            <TabPanel value={value} index={5}>
-              <Setting />
-            </TabPanel>
-          </LazyLoad>
-        </Box>
-      </Container>
-    </AuthRoute>
+    <Container>
+      <Typography variant="h5">User settings</Typography>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab label="Dashboard" {...allyProps(0)} />
+          <Tab label="Information" {...allyProps(1)} />
+          <Tab label="Nortifications" {...allyProps(2)} />
+          <Tab label="History" {...allyProps(3)} />
+          <Tab label="Settings" {...allyProps(4)} />
+        </Tabs>
+      </Box>
+      <Box pt={4}>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={0}>
+            <Dashboard />
+          </TabPanel>
+        </LazyLoad>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={1}>
+            <Information />
+          </TabPanel>
+        </LazyLoad>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={2}>
+            <Nortification />
+          </TabPanel>
+        </LazyLoad>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={3}>
+            <History />
+          </TabPanel>
+        </LazyLoad>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={4}>
+            <Nortification />
+          </TabPanel>
+        </LazyLoad>
+        <LazyLoad once={true}>
+          <TabPanel value={value} index={5}>
+            <Setting />
+          </TabPanel>
+        </LazyLoad>
+      </Box>
+    </Container>
   )
 }
 
