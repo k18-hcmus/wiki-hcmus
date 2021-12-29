@@ -55,7 +55,7 @@ export const HISTORY_CONST = {
       id: 6,
       label: 'Report',
       context: 'Reported',
-    }
+    },
   },
   TARGET: {
     POST: {
