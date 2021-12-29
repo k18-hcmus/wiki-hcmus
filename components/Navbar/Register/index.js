@@ -99,7 +99,6 @@ export default function Register({ open, handleClose }) {
           username: data.get('username'),
           password: data.get('password'),
         })
-        console.log('res', response)
         const UserId = response.data.user.id
         if (response.data) {
           const res = await axiosClient.post('/account-users', {
@@ -126,7 +125,6 @@ export default function Register({ open, handleClose }) {
     <Modal
       open={open}
       onClose={(event, reason) => {
-        console.log(loading)
         if (reason === 'backdropClick' && !loading) {
           handleClose()
         }

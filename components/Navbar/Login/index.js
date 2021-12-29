@@ -53,7 +53,6 @@ export default function Login({ open, handleClose }) {
   }, [open])
   const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('local', localStorage.getItem('token'))
     if (localStorage.getItem('token')) {
       return
     }
@@ -84,7 +83,6 @@ export default function Login({ open, handleClose }) {
     <Modal
       open={open}
       onClose={(event, reason) => {
-        console.log(loading)
         if (reason === 'backdropClick' && !loading) {
           handleClose()
         }

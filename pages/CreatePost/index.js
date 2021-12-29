@@ -105,7 +105,6 @@ const CreatePost = ({ Tags }) => {
     setTagArr(tags)
   }
   const handlePopoverClick = (event) => {
-    console.log('user', user)
     setAnchorEl(event.currentTarget)
   }
 
