@@ -6,21 +6,16 @@ import { Button } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import { useRouter } from 'next/router'
 import { CardActions } from '@mui/material'
-
+import { BUTTON_POST } from '../../../shared/constants'
 function ListPost() {
   const router = useRouter()
   const [listPost, setListPost] = React.useState()
   const [selectionModel, setSelectionModel] = React.useState()
-  const [disable, setDisable] = useState(true)
+  const [disableDelete, setDisableDelete] = useState(true)
   const [cachedPost, setCachedPost] = useState()
-  const handleChangePostEdit = (e, params) => {
-    //e.preventDefault();
-    router.push(`/admin/post/${params.listPost.id}`)
-  }
-  const handleCreatePost = (e) => {
-    //e.preventDefault();
-    router.push('/admin/post/CreatePost')
-  }
+  const [disable, setDisable] = useState(true)
+  const [delPost, setDelPost] = useState({})
+
   useEffect(() => {
     async function FetchPost() {
       const result = await axiosClient.get('/posts')
@@ -65,12 +60,22 @@ function ListPost() {
     },
   ]
   const handleClickDelPost = async () => {
-    let delPost = await listPost.filter((p) => p.id !== selectionModel[0])
-    setListPost(delPost)
-    setDisable(true)
+    let tempPost = await listPost.filter((p) => p.id !== selectionModel[0])
+    let temp = await listPost.filter((p) => p.id === selectionModel[0])
+    setDelPost(temp)
+    setListPost(tempPost)
+    setDisableDelete(true)
+    setDisable(false)
   }
   const handleClickUndo = () => {
     setListPost(cachedPost)
+    setDisable(true)
+  }
+  const handleClickSave = async () => {
+    console.log('idPost:', delPost[0].id)
+    let id = delPost[0].id
+    console.log('id:', id)
+    await axiosClient.delete(`/posts/${id}`)
     setDisable(true)
   }
   return (
@@ -84,15 +89,23 @@ function ListPost() {
         checkboxSelection
         onSelectionModelChange={(ids) => {
           setSelectionModel(ids)
-          setDisable(false)
+          setDisableDelete(false)
         }}
       />
       <CardActions>
-        <Button variant="contained" color="primary" onClick={handleClickDelPost} disabled={disable}>
-          DELETE
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickDelPost}
+          disabled={disableDelete}
+        >
+          {BUTTON_POST.Delete.label}
         </Button>
         <Button variant="contained" color="primary" onClick={handleClickUndo} disabled={disable}>
-          UNDO
+          {BUTTON_POST.Undo.label}
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleClickSave} disabled={disable}>
+          {BUTTON_POST.Save.label}
         </Button>
       </CardActions>
     </div>
