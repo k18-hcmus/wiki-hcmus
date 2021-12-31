@@ -8,24 +8,13 @@ import {
   TextField,
   Card,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Stack,
   Chip,
   CardHeader,
   Avatar,
   CardContent,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Autocomplete,
   Popover,
 } from '@mui/material'
 import { styled } from '@mui/styles'
-import faker from 'faker'
 import TagCard from '../../components/CreatePost/TagCard'
 import { EditorState } from 'draft-js'
 import dynamic from 'next/dynamic'
@@ -114,6 +103,7 @@ const CreatePost = ({ Tags }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     const body = JSON.stringify(content)
+    console.log(draftToHtml(content))
     try {
       const response = axiosClient.post('posts', {
         Title: title,
