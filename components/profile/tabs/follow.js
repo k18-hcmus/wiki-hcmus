@@ -78,7 +78,7 @@ const Follow = () => {
             displayName: record.DisplayName,
             followerNum: record.FollowedByUsers ? record.FollowedByUsers.length : 0,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar,
+            AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }
         })
         const refinedFollowerData = data.FollowedByUsers.map((record, index) => {
@@ -87,7 +87,7 @@ const Follow = () => {
             displayName: record.DisplayName,
             followerNum: record.FollowerNum,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar,
+            AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }
         })
         setFollowData(refinedFollowData)

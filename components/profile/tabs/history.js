@@ -116,7 +116,7 @@ const History = () => {
         const refinedData = data.map((record) => {
           return {
             id: record.id,
-            avatarURL: record.User.AvatarURL,
+            AvatarURL: record.User.AvatarURL || '/static/avatars/avatar_1.jpg',
             actor: record.User.DisplayName === myDisplayName ? 'You' : record.User.DisplayName,
             action: getHistoryString(record, true, myDisplayName),
             gotoUrl: getHistoryUrl(record),
@@ -165,6 +165,7 @@ const History = () => {
           <Grid item lg={9} md={12} xl={9} xs={12}>
             <HistoryTab
               data={historyData}
+              setData={setHistoryData}
               timeFilter={timeFilter}
               timeFilterOptions={timeFilterOptions}
               checkboxStatus={checkboxStatus}

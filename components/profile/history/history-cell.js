@@ -24,9 +24,9 @@ const CenteredGrid = styled(Grid)({
   justifyContent: 'center',
 })
 
-const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }) => {
+const HistoryCell = ({ id, data, setData, checkBoxStatus, onCheckCallBack, callbackGoto }) => {
+  console.log(data)
   const [anchorEl, setAnchorEl] = useState(null)
-  const [avatarURL, setAvatarURL] = useState(data.avatarURL || '/static/avatars/avatar_1.jpg')
   const [imgErr, setImgErr] = useState(false)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -44,7 +44,7 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
   }
   const handleImgError = () => {
     if (!imgErr) {
-      setAvatarURL('/static/avatars/avatar_1.jpg')
+      setData({...data, AvatarURL: '/static/avatars/avatar_1.jpg'})
       setImgErr(true)
     }
   }
@@ -63,7 +63,7 @@ const HistoryCell = ({ id, data, checkBoxStatus, onCheckCallBack, callbackGoto }
                   width: 50,
                 }}
               >
-                <img src={avatarURL} onError={handleImgError}/>
+                <img src={data.AvatarURL} onError={handleImgError}/>
               </Avatar>
             </CenteredGrid>
           </Grid>

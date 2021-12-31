@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Box, CardHeader, Avatar, CardContent, Typography, Grid } from '@mui/material'
 
-const UserInfo = ({ data }) => {
-  const [avatarURL, setAvatarURL] = useState(data.AvatarURL || '/static/avatars/avatar_1.jpg')
+const UserInfo = ({ data, setData }) => {
   const [imgErr, setImgErr] = useState(false)
   const handleImgError = () => {
     if (!imgErr) {
-      setAvatarURL('/static/avatars/avatar_1.jpg')
+      setData({...data, AvatarURL: '/static/avatars/avatar_1.jpg'})
       setImgErr(true)
     }
   }
+
   return (
     <Card>
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -18,7 +18,7 @@ const UserInfo = ({ data }) => {
             <Avatar
               display="block"
               alt="user avatar"
-              src={avatarURL}
+              src={data.AvatarURL}
               onError={handleImgError}
               sx={{ width: 120, height: 120 }}
               align="center"

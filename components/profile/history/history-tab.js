@@ -16,6 +16,7 @@ import HistoryCell from '../history/history-cell'
 
 const HistoryTab = ({
   data,
+  setData,
   timeFilter,
   timeFilterOptions,
   checkboxStatus,
@@ -52,6 +53,9 @@ const HistoryTab = ({
   const handleCheckAll = (event) => {
     callbackCheckAll(event.target.checked)
   }
+  const handleSetCellData = (newCellData) => {
+    setData(data.map(record => record.id === newCellData.id ? newCellData : record))
+  }
   return (
     <Card>
       <CardHeader
@@ -87,6 +91,7 @@ const HistoryTab = ({
             key={i}
             id={i}
             data={record}
+            setData={handleSetCellData}
             callbackGoto={handleGotoHistory}
             checkBoxStatus={checkboxStatus[i]}
             onCheckCallBack={callbackSetCheckBox}
