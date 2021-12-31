@@ -69,22 +69,3 @@ export const getHistoryUrl = (history) => {
   const targetConst = HISTORY_LIST.TARGET[history.TargetId]
   return targetConst.url + history[targetConst.property].id
 }
-
-export const getHistoryString = (history, checkActorName, actorName) => {
-  var actorContext
-  if (
-    checkActorName &&
-    HISTORY_LIST.ACTOR[history.ActorId].context === HISTORY_CONST.ACTOR.OTHER.context
-  )
-    actorContext = history.User.DisplayName === actorName ? 'You' : history.User.DisplayName
-  else actorContext = history.User.DisplayName
-  const actionContext = HISTORY_LIST.ACTION[history.ActionId].context
-  const targetConst = HISTORY_LIST.TARGET[history.TargetId]
-  const targetContext = history[targetConst.property][targetConst.contextProperty]
-  return actorContext + ' ' + actionContext + ' ' + targetConst.context + " '" + targetContext + "'"
-}
-
-export const getHistoryUrl = (history) => {
-  const targetConst = HISTORY_LIST.TARGET[history.TargetId]
-  return targetConst.url + history[targetConst.property].id
-}

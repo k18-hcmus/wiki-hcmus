@@ -18,7 +18,7 @@ const Profile = () => {
   const router = useRouter()
   const { id } = router.query
   const [userData, setUserData] = useState({
-    AvatarURL: null,
+    AvatarURL: '/static/avatars/avatar_1.jpg',
   })
   const [overviewData, setOverviewData] = useState([])
   const handleOverviewChange = (option) => {
@@ -84,7 +84,7 @@ const Profile = () => {
         </Grid>
         <Grid item lg={3} md={3} xl={3} xs={12}>
           <Box sx={{ pt: 2 }}>
-            <UserInfo data={userData} />
+            <UserInfo data={userData} setdata={setUserData}/>
           </Box>
         </Grid>
       </Grid>

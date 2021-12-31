@@ -8,11 +8,10 @@ import TotalUpvoteDownvote from '../dashboard/total-upvote-downvote'
 import TotalContribution from '../dashboard/total-contribution'
 import TotalPostComment from '../dashboard/total-post-comment'
 import axiosClient from '../../../axiosClient'
-import { userId } from '../../../mock/data'
 import { getTotalContribution, getMonthlyContribution } from '../../../utils/contribution-utils'
 import { getTotalVote } from '../../../utils/vote-utils'
 
-const Dashboard = () => {
+const Dashboard = ({ userData }) => {
   const [cPLastMonth, setCPLastMonth] = useState(0)
   const [cPThisMonth, setCPThisMonth] = useState(0)
   const [totalCP, setTotalCP] = useState(0)
@@ -26,15 +25,18 @@ const Dashboard = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const cPResult = await axiosClient.get(`/contributions?User.id=${userId}`)
-        const cPRawData = cPResult.data
-        setCPRawData(cPRawData)
+        // const cPResult = await axiosClient.get(`/contributions?User.id=${userId}`)
+        // const cPRawData = cPResult.data
+        // setCPRawData(cPRawData)
+        setCPRawData(userData.Contributions)
         contributionRef.current.updateChartData()
-        const commentDataResult = await axiosClient.get(`/comments?User.id=${userId}`)
-        const commentRawData = commentDataResult.data
-        setCommentData(commentRawData)
-        const userData = await axiosClient.get(`/account-users?id=${userId}`)
-        const userObject = userData.data[0]
+        // const commentDataResult = await axiosClient.get(`/comments?User.id=${userId}`)
+        // const commentRawData = commentDataResult.data
+        // setCommentData(commentRawData)
+        setCommentData(userData.Comments)
+        // const userData = await axiosClient.get(`/account-users?id=${userId}`)
+        // const userObject = userData.data[0]
+        const userObject = userData
         const totalCP = await getTotalContribution('object', userObject)
         setTotalCP(totalCP)
         const [lastMonthCP, thisMonthCP] = await getMonthlyContribution('object', userObject)
