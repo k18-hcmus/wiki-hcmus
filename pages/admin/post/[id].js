@@ -14,18 +14,39 @@ import {
   Typography,
   CardActions,
   Button,
+  TextField,
 } from '@mui/material'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbDownIcon from '@mui/icons-material/ThumbDown'
-
+import { STATUS_POST } from '../../../shared/constants.js'
 import { useRouter } from 'next/router'
+import { Modal } from '@mui/material'
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+}
 function DetailPost() {
   const [userDetail, setUserDetail] = useState([])
   const [postDetail, setPostDetail] = useState([])
   const [disable, setDisable] = useState(true)
   const router = useRouter()
   const { id } = router.query
+  const [open, setOpen] = useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+  const handleClose = () => {
+    setOpen(false)
+  }
   useEffect(() => {
     async function FetchPost() {
       const response = await axiosClient.get(`/posts/${id}`)
@@ -37,7 +58,7 @@ function DetailPost() {
   }, [])
   const handleClickUpdate = async () => {
     const response = await axiosClient.put(`/posts/${id}`, {
-      Status: 'PUBLISH',
+      Status: STATUS_POST.Publish.value,
     })
   }
   return (
@@ -52,22 +73,34 @@ function DetailPost() {
               {postDetail.Content}
             </Typography>
           </CardContent>
-          <CardActions>
-            <Typography gutterBottom variant="h5" component="div">
-              <ThumbUpIcon />
-              {postDetail.UpvoteCount}
-            </Typography>
-
-            <Typography gutterBottom variant="h5" component="div">
-              <ThumbDownIcon />
-              {postDetail.DownvoteCount}
-            </Typography>
-          </CardActions>
 
           <CardActions>
-            <Button size="small" onClick={handleClickUpdate}>
-              PUBLIC
+            <Button size="small" onClick={handleClickUpdate} variant="outlined" sx={{ ml: 2 }}>
+              {STATUS_POST.Publish.label}
             </Button>
+            <Button size="small" onClick={handleClickUpdate} variant="outlined" sx={{ ml: 2 }}>
+              {STATUS_POST.Report.label}
+            </Button>
+            <Button size="small" onClick={handleOpen} variant="outlined" sx={{ ml: 2 }}>
+              {STATUS_POST.Refused.label}
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  reason for refusal
+                </Typography>
+                <TextField fullWidth sx={{ mt: 2 }} />
+                {/* noi day handle refuse */}
+                <Button onClick={handleClose} variant="outlined" sx={{ mt: 2 }}>
+                  DONE
+                </Button>
+              </Box>
+            </Modal>
           </CardActions>
         </Card>
       </Grid>
