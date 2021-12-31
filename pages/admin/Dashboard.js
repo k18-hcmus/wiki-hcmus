@@ -38,6 +38,10 @@ function Dashboard() {
     e.preventDefault()
     router.push('/admin/post')
   }
+  const handleClickAnnounce = (e) => {
+    e.preventDefault()
+    router.push('/admin/announce')
+  }
   return (
     <ContentContainer>
       <ContentWrapper>
@@ -51,7 +55,7 @@ function Dashboard() {
             <h2>Post</h2>
           </Categories>
         </Tabs>
-        <Tabs>
+        <Tabs onClick={handleClickAnnounce}>
           <Categories>
             <h2>Announce</h2>
           </Categories>

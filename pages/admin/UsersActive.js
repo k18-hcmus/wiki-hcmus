@@ -33,10 +33,11 @@ export default function Users() {
   const [disable, setDisable] = useState(true)
   const [user, setUser] = useState({})
   const [userCached, setUserCached] = useState()
+  const [totalUser, setTotalUser] = useState()
   const handleFilterByName = (event) => {
     setFilterName(event.target.value)
     if (filterName.length > 0) {
-      let temp = userList.filter((user) => {
+      let temp = totalUser.filter((user) => {
         return user.DisplayName.match(filterName)
       })
       setUserList(temp)
@@ -70,6 +71,7 @@ export default function Users() {
         const response = await axiosClient.get('/account-users')
         setUserList(response.data)
         setUserCached(response.data)
+        setTotalUser(response.data)
       } catch (error) {
         console.log(error)
       }
