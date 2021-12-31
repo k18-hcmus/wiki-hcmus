@@ -1,10 +1,33 @@
-import { Container, Typography, Avatar, Button, Grid, Divider, TextField, Box } from '@mui/material'
-import { Add as AddIcon } from '@mui/icons-material'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import {
+  Container,
+  Typography,
+  Avatar,
+  Button,
+  Grid,
+  Divider,
+  TextField,
+  Box,
+  Skeleton,
+} from '@mui/material'
+import {
+  Add as AddIcon,
+  Message as MessageIcon,
+  Visibility as VisibilityIcon,
+} from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
-import { posts } from '../../mock/data'
+import LazyLoad from 'react-lazyload'
+import { animateScroll as scroll } from 'react-scroll'
+
 import TagCard from './components/TagCard'
 import Comment from './components/Comment'
 import Vote from './components/Vote'
+import axiosClient from '../../axiosClient'
+import draftToHtml from 'draftjs-to-html'
+import { getUser } from '../../redux/slices/userSlice'
+import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
+import { addNewComment } from '../../utils/comment-utils'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -43,19 +66,104 @@ const TagSection = styled(Grid)`
   padding: 0 ${({ theme }) => theme.spacing(2)};
 `
 
-const InputCommentField = styled('div')`
+const InputCommentField = styled('form')`
   display: flex;
   flex-direction: column;
   margin: 25px 0;
 `
 
-const Post = ({ post }) => {
-  const user = post.User
-  const tags = post.Tags
-  const comments = post.Comments
+const IconStatistic = styled(Box)`
+  display: flex;
+  align-items: center;
+  margin: 0 ${({ theme }) => theme.spacing(2)};
+`
 
-  const { DownvoteCount, UpvoteCount } = post
-  const vote = UpvoteCount - DownvoteCount
+const BackToTopButton = styled(Button)({
+  width: '200px',
+  height: '40px',
+  borderRadius: '15px',
+  position: 'fixed',
+  bottom: '50px',
+  right: '50px',
+  zIndex: 10,
+})
+
+const Post = ({ post }) => {
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState('')
+  const [loadingComment, setLoadingComment] = useState(true)
+  const [visible, setVisible] = useState(false)
+
+  const userState = useSelector(getUser)
+
+  const {
+    DownvoteCount,
+    UpvoteCount,
+    Title,
+    Content,
+    ViewCount,
+    User: user,
+    Tags: tags,
+    Comments: CommentsProps,
+  } = post
+
+  const htmlContent = draftToHtml(JSON.parse(Content))
+
+  const handleChangeNewComment = (e) => {
+    setNewComment(e.target.value)
+  }
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault()
+    const response = await addNewComment({
+      User: userState.DetailUser,
+      Post: post.id,
+      Content: newComment,
+    })
+    setNewComment('')
+    setComments((prevState) => {
+      const comment = response.data
+      return [comment, ...prevState]
+    })
+  }
+
+  const scrollToTop = () => {
+    scroll.scrollToTop()
+  }
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      const response = await getCommentsByPostId(post.id)
+
+      if (response.data) {
+        setComments(response.data)
+        setLoadingComment(false)
+      }
+    }
+
+    fetchComments()
+  }, [])
+
+  // Increase view count of the post
+  useEffect(() => {
+    const increaseViewCount = async () => {
+      await axiosClient.put(`/posts/${post.id}`, {
+        ViewCount: ViewCount + 1,
+      })
+    }
+
+    increaseViewCount()
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 600) {
+        setVisible(true)
+      } else {
+        setVisible(false)
+      }
+    })
+  }, [])
 
   return (
     <>
@@ -63,21 +171,26 @@ const Post = ({ post }) => {
         <Grid container sx={{ mt: 10, display: 'flex', flexDirection: 'row' }}>
           <ContentSection item md={9}>
             <Typography variant="h3" component="div" sx={{ mb: 1 }}>
-              {post.Title}
+              {Title}
             </Typography>
 
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
               <Vote upvote={UpvoteCount} downvote={DownvoteCount} />
-              <Box sx={{ ml: 3 }}>
-                <p>Bình luận: {comments.length}</p>
+              <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
+                <IconStatistic>
+                  <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
+                </IconStatistic>
+                <IconStatistic>
+                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                </IconStatistic>
               </Box>
             </PostStatisticSection>
 
             {/* User info section */}
             <UserSection>
-              <Avatar alt="Remy Sharp" src={user.avatar} sx={{ width: 56, height: 56, mr: 2 }} />
-              <Username>{user.username}</Username>
+              <Avatar alt="user avatar" src={user.avatar} sx={{ width: 56, height: 56, mr: 2 }} />
+              <Username>{user.DisplayName}</Username>
               <FollowButton variant="contained">
                 <AddIcon />
                 <span>Theo dõi</span>
@@ -86,47 +199,71 @@ const Post = ({ post }) => {
 
             {/* This div is to render HTML content generate by React Draft get from database */}
             <div
-              dangerouslySetInnerHTML={{ __html: post.Content }}
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
               sx={{ overflow: 'hidden' }}
             ></div>
 
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
               <Vote upvote={UpvoteCount} downvote={DownvoteCount} />
-              <Box sx={{ ml: 3 }}>
-                <p>Bình luận: {comments.length}</p>
+              <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
+                <IconStatistic>
+                  <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
+                </IconStatistic>
+                <IconStatistic>
+                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                </IconStatistic>
               </Box>
             </PostStatisticSection>
 
             <Divider variant="fullWidth" sx={{ mb: 5 }} />
 
             {/* Comments sections */}
-
             <Typography variant="h4">Bình luận</Typography>
 
-            <InputCommentField>
+            <InputCommentField onSubmit={handleSubmitComment}>
               <TextField
                 placeholder="Bình luận mới"
                 multiline
                 fullWidth
+                value={newComment}
+                onChange={handleChangeNewComment}
                 minRows={2}
                 variant="standard"
                 sx={{ mb: 2 }}
               />
-              <Button variant="contained" style={{ marginLeft: 'auto' }}>
+              <Button type="submit" variant="contained" style={{ marginLeft: 'auto' }}>
                 Đăng
               </Button>
             </InputCommentField>
 
-            {comments.map((comment) => (
-              <Comment key={comment.id} comment={comment} />
-            ))}
+            {loadingComment ? (
+              <Skeleton
+                sx={{ height: 100, borderRadius: 1 }}
+                animation="wave"
+                variant="rectangular"
+              />
+            ) : (
+              comments.map((comment) => (
+                <LazyLoad key={comment.id} height={150} once={true}>
+                  <Comment key={comment.id} comment={comment} />
+                </LazyLoad>
+              ))
+            )}
           </ContentSection>
-
           {/* Tag Section */}
           <TagSection item md={3}>
             <TagCard tag={tags[0]} />
+            {tags.map((tag) => (
+              <TagCard key={tag.id} tag={tag} />
+            ))}
           </TagSection>
+
+          {visible && (
+            <BackToTopButton color="primary" variant="contained" onClick={scrollToTop}>
+              Back To Top
+            </BackToTopButton>
+          )}
         </Grid>
       </Container>
     </>
@@ -134,14 +271,33 @@ const Post = ({ post }) => {
 }
 
 export async function getServerSideProps(context) {
-  // TODO: Change to fetch data from server when integrate, right now we just get post from mock data
-  const { params } = context
-  const post = posts.find((p) => p.id == params.id)
+  const {
+    params: { id: postId },
+  } = context
 
-  return {
-    props: {
-      post,
-    }, // will be passed to the page component as props
+  try {
+    const response = await getPostById(postId)
+    const post = response.data
+    if (!post) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/404',
+        },
+      }
+    }
+    return {
+      props: {
+        post,
+      },
+    }
+  } catch (error) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/404',
+      },
+    }
   }
 }
 

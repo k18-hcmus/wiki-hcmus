@@ -1,10 +1,10 @@
 import PostAddIcon from '@mui/icons-material/PostAdd'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { alpha, styled } from '@mui/material/styles'
-import { Box, Link, Card, Avatar, Typography, CardContent } from '@mui/material'
-// import { fDate } from '../../../utils/formatTime'
-// import { fShortenNumber } from '../../../utils/formatNumber'
+import { Box, Card, Avatar, Typography, CardContent } from '@mui/material'
+import { fDate } from '../../../utils/formatTime'
 import SvgIconStyle from './SvgIconStyle'
+import Link from 'next/link'
 
 const CardMediaStyle = styled('div')({
   position: 'relative',
@@ -36,19 +36,12 @@ const InfoStyle = styled('div')(({ theme }) => ({
   color: theme.palette.text.disabled,
 }))
 
-const CoverImgStyle = styled('img')({
-  top: 0,
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  position: 'absolute',
-})
-
 export default function TagCard({ tag }) {
-  const { name, posts, votes, iconTag, createdAt, description } = tag
+  const { id, Name, posts, votes, iconTag, created_at, Description } = tag
+  console.log(tag)
 
   return (
-    <Card sx={{ position: 'relative' }}>
+    <Card sx={{ position: 'relative', my: 1 }}>
       <CardMediaStyle
         sx={{
           pt: 'calc(100% * 1 / 5)',
@@ -73,7 +66,7 @@ export default function TagCard({ tag }) {
             position: 'absolute',
           }}
         />
-        <AvatarStyle alt={name} src={iconTag} />
+        <AvatarStyle alt={Name} src={iconTag} />
       </CardMediaStyle>
 
       <CardContent>
@@ -82,18 +75,18 @@ export default function TagCard({ tag }) {
           variant="caption"
           sx={{ color: 'text.disabled', display: 'block' }}
         >
-          Created At {createdAt}
+          Created At {fDate(created_at)}
         </Typography>
 
-        <NameStyle color="inherit" variant="subName2" underline="hover">
-          {name}
+        <NameStyle color="inherit" variant="subName2" href={`/tags/${id}`}>
+          {Name}
         </NameStyle>
         <Typography
           gutterBottom
           variant="caption"
           sx={{ color: 'text.disabled', display: 'block' }}
         >
-          {description}
+          {Description}
         </Typography>
         <InfoStyle>
           <Box sx={{ mr: 1 }}>
