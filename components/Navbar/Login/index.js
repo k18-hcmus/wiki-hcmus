@@ -71,7 +71,11 @@ export default function Login({ open, handleClose }) {
         axiosClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
           'token'
         )}`
-        dispatch(userLogin(response.data.user))
+        const accountUser = await axiosClient.get(
+          `/account-users/${response.data.user.DetailUser.id}`
+        )
+        console.log('res', accountUser)
+        dispatch(userLogin({ user: response.data.user, accUser: accountUser.data }))
       }
     } catch (err) {
       setMsg({ err: err.response.data.message[0].messages[0].message, success: '' })
