@@ -6,13 +6,15 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   try {
     axiosClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
     const response = await axiosClient.get('/users/me')
-    return response.data
+    const accountUser = await axiosClient.get(`/account-users/${response.data.DetailUser}`)
+    return { user: response.data, accUser: accountUser.data }
   } catch (error) {
     console.log(error.response)
   }
 })
 const initialState = {
   user: {},
+  accUser: {},
   isLogged: false,
 }
 
@@ -21,8 +23,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     userLogin: (state, action) => {
+      // param obj {user , accUser}
       state.isLogged = true
-      state.user = action.payload
+      state.user = action.payload.user
+      state.accUser = action.payload.accUser
     },
     userLogout: (state) => {
       state.user = undefined
@@ -31,7 +35,8 @@ export const userSlice = createSlice({
   },
   extraReducers: {
     [fetchUser.fulfilled]: (state, action) => {
-      state.user = action.payload
+      state.user = action.payload.user
+      state.accUser = action.payload.accUser
       state.isLogged = true
     },
   },
@@ -40,7 +45,7 @@ export const userSlice = createSlice({
 // Selectors
 export const getUser = (state) => state.user.user
 export const getUserAuth = (state) => state.user.isLogged
-
+export const getAccUser = (state) => state.user.accUser
 // Reducers and actions
 const { actions, reducer } = userSlice
 
