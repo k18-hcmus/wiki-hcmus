@@ -5,6 +5,10 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 const ChangeArrow = (props) => {
   const { currentValue, lastestValue, context } = props
   const colorValue = currentValue < lastestValue ? 'error' : 'success'
+  let value = 0
+  if (currentValue !== lastestValue || currentValue !== 0) {
+    value = Math.trunc(Math.abs(1 - currentValue / lastestValue) * 100)
+  }
   return (
     <Box
       sx={{
@@ -25,7 +29,7 @@ const ChangeArrow = (props) => {
         }}
         variant="body2"
       >
-        {Math.trunc(Math.abs(1 - currentValue / lastestValue) * 100)}%
+        {value}%
       </Typography>
       <Typography color="textSecondary" variant="caption">
         {context}

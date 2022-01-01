@@ -1,6 +1,4 @@
-export const INFORMATION_CONST = {
-  GENDER: ['Male', 'Female', 'Unknown'],
-}
+import { INFORMATION_CONST, DASHBOARD_CONST } from './profile-constants'
 
 export const HISTORY_CONST = {
   ACTOR: {
@@ -211,3 +209,5 @@ export const VOTE_CONST = {
     },
   },
 }
+
+export { INFORMATION_CONST, DASHBOARD_CONST }

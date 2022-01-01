@@ -121,7 +121,7 @@ const Contributions = forwardRef((props, ref) => {
   }
 
   return (
-    <Card {...props}>
+    <Card>
       <CardHeader
         fullWidth
         action={
@@ -138,7 +138,7 @@ const Contributions = forwardRef((props, ref) => {
             >
               {cPChartDisplay.map((value, index) => {
                 return (
-                  <MenuItem key={index} value={value.context} primaryText={value.context}>
+                  <MenuItem key={index} value={value.context}>
                     {value.context}
                   </MenuItem>
                 )
@@ -159,18 +159,6 @@ const Contributions = forwardRef((props, ref) => {
           <Bar data={data} options={options} />
         </Box>
       </CardContent>
-      <Divider />
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          p: 2,
-        }}
-      >
-        <Button color="primary" endIcon={<ArrowRightIcon fontSize="small" />} size="small">
-          Overview
-        </Button>
-      </Box>
     </Card>
   )
 })
