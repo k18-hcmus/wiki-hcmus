@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {
   Container,
   Typography,
@@ -27,6 +27,7 @@ import Vote from './components/Vote'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
 import { getUser } from '../../redux/slices/userSlice'
+import { toggleLoginForm } from '../../redux/slices/authSlice'
 import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
 
@@ -107,6 +108,7 @@ const Post = ({ post }) => {
   const [votes, setVotes] = useState(PostVotes)
 
   const userState = useSelector(getUser)
+  const dispatch = useDispatch()
 
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
@@ -186,6 +188,12 @@ const Post = ({ post }) => {
       })
 
       setVotes((prevState) => [response.data, ...prevState])
+    }
+  }
+
+  const handleClickNewComment = () => {
+    if (isEmpty(userState)) {
+      dispatch(toggleLoginForm())
     }
   }
 
@@ -298,6 +306,7 @@ const Post = ({ post }) => {
                 fullWidth
                 value={newComment}
                 onChange={handleChangeNewComment}
+                onClick={handleClickNewComment}
                 minRows={2}
                 variant="standard"
                 sx={{ mb: 2 }}
