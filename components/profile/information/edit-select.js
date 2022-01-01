@@ -11,7 +11,7 @@ const EditSelect = (props) => {
     setCallbackValue(selectValue)
   }, [selectValue])
   const menuItems = values.map((value, index) => (
-    <MenuItem key={index} value={value} primaryText={value}>
+    <MenuItem key={index} value={value}>
       {value}
     </MenuItem>
   ))

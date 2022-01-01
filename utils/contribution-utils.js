@@ -85,8 +85,11 @@ async function getMonthlyContribution(type, user) {
   } else {
     data = user
   }
+  const tempDate = new Date()
+  var todayMonth = tempDate.getMonth()
+  tempDate.setDate(1)
+  const previousMonth = new Date(tempDate.setMonth(todayMonth - 1))
   const today = new Date()
-  const previousMonth = new Date(new Date().setMonth(today.getMonth() - 1))
   var resultLastMonth = 0
   var resultThisMonth = 0
   data.Contributions.forEach((con) => {

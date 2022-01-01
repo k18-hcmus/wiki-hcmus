@@ -7,9 +7,8 @@ import Follow from '../../components/profile/tabs/follow.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
 import TabPanel from '../../components/profile/commons/tab-panel'
-import { getUser } from '../../redux/slices/userSlice'
-import { useSelector } from 'react-redux'
-import axiosClient from '../../axiosClient'
+import { getUser, getAccUser, userUpdateDetail } from '../../redux/slices/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 function allyProps(index) {
   return {
@@ -29,22 +28,35 @@ const Profile = () => {
     Comments: [],
     Posts: [],
     Contributions: [],
-    Follows: []
+    FollowUsers: [],
+    FollowedByUsers: [],
+    Email: '',
   })
+  const userDataObject = useSelector(getAccUser)
   const userObject = useSelector(getUser)
+  const updateReduxUserDetail = (property, data) => {
+    const currentDataObject = useSelector(getAccUser)
+    useDispatch(userUpdateDetail({ ...currentDataObject, [property]: data }))
+  }
   useEffect(() => {
     const fetchData = async () => {
-      if (userObject === undefined) {
+      if (
+        !userDataObject ||
+        !userObject ||
+        (Object.keys(userDataObject).length !== 0 && Object.keys(userObject).length !== 0)
+      ) {
         try {
-          const userResult = await axiosClient.get(`/account-users?id=${userObject.DetailUser}`)
-          setUserData(userResult.data[0])
+          setUserData({
+            ...userDataObject,
+            Email: userObject.email,
+          })
         } catch (error) {
           console.log(error)
         }
-      } 
+      }
     }
     fetchData()
-  }, [userObject])
+  }, [userDataObject, userObject])
   return (
     <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -59,27 +71,27 @@ const Profile = () => {
       <Box pt={4}>
         <LazyLoad once={true}>
           <TabPanel value={value} index={0}>
-            <Dashboard userData={userData} />
+            <Dashboard userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={1}>
-            <Information userData={userData} />
+            <Information userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={2}>
-            <Follow userData={userData} />
+            <Follow userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={3}>
-            <History userData={userData} />
+            <History userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={5}>
-            <Setting userData={userData} />
+            <Setting userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
       </Box>

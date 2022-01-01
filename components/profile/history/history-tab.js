@@ -54,7 +54,7 @@ const HistoryTab = ({
     callbackCheckAll(event.target.checked)
   }
   const handleSetCellData = (newCellData) => {
-    setData(data.map(record => record.id === newCellData.id ? newCellData : record))
+    setData(data.map((record) => (record.id === newCellData.id ? newCellData : record)))
   }
   return (
     <Card>
@@ -75,7 +75,7 @@ const HistoryTab = ({
             >
               {timeFilterOptions.map((value, index) => {
                 return (
-                  <MenuItem key={index} value={value.context} primaryText={value.context}>
+                  <MenuItem key={index} value={value.context}>
                     {value.context}
                   </MenuItem>
                 )

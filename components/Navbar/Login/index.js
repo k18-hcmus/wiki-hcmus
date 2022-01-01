@@ -38,7 +38,7 @@ const BoxForm = styled(Box)(({ theme }) => ({
   width: 800,
   backgroundColor: '#FFFFFF',
   border: '1px solid #000',
-  //borderRadius: theme.shape.borderRadius,
+  borderRadius: theme.shape.borderRadius,
   boxShadow: 24,
 }))
 export default function Login({ open, handleClose }) {
