@@ -2,6 +2,7 @@ import React from 'react'
 import { IconButton } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material'
+import axiosClient from '../../../axiosClient'
 
 const StyledVote = styled('div')`
   align-items: center;
@@ -12,16 +13,27 @@ const CustomIconButton = styled(IconButton)`
   padding: 5px;
 `
 
-const Vote = ({ upvote, downvote }) => {
-  const vote = upvote - downvote
+const Vote = ({ upvoteCount, downvoteCount, userVote, handleDownVote, handleUpVote }) => {
+  const vote = upvoteCount - downvoteCount
+
+  let isUpVote = false,
+    isDownVote = false
+
+  if (userVote) {
+    if (userVote.Upvote) {
+      isUpVote = true
+    } else if (userVote.Downvote) {
+      isDownVote = true
+    }
+  }
 
   return (
     <StyledVote>
-      <CustomIconButton disableRipple>
+      <CustomIconButton color={isDownVote ? 'error' : 'default'} onClick={handleDownVote}>
         <ArrowDownward />
       </CustomIconButton>
       {vote}
-      <CustomIconButton disableRipple>
+      <CustomIconButton color={isUpVote ? 'success' : 'default'} onClick={handleUpVote}>
         <ArrowUpward />
       </CustomIconButton>
     </StyledVote>

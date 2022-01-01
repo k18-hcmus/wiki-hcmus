@@ -19,6 +19,7 @@ import {
 import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
 import { animateScroll as scroll } from 'react-scroll'
+import isEmpty from 'lodash/isEmpty'
 
 import TagCard from './components/TagCard'
 import Comment from './components/Comment'
@@ -89,25 +90,34 @@ const BackToTopButton = styled(Button)({
 })
 
 const Post = ({ post }) => {
-  const [comments, setComments] = useState([])
-  const [newComment, setNewComment] = useState('')
-  const [loadingComment, setLoadingComment] = useState(true)
-  const [visible, setVisible] = useState(false)
-
-  const userState = useSelector(getUser)
-
   const {
-    DownvoteCount,
-    UpvoteCount,
     Title,
     Content,
     ViewCount,
     User: user,
     Tags: tags,
     Comments: CommentsProps,
+    PostVotes,
   } = post
 
-  const htmlContent = draftToHtml(JSON.parse(Content))
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState('')
+  const [loadingComment, setLoadingComment] = useState(true)
+  const [visible, setVisible] = useState(false)
+  const [votes, setVotes] = useState(PostVotes)
+
+  const userState = useSelector(getUser)
+
+  let upvotes = votes.filter((v) => v.Upvote)
+  let downvotes = votes.filter((v) => v.Downvote)
+
+  let userVote
+
+  if (!isEmpty(userState)) {
+    userVote = votes.find((v) => v.User == userState.DetailUser)
+  }
+
+  const htmlContent = Content ? draftToHtml(JSON.parse(Content)) : ''
 
   const handleChangeNewComment = (e) => {
     setNewComment(e.target.value)
@@ -129,6 +139,54 @@ const Post = ({ post }) => {
 
   const scrollToTop = () => {
     scroll.scrollToTop()
+  }
+
+  const handleDownVote = async () => {
+    if (userVote) {
+      const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
+        Downvote: !userVote.Downvote,
+        Upvote: false,
+      })
+
+      setVotes((prevState) => {
+        const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
+        prevState[updatedObjIndex] = response.data
+        return [...prevState]
+      })
+    } else {
+      const response = await axiosClient.post('/post-votes', {
+        Downvote: true,
+        Upvote: false,
+        Post: post.id,
+        User: userState.DetailUser,
+      })
+
+      setVotes((prevState) => [response.data, ...prevState])
+    }
+  }
+
+  const handleUpVote = async () => {
+    if (userVote) {
+      const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
+        Downvote: false,
+        Upvote: !userVote.Upvote,
+      })
+
+      setVotes((prevState) => {
+        const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
+        prevState[updatedObjIndex] = response.data
+        return [...prevState]
+      })
+    } else {
+      const response = await axiosClient.post('/post-votes', {
+        Downvote: false,
+        Upvote: true,
+        Post: post.id,
+        User: userState.DetailUser,
+      })
+
+      setVotes((prevState) => [response.data, ...prevState])
+    }
   }
 
   useEffect(() => {
@@ -176,7 +234,13 @@ const Post = ({ post }) => {
 
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
-              <Vote upvote={UpvoteCount} downvote={DownvoteCount} />
+              <Vote
+                upvoteCount={upvotes.length}
+                downvoteCount={downvotes.length}
+                userVote={userVote}
+                handleDownVote={handleDownVote}
+                handleUpVote={handleUpVote}
+              />
               <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
                 <IconStatistic>
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
@@ -205,7 +269,13 @@ const Post = ({ post }) => {
 
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
-              <Vote upvote={UpvoteCount} downvote={DownvoteCount} />
+              <Vote
+                upvoteCount={upvotes.length}
+                downvoteCount={downvotes.length}
+                userVote={userVote}
+                handleDownVote={handleDownVote}
+                handleUpVote={handleUpVote}
+              />
               <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
                 <IconStatistic>
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
@@ -253,7 +323,6 @@ const Post = ({ post }) => {
           </ContentSection>
           {/* Tag Section */}
           <TagSection item md={3}>
-            <TagCard tag={tags[0]} />
             {tags.map((tag) => (
               <TagCard key={tag.id} tag={tag} />
             ))}
