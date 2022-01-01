@@ -1,8 +1,12 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { IconButton } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material'
-import axiosClient from '../../../axiosClient'
+import isEmpty from 'lodash/isEmpty'
+
+import { getUser } from '../../../redux/slices/userSlice'
+import { toggleLoginForm } from '../../../redux/slices/authSlice'
 
 const StyledVote = styled('div')`
   align-items: center;
@@ -14,6 +18,9 @@ const CustomIconButton = styled(IconButton)`
 `
 
 const Vote = ({ upvoteCount, downvoteCount, userVote, handleDownVote, handleUpVote }) => {
+  const userState = useSelector(getUser)
+  const dispatch = useDispatch()
+
   const vote = upvoteCount - downvoteCount
 
   let isUpVote = false,
@@ -27,13 +34,35 @@ const Vote = ({ upvoteCount, downvoteCount, userVote, handleDownVote, handleUpVo
     }
   }
 
+  const handleClickDownVote = () => {
+    if (isEmpty(userState)) {
+      dispatch(toggleLoginForm())
+    } else {
+      handleDownVote()
+    }
+  }
+
+  const handleClickUpVote = () => {
+    if (isEmpty(userState)) {
+      dispatch(toggleLoginForm())
+    } else {
+      handleUpVote()
+    }
+  }
+
   return (
     <StyledVote>
-      <CustomIconButton color={isDownVote ? 'error' : 'default'} onClick={handleDownVote}>
+      <CustomIconButton
+        color={isDownVote ? 'error' : 'default'}
+        onClick={() => handleClickDownVote()}
+      >
         <ArrowDownward />
       </CustomIconButton>
       {vote}
-      <CustomIconButton color={isUpVote ? 'success' : 'default'} onClick={handleUpVote}>
+      <CustomIconButton
+        color={isUpVote ? 'success' : 'default'}
+        onClick={() => handleClickUpVote()}
+      >
         <ArrowUpward />
       </CustomIconButton>
     </StyledVote>
