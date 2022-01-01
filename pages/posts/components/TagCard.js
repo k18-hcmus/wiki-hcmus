@@ -38,7 +38,6 @@ const InfoStyle = styled('div')(({ theme }) => ({
 
 export default function TagCard({ tag }) {
   const { id, Name, posts, votes, iconTag, created_at, Description } = tag
-  console.log(tag)
 
   return (
     <Card sx={{ position: 'relative', my: 1 }}>
@@ -91,15 +90,11 @@ export default function TagCard({ tag }) {
         <InfoStyle>
           <Box sx={{ mr: 1 }}>
             <PostAddIcon sx={{ width: 16, height: 16, mr: 0.5 }} />
-            <Typography start variant="caption">
-              {posts}
-            </Typography>
+            <Typography variant="caption">{posts}</Typography>
           </Box>
           <Box>
             <ThumbUpIcon sx={{ width: 16, height: 16, mr: 0.5 }} />
-            <Typography start variant="caption">
-              {votes}
-            </Typography>
+            <Typography variant="caption">{votes}</Typography>
           </Box>
         </InfoStyle>
       </CardContent>

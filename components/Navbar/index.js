@@ -18,15 +18,16 @@ import {
   AccountCircle,
   Notifications as NotificationsIcon,
   MoreVert as MoreIcon,
-  Warning,
 } from '@mui/icons-material'
 import CustomLink from './CustomLink'
 import Login from './Login'
 import Register from './Register'
 import { useRouter } from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUser, userLogout } from '../../redux/slices/userSlice'
+import { useDispatch } from 'react-redux'
+import { userLogout } from '../../redux/slices/userSlice'
+import { toggleLoginForm } from '../../redux/slices/authSlice'
 import axiosClient from '../../axiosClient'
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -70,26 +71,23 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
-  const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
   const [isAuth, setIsAuth] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsAuth(!!localStorage.getItem('token')) //Check authenticate
     }
   }, [])
-  const handleOpenLogin = (event) => {
-    event.preventDefault()
-    setIsLoginOpen(true)
+
+  const handleOpenLogin = () => {
+    dispatch(toggleLoginForm())
   }
-  const handleCloseLogin = () => {
-    setIsAuth(!!localStorage.getItem('token'))
-    setIsLoginOpen(false)
-  }
+
   const handleOpenRegister = (event) => {
     event.preventDefault()
     setIsRegisterOpen(true)
@@ -194,7 +192,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Login open={isLoginOpen} handleClose={handleCloseLogin} />
+      <Login />
       <Register open={isRegisterOpen} handleClose={handleCloseRegister} />
       <AppBar position="static">
         <Toolbar>
