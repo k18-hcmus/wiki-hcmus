@@ -17,7 +17,7 @@ import StarIcon from '@mui/icons-material/Star'
 import AbstractPost from '../../commons/abstract-post'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-const Overview = ({ data, callbackSetDataOption, callbackLoadData, hasMoreData }) => {
+const Overview = ({ data, ownUserId, callbackSetDataOption, callbackLoadData, hasMoreData }) => {
   const [checked, setChecked] = useState([true, false, false])
   const options = ['hot', 'new', 'best']
   const handleCheck = (event) => {
@@ -86,7 +86,7 @@ const Overview = ({ data, callbackSetDataOption, callbackLoadData, hasMoreData }
         <Box sx={{ px: 1 }}>
           {data.map((record, index) => (
             <Paper key={index} sx={{ mb: 3, p: 1 }} elevation={3}>
-              <AbstractPost data={record} />
+              <AbstractPost data={record} ownUserId={ownUserId} />
             </Paper>
           ))}
         </Box>

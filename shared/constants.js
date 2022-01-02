@@ -51,6 +51,11 @@ export const HISTORY_CONST = {
       label: 'Unfollow',
       context: 'Unfollowed',
     },
+    REPORT: {
+      id: 6,
+      label: 'Report',
+      context: 'Reported',
+    }
   },
   TARGET: {
     POST: {
@@ -118,6 +123,7 @@ export const HISTORY_LIST = {
     HISTORY_CONST.ACTION.REMOVE,
     HISTORY_CONST.ACTION.FOLLOW,
     HISTORY_CONST.ACTION.UNFOLLOW,
+    HISTORY_CONST.ACTION.REPORT,
   ],
   TARGET: [
     HISTORY_CONST.TARGET.POST,

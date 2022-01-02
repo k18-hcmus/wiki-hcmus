@@ -41,9 +41,10 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (
-        !userDataObject ||
-        !userObject ||
-        (Object.keys(userDataObject).length !== 0 && Object.keys(userObject).length !== 0)
+        userDataObject &&
+        userObject &&
+        Object.keys(userDataObject).length !== 0 &&
+        Object.keys(userObject).length !== 0
       ) {
         try {
           setUserData({

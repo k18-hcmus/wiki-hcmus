@@ -8,6 +8,8 @@ import TabPanel from '../../components/profile/commons/tab-panel'
 import { getTotalContribution } from '../../utils/contribution-utils'
 import axiosClient from '../../axiosClient'
 import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
+import { getAccUser, userUpdateDetail } from '../../redux/slices/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 const Profile = () => {
   const [value, setValue] = React.useState(0)
@@ -15,6 +17,9 @@ const Profile = () => {
   const { id } = router.query
   const [userData, setUserData] = useState({
     AvatarURL: '/static/avatars/avatar_1.jpg',
+    Posts: [],
+    Comments: [],
+    PostVotes: [],
   })
   const [overviewData, setOverviewData] = useState([])
   const [hasMoreData, setHasMoreData] = useState(true)
@@ -26,7 +31,6 @@ const Profile = () => {
     try {
       const newStart = start + limit
       setStart(newStart)
-      console.log('get more data ' + newStart + ' ' + limit)
       const postResult = await axiosClient.get(
         `/posts?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
       )
@@ -98,6 +102,15 @@ const Profile = () => {
     }
     if (id) fetchData()
   }, [id])
+  const [ownUserData, setOwnUserData] = useState({
+    id: null,
+  })
+  const userDataObject = useSelector(getAccUser)
+  useEffect(() => {
+    if (userDataObject && Object.keys(userDataObject).length !== 0) {
+      setOwnUserData(userDataObject)
+    }
+  }, [userDataObject])
   return (
     <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -112,6 +125,7 @@ const Profile = () => {
               <TabPanel value={value} index={0}>
                 <Overview
                   data={overviewData}
+                  ownUserId={ownUserData.id}
                   callbackSetDataOption={handleOverviewChange}
                   callbackLoadData={getMoreData}
                   hasMoreData={hasMoreData}
