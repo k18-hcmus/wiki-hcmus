@@ -64,8 +64,6 @@ export default function Register({ open, handleClose }) {
   }
   const handleSubmit = async (event) => {
     event.preventDefault()
-    setDisabled(true)
-    setLoading(true)
     setEmailError(false)
     setUsernameError(false)
     setPasswordError(false)
@@ -93,6 +91,8 @@ export default function Register({ open, handleClose }) {
       data.get('password') &&
       data.get('DisplayName')
     ) {
+      setDisabled(true)
+      setLoading(true)
       try {
         const response = await axiosClient.post('/auth/local/register', {
           email: data.get('email'),
@@ -115,8 +115,8 @@ export default function Register({ open, handleClose }) {
           setMsg({ err: 'Register faill', success: '' })
         }
       } catch (err) {
-        console.log('err', err.response.data)
-        setMsg({ err: err.response.data.message, success: '' })
+        setDisabled(false)
+        setMsg({ err: err.response.data.message[0].messages[0].message, success: '' })
       }
     }
     setLoading(false)
@@ -147,28 +147,20 @@ export default function Register({ open, handleClose }) {
         </Typography>
         {msg.success && showSuccessMsg(msg.success)}
         {msg.err && showErrMsg(msg.err)}
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={3} sm={4} md={12}>
               <TextField
-                autoComplete="given-name"
-                name="firstName"
+                required
                 fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
+                id="DisplayName"
+                label="Display Name"
+                name="DisplayName"
+                autoComplete="DisplayName"
+                error={displayNameError}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={2} md={6}>
               <TextField
                 fullWidth
                 id="Phone"
@@ -177,7 +169,7 @@ export default function Register({ open, handleClose }) {
                 autoComplete="family-name"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={2} md={6}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Gender</FormLabel>
                 <RadioGroup
@@ -192,18 +184,7 @@ export default function Register({ open, handleClose }) {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="DisplayName"
-                label="Display Name"
-                name="DisplayName"
-                autoComplete="DisplayName"
-                error={displayNameError}
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={3} sm={6} md={12}>
               <TextField
                 required
                 fullWidth
@@ -214,7 +195,7 @@ export default function Register({ open, handleClose }) {
                 error={emailError}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={3} sm={6} md={12}>
               <TextField
                 required
                 fullWidth
@@ -224,7 +205,7 @@ export default function Register({ open, handleClose }) {
                 error={usernameError}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={3} sm={6} md={12}>
               <TextField
                 required
                 fullWidth
@@ -238,9 +219,7 @@ export default function Register({ open, handleClose }) {
           </Grid>
           <RegisterButton
             loading={loading}
-            loadingPosition="start"
             type="submit"
-            fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             disabled={disabled}

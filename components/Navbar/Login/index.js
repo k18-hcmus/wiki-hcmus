@@ -74,10 +74,11 @@ export default function Login({ open, handleClose }) {
         const accountUser = await axiosClient.get(
           `/account-users/${response.data.user.DetailUser.id}`
         )
-        console.log('res', accountUser)
         dispatch(userLogin({ user: response.data.user, accUser: accountUser.data }))
+        handleClose()
       }
     } catch (err) {
+      setDisabled(false)
       setMsg({ err: err.response.data.message[0].messages[0].message, success: '' })
     }
     setLoading(false)
