@@ -16,7 +16,6 @@ const CommentPaper = styled(Paper)`
 
 const Comment = ({ comment }) => {
   const { Content: content, User: user, createdAt, CommentVotes } = comment
-  console.log(comment)
 
   const [votes, setVotes] = useState(CommentVotes)
 
