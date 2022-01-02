@@ -21,11 +21,11 @@ const Comment = ({ comment }) => {
             justifyContent: 'center',
           }}
         >
-          <Avatar alt="Remy Sharp" src={user.avatar} />
-          <Vote upvote={1} downvote={2} />
+          <Avatar alt="Remy Sharp" src={user.AvatarURL} />
+          <Vote upvote={100} downvote={2} />
         </Grid>
         <Grid justifyContent="left" item xs zeroMinWidth>
-          <h4 style={{ margin: 0, textAlign: 'left' }}>{user.username}</h4>
+          <h4 style={{ margin: 0, textAlign: 'left' }}>{user.DisplayName}</h4>
           <p style={{ margin: 0, textAlign: 'left', color: 'gray' }}>{createdAt}</p>
           <p style={{ textAlign: 'left' }}>{content}</p>
         </Grid>
