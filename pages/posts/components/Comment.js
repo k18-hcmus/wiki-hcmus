@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import { Grid, Avatar, Paper } from '@mui/material'
 import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 import axiosClient from '../../../axiosClient'
 import { getUser } from '../../../redux/slices/userSlice'
@@ -15,6 +16,7 @@ const CommentPaper = styled(Paper)`
 
 const Comment = ({ comment }) => {
   const { Content: content, User: user, createdAt, CommentVotes } = comment
+  console.log(comment)
 
   const [votes, setVotes] = useState(CommentVotes)
 
@@ -25,7 +27,11 @@ const Comment = ({ comment }) => {
 
   let userVote
   if (!isEmpty(userState)) {
-    userVote = votes.find((v) => v.User == userState.DetailUser)
+    userVote = votes.find((v) => {
+      return (
+        v.User == get(userState, 'DetailUser', '') || v.User == get(userState, 'DetailUser.id', '')
+      )
+    })
   }
 
   const handleDownVote = async () => {
@@ -44,7 +50,7 @@ const Comment = ({ comment }) => {
       const response = await axiosClient.post('/comment-votes', {
         Downvote: true,
         Upvote: false,
-        Post: comment.id,
+        Comment: comment.id,
         User: userState.DetailUser,
       })
 
@@ -68,7 +74,7 @@ const Comment = ({ comment }) => {
       const response = await axiosClient.post('/comment-votes', {
         Downvote: false,
         Upvote: true,
-        Post: comment.id,
+        Comment: comment.id,
         User: userState.DetailUser,
       })
 

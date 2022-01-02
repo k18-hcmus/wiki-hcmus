@@ -23,8 +23,8 @@ import CustomLink from './CustomLink'
 import Login from './Login'
 import Register from './Register'
 import { useRouter } from 'next/router'
-import { useDispatch } from 'react-redux'
-import { userLogout } from '../../redux/slices/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { userLogout, getUserAuth } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 import axiosClient from '../../axiosClient'
 
@@ -77,6 +77,8 @@ export default function PrimarySearchAppBar() {
   const [isAuth, setIsAuth] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
+
+  const isLoggedIn = useSelector(getUserAuth)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -220,7 +222,7 @@ export default function PrimarySearchAppBar() {
           </Box>
 
           {/* Create New Post Link Button */}
-          {!isAuth ? (
+          {!isLoggedIn ? (
             <Box>
               <Grid container direction="row" spacing={2}>
                 <Grid item>

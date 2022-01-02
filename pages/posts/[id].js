@@ -20,6 +20,7 @@ import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
 import { animateScroll as scroll } from 'react-scroll'
 import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 import TagCard from './components/TagCard'
 import Comment from './components/Comment'
@@ -30,6 +31,7 @@ import { getUser } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
+import { fDate } from '../../utils/formatTime'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -110,16 +112,18 @@ const Post = ({ post }) => {
   const userState = useSelector(getUser)
   const dispatch = useDispatch()
 
+  const htmlContent = Content ? draftToHtml(JSON.parse(Content)) : ''
+
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
-
   let userVote
-
   if (!isEmpty(userState)) {
-    userVote = votes.find((v) => v.User == userState.DetailUser)
+    userVote = votes.find((v) => {
+      return (
+        v.User == get(userState, 'DetailUser', '') || v.User == get(userState, 'DetailUser.id', '')
+      )
+    })
   }
-
-  const htmlContent = Content ? draftToHtml(JSON.parse(Content)) : ''
 
   const handleChangeNewComment = (e) => {
     setNewComment(e.target.value)
@@ -249,7 +253,8 @@ const Post = ({ post }) => {
                 handleDownVote={handleDownVote}
                 handleUpVote={handleUpVote}
               />
-              <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
+              <Box sx={{ ml: 3, display: 'flex', spacing: 2, alignItems: 'center' }}>
+                <Typography> {fDate(post.created_at)}</Typography>
                 <IconStatistic>
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
