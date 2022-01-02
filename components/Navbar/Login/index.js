@@ -1,26 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import {
   Avatar,
-  Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Box,
-  Grid,
   Typography,
-  Container,
   Modal,
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { styled } from '@mui/styles'
 import axiosClient from '../../../axiosClient'
-import useRouter from 'next/router'
-import Link from 'next/link'
 import { showSuccessMsg, showErrMsg } from '../../../utils/Notifications'
 import { useDispatch, useSelector } from 'react-redux'
 import { userLogin } from '../../../redux/slices/userSlice'
+import { getIsLoginOpen, toggleLoginForm } from '../../../redux/slices/authSlice'
+
 const SubmitButton = styled(LoadingButton)({
   width: '100%',
   border: 0,
@@ -41,16 +37,20 @@ const BoxForm = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: 24,
 }))
-export default function Login({ open, handleClose }) {
+export default function Login() {
   const [disabled, setDisabled] = useState(false)
   const [msg, setMsg] = useState({ err: '', success: '' })
   const [loading, setLoading] = useState(false)
+
+  const open = useSelector(getIsLoginOpen)
   const dispatch = useDispatch()
+
   useEffect(() => {
     setMsg({ err: '', success: '' })
     setDisabled(false)
     setLoading(false)
   }, [open])
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (localStorage.getItem('token')) {
@@ -82,6 +82,10 @@ export default function Login({ open, handleClose }) {
       setMsg({ err: err.response.data.message[0].messages[0].message, success: '' })
     }
     setLoading(false)
+  }
+
+  const handleClose = () => {
+    dispatch(toggleLoginForm())
   }
 
   return (
