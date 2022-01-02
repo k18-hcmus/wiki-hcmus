@@ -11,7 +11,7 @@ const UserInfo = ({ data, setData }) => {
   }
 
   return (
-    <Card>
+    <Card elevation={3}>
       <Box display="flex" justifyContent="center" alignItems="center">
         <CardHeader
           avatar={
@@ -42,13 +42,28 @@ const UserInfo = ({ data, setData }) => {
               {data.totalCP}
             </Typography>
           </Grid>
-          
           <Grid item lg={6} md={6} xl={6} xs={12}>
             <Typography variant="caption" color="text.primary" display="block" textAlign="left">
               Followers
             </Typography>
             <Typography variant="caption" color="text.secondary" display="block" textAlign="left">
               {data.followerNum}
+            </Typography>
+          </Grid>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
+            <Typography variant="caption" color="text.primary" display="block" textAlign="left">
+              Posts
+            </Typography>
+            <Typography variant="caption" color="text.secondary" display="block" textAlign="left">
+              {data.Posts.length}
+            </Typography>
+          </Grid>
+          <Grid item lg={6} md={6} xl={6} xs={12}>
+            <Typography variant="caption" color="text.primary" display="block" textAlign="left">
+              Comments
+            </Typography>
+            <Typography variant="caption" color="text.secondary" display="block" textAlign="left">
+              {data.Comments.length}
             </Typography>
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>

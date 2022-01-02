@@ -1,4 +1,7 @@
-import { INFORMATION_CONST, DASHBOARD_CONST } from './profile-constants'
+import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-constants'
+import { POST_CONST } from './post-constants'
+import { FEATURE_MESSAGE } from './notification-constants'
+import { REPORT_CONST } from './report-constants'
 
 export const HISTORY_CONST = {
   ACTOR: {
@@ -210,4 +213,11 @@ export const VOTE_CONST = {
   },
 }
 
-export { INFORMATION_CONST, DASHBOARD_CONST }
+export {
+  INFORMATION_CONST,
+  DASHBOARD_CONST,
+  VIEWOTHER_CONST,
+  POST_CONST,
+  FEATURE_MESSAGE,
+  REPORT_CONST,
+}

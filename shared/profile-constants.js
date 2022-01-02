@@ -23,3 +23,7 @@ export const DASHBOARD_CONST = {
     UPDATED: 'Updated',
   },
 }
+
+export const VIEWOTHER_CONST = {
+  LIMIT_VIEW: 5
+}
