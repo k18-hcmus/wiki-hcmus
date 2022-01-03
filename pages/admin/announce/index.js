@@ -73,9 +73,6 @@ function Announce() {
     }
     FetchUserId()
   }, [])
-  useEffect(() => {
-    console.log('all id', ArrIdUser)
-  }, [ArrIdUser])
   const [ownUserData, setOwnUserData] = useState({
     id: null,
     DisplayName: '',
