@@ -55,7 +55,7 @@ export const HISTORY_CONST = {
       id: 6,
       label: 'Report',
       context: 'Reported',
-    }
+    },
   },
   TARGET: {
     POST: {
@@ -144,12 +144,12 @@ export const NORTIFICATION_CONST = {
 }
 export const STATES_CONST = [
   {
-    value: 'ACTIVE',
+    value: 'Active',
     label: 'ACTIVE',
   },
   {
-    value: 'PENDING',
-    label: 'PENDING',
+    value: 'Ban',
+    label: 'BAN',
   },
 ]
 export const CONTRIBUTION_CONST = {

@@ -69,6 +69,7 @@ export const AccountProfileDetails = (props) => {
                 required
                 value={user.DisplayName}
                 variant="outlined"
+                disabled
               />
             </Grid>
             <Grid item md={6} xs={12}>
@@ -80,6 +81,7 @@ export const AccountProfileDetails = (props) => {
                 required
                 value={user.Email}
                 variant="outlined"
+                disabled
               />
             </Grid>
             <Grid item md={6} xs={12}>
@@ -91,6 +93,7 @@ export const AccountProfileDetails = (props) => {
                 type="number"
                 value={user.Phone}
                 variant="outlined"
+                disabled
               />
             </Grid>
             <Grid item md={6} xs={12}>
