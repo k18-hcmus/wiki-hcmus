@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Container,
@@ -24,7 +24,11 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
-
+import { useSelector } from 'react-redux'
+import { getAccUser } from '../../../redux/slices/userSlice'
+import { date } from 'faker'
+import { NORTIFICATION_CONST } from '../../../shared/constants'
+import { addNortification } from '../../../utils/nortification-utils'
 const FormBox = styled(Box)({
   borderRadius: 3,
   boxShadow: '#091e42 0px 1px 1px 0px',
@@ -48,6 +52,7 @@ export async function getStaticProps() {
     },
   }
 }
+
 function Announce() {
   const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' }) //message
@@ -56,6 +61,31 @@ function Announce() {
   const [title, setTitle] = useState('')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [ArrIdUser, setArrIdUser] = useState()
+  useEffect(() => {
+    async function FetchUserId() {
+      try {
+        const response = await axiosClient.get('/account-users')
+        setArrIdUser(response.data.map((user) => user.id))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    FetchUserId()
+  }, [])
+  useEffect(() => {
+    console.log('all id', ArrIdUser)
+  }, [ArrIdUser])
+  const [ownUserData, setOwnUserData] = useState({
+    id: null,
+    DisplayName: '',
+  })
+  const userDataObject = useSelector(getAccUser)
+  useEffect(() => {
+    if (userDataObject && Object.keys(userDataObject).length !== 0) {
+      setOwnUserData(userDataObject)
+    }
+  }, [userDataObject])
 
   const handlePopoverClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -64,15 +94,25 @@ function Announce() {
   const handlePopoverClose = () => {
     setAnchorEl(null)
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const body = JSON.stringify(content)
     try {
-      const response = axiosClient.post('posts', {
+      const response = await axiosClient.post('posts', {
         Title: title,
         Content: body,
-        Status: POST_STATUS.PUBLISH, // Waiting approve post function
+        Status: POST_STATUS.PUBLISH,
+        User: ownUserData,
       })
+      const textContent = `Admin ${ownUserData.DisplayName} created notification ${response.data.Title}`
+      for (let i = 0; i < ArrIdUser.length; i++) {
+        addNortification(
+          NORTIFICATION_CONST.TYPE.ADMIN,
+          ArrIdUser[i],
+          response.data.id,
+          textContent
+        )
+      }
       response && setMsg({ err: '', success: 'Create announce succeed' })
     } catch (error) {
       setMsg({ err: error.message, success: '' })
@@ -104,6 +144,7 @@ function Announce() {
       console.error(e)
     }
   }
+
   return (
     <Container maxWidth="lg">
       <Grid container direction="row" alignContent="center" justifyContent="center" spacing="30">

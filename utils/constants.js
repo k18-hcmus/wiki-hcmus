@@ -5,4 +5,5 @@ export const ACCOUNT_STATUS = {
 export const POST_STATUS = {
   UNPUBLISH: 'UNPUBLISH',
   PUBLISH: 'PUBLISH',
+  NOTIFICATION: 'Notification',
 }
