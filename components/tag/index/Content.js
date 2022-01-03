@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { FormGroup, Paper, Checkbox, FormControlLabel, Grid, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import {
+  FormGroup,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Box,
+  LinearProgress,
+} from '@mui/material'
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import WhatshotOutlinedIcon from '@mui/icons-material/WhatshotOutlined'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined'
 import StarIcon from '@mui/icons-material/Star'
+import AbstractPost from '../../commons/abstract-post'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-const Content = ({ data, callbackSetDataOption }) => {
+const Content = ({ data, callbackSetDataOption, ownUserId, hasMoreData, callbackLoadData }) => {
   const [checked, setChecked] = useState([true, false, false])
-  const options = ['hot', 'new', 'best']
+  const options = ['new', 'hot', 'best']
   const handleCheck = (event) => {
     const newChecked = checked.filter(() => false)
     newChecked[event.target.id] = true
@@ -21,20 +31,6 @@ const Content = ({ data, callbackSetDataOption }) => {
       <Paper sx={{ mb: 3, p: 1 }}>
         <FormGroup>
           <Grid container>
-            <Grid item auto>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    id={2}
-                    checked={checked[2]}
-                    onChange={handleCheck}
-                    icon={<WhatshotOutlinedIcon />}
-                    checkedIcon={<WhatshotIcon />}
-                  />
-                }
-                label="Hot"
-              />
-            </Grid>
             <Grid item auto>
               <FormControlLabel
                 control={
@@ -56,6 +52,20 @@ const Content = ({ data, callbackSetDataOption }) => {
                     id={1}
                     checked={checked[1]}
                     onChange={handleCheck}
+                    icon={<WhatshotOutlinedIcon />}
+                    checkedIcon={<WhatshotIcon />}
+                  />
+                }
+                label="Hot"
+              />
+            </Grid>
+            <Grid item auto>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    id={2}
+                    checked={checked[2]}
+                    onChange={handleCheck}
                     icon={<StarBorderOutlinedIcon />}
                     checkedIcon={<StarIcon />}
                   />
@@ -66,15 +76,20 @@ const Content = ({ data, callbackSetDataOption }) => {
           </Grid>
         </FormGroup>
       </Paper>
-      <Paper sx={{ p: 1 }}>
-        {data.map((record) => {
-          return (
-            <Typography variant="caption" color="text.primary">
-              record.Title
-            </Typography>
-          )
-        })}
-      </Paper>
+      <InfiniteScroll
+        dataLength={data.length}
+        next={callbackLoadData}
+        hasMore={hasMoreData}
+        loader={<LinearProgress />}
+      >
+        <Box sx={{ px: 1 }}>
+          {data.map((record, index) => (
+            <Paper key={index} sx={{ mb: 3, p: 1 }} elevation={3}>
+              <AbstractPost data={record} ownUserId={ownUserId} />
+            </Paper>
+          ))}
+        </Box>
+      </InfiniteScroll>
     </div>
   )
 }

@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
-import { Box, Button, Card, IconButton, Typography, Grid, Link } from '@mui/material'
+import { Box, IconButton, Typography, Grid, Link } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { format } from 'date-fns'
 import PostActionButtons from './post-action-buttons'
 import axiosClient from '../../axiosClient'
-
-const ArtButton = styled(Button)({
-  width: '30px',
-  height: '30px',
-  borderRadius: '15px',
-  backgroundColor: '#d98444',
-  color: '#fff',
-  marginLeft: '30px',
-})
 
 const CenteredGrid = styled(Grid)({
   display: 'flex',
@@ -61,9 +52,7 @@ const AbstractPost = ({ data, ownUserId }) => {
       if (data.PostVotes.filter((postVote) => postVote.User === ownUserId).length !== 0) {
         if (data.PostVotes.filter((postVote) => postVote.User === ownUserId)[0].Upvote === true)
           loadedVote[0] = true
-        if (
-          data.PostVotes.filter((postVote) => postVote.User === ownUserId)[0].Downvote === true
-        )
+        if (data.PostVotes.filter((postVote) => postVote.User === ownUserId)[0].Downvote === true)
           loadedVote[1] = true
         setPostVoteId(data.PostVotes.filter((postVote) => postVote.User === ownUserId)[0].id)
       }
@@ -122,9 +111,23 @@ const AbstractPost = ({ data, ownUserId }) => {
                 {data.Title}
               </Typography>
             </Link>
-            {data.Tags.map((tag, index) => (
-              <ArtButton key={index}>{tag.Name}</ArtButton>
-            ))}
+          </Box>
+          <Box display="flex" flexDirection="row" sx={{ ml: 1 }}>
+            {data.Tags.map((tag, index) =>
+              index !== data.Tags.length - 1 ? (
+                <Link href={`/tags/${tag.id}`} underline="hover">
+                  <Typography variant="body2" color="text.secondary">
+                    #{tag.Name},&nbsp;
+                  </Typography>
+                </Link>
+              ) : (
+                <Link href={`/tags/${tag.id}`} underline="hover">
+                  <Typography variant="body2" color="text.secondary">
+                    #{tag.Name}
+                  </Typography>
+                </Link>
+              )
+            )}
           </Box>
           <Box display="flex" alignItems="center" sx={{ my: 1, ml: 1 }}>
             {/* This created_at should change to publish date */}

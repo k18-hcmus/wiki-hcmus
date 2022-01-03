@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import axiosClient from '../../../axiosClient'
-import { useRouter } from 'next/router'
+import React, { useState, useEffect } from 'react'
 import { Container, Typography, Grid, Button, Avatar, styled } from '@mui/material'
 import { TAG_DETAIL } from '../../../shared/constants'
 import { animateScroll as scroll } from 'react-scroll'
 
 const HeadAbsContainer = styled(Container)({
   position: 'relative',
-  height: '80px',
+  height: '80px'
 })
 
 const HeadGrid = styled(Grid)({

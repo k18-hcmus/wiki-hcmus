@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import axiosClient from '../../axiosClient'
 import { useRouter } from 'next/router'
-import { Box, Container, Tab, Tabs, Typography, Grid, Paper, Avatar, styled } from '@mui/material'
+import { Container, Grid } from '@mui/material'
 import Header from '../../components/tag/index/Header'
 import Content from '../../components/tag/index/Content'
 import SidebarDetail from '../../components/tag/index/SidebarDetail'
 import { getTagTotalVote } from '../../utils/vote-utils'
+import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
+import { getAccUser } from '../../redux/slices/userSlice'
+import { useSelector } from 'react-redux'
 
 const Tag = () => {
   const router = useRouter()
@@ -16,22 +19,21 @@ const Tag = () => {
     postNum: 0,
     createdDate: null,
     voteNum: 0,
-    relatedTags: []
+    relatedTags: [],
+    majors: []
   })
+  const [headerData, setHeaderData] = useState({
+    avatarURL: '/static/avatars/avatar_1.jpg',
+    backgroundImgTop: '/static/backgroundImgs/tag_1.jpg',
+    name: '',
+  })
+  const [backgroundImgBody, setBackgroundImgBody] = useState('/static/backgroundImgs/tag_2.jpg')
   const [postData, setPostData] = useState([])
-  const handlePostSortChange = (option) => {
-    switch (option) {
-      case 'hot':
-        break
-      case 'new':
-        break
-      case 'best':
-        break
-    }
-  }
   useEffect(() => {
     async function fetchData() {
       try {
+        if (!id)
+          return
         const results = await axiosClient.get(`/tags?id=${id}`)
         var tagObject = results.data[0]
         const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagObject)
@@ -40,22 +42,88 @@ const Tag = () => {
           postNum: tagObject.Posts.length,
           createdDate: format(new Date(tagObject.created_at), 'MMM dd, yyyy'),
           voteNum: upvoteSum - downvoteSum,
-          relatedTags: tagObject.RelatedTags
+          relatedTags: tagObject.RelatedTags,
+          majors: tagObject.Majors
         }
         setSidebarDetailData(sidebarDetail)
+        const headerDetail = {
+          avatarURL: tagObject.AvatarURL || '/static/avatars/avatar_1.jpg',
+          backgroundImgTop: tagObject.BackgroundTopURL || '/static/backgroundImgs/tag_1.jpg',
+          name: tagObject.Name,
+        }
+        setHeaderData(headerDetail)
+        setBackgroundImgBody(tagObject.BackgroundBodyURL || '/static/backgroundImgs/tag_2.jpg')
+        const postResult = await axiosClient.get(
+          `/posts?Tags.id=${id}&_start=${start}&_limit=${limit}&${dataOrder}`
+        )
+        setPostData(postResult.data)
       } catch (error) {
         console.log(error)
       }
     }
     fetchData()
   }, [id])
-  const backgroundImgBody = '/static/backgroundImgs/tag_2.jpg'
-  const headerData = {
-    avatarURL: '/static/avatars/avatar_1.jpg',
-    backgroundImgTop: '/static/backgroundImgs/tag_1.jpg',
-    name: 'Trương Toàn Thịnh',
+  const [hasMoreData, setHasMoreData] = useState(true)
+  const [start, setStart] = useState(0)
+  const limit = VIEWOTHER_CONST.LIMIT_VIEW
+  const [dataOrder, setDataOrder] = useState(POST_CONST.DATA_ORDER.HOT)
+  const getMoreData = async () => {
+    if (!id) return
+    try {
+      const newStart = start + limit
+      setStart(newStart)
+      const postResult = await axiosClient.get(
+        `/posts?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+      )
+      if (postResult.data.length === 0) setHasMoreData(false)
+      else setPostData([...postData, ...postResult.data])
+    } catch (error) {
+      console.log(error)
+    }
   }
-
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+  }
+  const handleDataOptionChange = (option) => {
+    switch (option) {
+      case 'hot':
+        setDataOrder(POST_CONST.DATA_ORDER.HOT)
+        break
+      case 'new':
+        setDataOrder(POST_CONST.DATA_ORDER.NEW)
+        break
+      case 'best':
+        setDataOrder(POST_CONST.DATA_ORDER.BEST)
+        break
+    }
+  }
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (!id)
+          return
+        const newStart = 0
+        setStart(newStart)
+        setHasMoreData(true)
+        const postResult = await axiosClient.get(
+          `/posts?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        )
+        setPostData(postResult.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [dataOrder])
+  const [ownUserData, setOwnUserData] = useState({
+    id: null,
+  })
+  const userDataObject = useSelector(getAccUser)
+  useEffect(() => {
+    if (userDataObject && Object.keys(userDataObject).length !== 0) {
+      setOwnUserData(userDataObject)
+    }
+  }, [userDataObject])
   return (
     <div>
       <Header data={headerData} />
@@ -63,7 +131,13 @@ const Tag = () => {
         <Container>
           <Grid container spacing={3}>
             <Grid item lg={8} md={8} xl={9} xs={6}>
-              <Content data={postData} callbackSetDataOption={handlePostSortChange}/>
+              <Content
+                data={postData}
+                ownUserId={ownUserData.id}
+                callbackSetDataOption={handleDataOptionChange}
+                hasMoreData={hasMoreData}
+                callbackLoadData={getMoreData}
+              />
             </Grid>
             <Grid item lg={4} md={4} xl={3} xs={6}>
               <SidebarDetail data={sidebarDetailData} />

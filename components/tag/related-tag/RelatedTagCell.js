@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import axiosClient from '../../../axiosClient'
-import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import { ListItem, Link, Typography, Grid, Avatar, Divider } from '@mui/material'
-import { TAG_DETAIL, COLOR_SET } from '../../../shared/constants'
+import { COLOR_SET } from '../../../shared/constants'
 
 const RelatedTagCell = ({ data, lastItem }) => {
   const [avatarURL, setAvatarURL] = useState(data.AvatarURL || '/static/avatars/avatar_1.jpg')
