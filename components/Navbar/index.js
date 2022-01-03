@@ -74,17 +74,9 @@ export default function PrimarySearchAppBar() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-  const [isAuth, setIsAuth] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
-
   const isLoggedIn = useSelector(getUserAuth)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsAuth(!!localStorage.getItem('token')) //Check authenticate
-    }
-  }, [])
 
   const handleOpenLogin = () => {
     dispatch(toggleLoginForm())
@@ -99,7 +91,6 @@ export default function PrimarySearchAppBar() {
   }
   const handleLogOut = () => {
     localStorage.clear()
-    setIsAuth(!!localStorage.getItem('token'))
     axiosClient.defaults.headers.common['Authorization'] = ``
     router.push('/')
     dispatch(userLogout())

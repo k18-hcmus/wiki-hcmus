@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import { styled } from '@mui/material/styles'
 import { Button, Grid } from '@mui/material'
+import { useRouter } from 'next/router'
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -150,6 +151,7 @@ const Listbox = styled('ul')(
 `
 )
 export default function CustomizedHook(props) {
+  const route = useRouter()
   const {
     getRootProps,
     getInputLabelProps,
@@ -170,6 +172,9 @@ export default function CustomizedHook(props) {
   })
   const handleTagSave = () => {
     props.handleTag(value)
+  }
+  const handleClickCreateTag = () => {
+    route.push('/create-tag')
   }
   return (
     <Root>
@@ -202,7 +207,7 @@ export default function CustomizedHook(props) {
         spacing={2}
       >
         <Grid item>
-          <Button variant="contained" size="small" disabled>
+          <Button variant="contained" color="secondary" size="small" onClick={handleClickCreateTag}>
             Create tag
           </Button>
         </Grid>

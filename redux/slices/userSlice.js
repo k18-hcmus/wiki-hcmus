@@ -9,7 +9,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
     const accountUser = await axiosClient.get(`/account-users/${response.data.DetailUser}`)
     return {
       user: response.data,
-      accUser: accountUser.data
+      accUser: accountUser.data,
     }
   } catch (error) {
     console.log(error.response)
@@ -36,8 +36,7 @@ export const userSlice = createSlice({
       state.accUser = undefined
       state.isLogged = false
     },
-    userUpdateDetail: (state) => {
-      console.log(action.payload)
+    userUpdateDetail: (state, action) => {
       state.accUser = action.payload
     },
   },

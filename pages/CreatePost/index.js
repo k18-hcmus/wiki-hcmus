@@ -30,6 +30,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { useSelector } from 'react-redux'
 import { getUser } from '../../redux/slices/userSlice'
 import AuthRoute from '../../utils/ProtectedRoute'
+import { getTags } from '../../redux/slices/tagSlice'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
@@ -70,16 +71,8 @@ const CardContentText = styled(Typography)({
   fontSize: '14px',
   fontWeight: 500,
 })
-export async function getStaticProps() {
-  const res = await fetch(`${process.env.STRAPI_API_URL}tags`)
-  const Tags = await res.json()
-  return {
-    props: {
-      Tags,
-    },
-  }
-}
-const CreatePost = ({ Tags }) => {
+const CreatePost = () => {
+  const Tags = useSelector(getTags)
   const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' }) //message
   const [showTagDetail, setShowTagDetail] = useState(false)
@@ -214,7 +207,8 @@ const CreatePost = ({ Tags }) => {
                           key={tags.id}
                           id={tags.id}
                           label={tags.Name}
-                          variant="outlined"
+                          icon={<Avatar sx={{ width: 25, height: 25 }} src={tags.AvatarURL} />}
+                          sx={{ color: '#FFFFFF', backgroundColor: tags.ColorTag }}
                           onClick={handleClickTag}
                           onDelete={handleDeleteTag(tags.id)}
                         />

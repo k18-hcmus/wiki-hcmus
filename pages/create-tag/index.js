@@ -7,10 +7,20 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Checkbox,
+  Chip,
   Container,
   Divider,
+  FormControl,
   Grid,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+  Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 //import { useSnackbar } from 'notistack'
@@ -20,23 +30,80 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { styled } from '@mui/styles'
 import { useSelector } from 'react-redux'
 import { getUser } from '../../redux/slices/userSlice'
+import { colorsTagArr, CATEGORY_CONST, MAJOR_CONST, TAG_STATUS } from '../../shared/tag-constant'
+import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
+import { getTags } from '../../redux/slices/tagSlice'
+const colorObj = {
+  default: false,
+  red: false,
+  blue: false,
+  green: false,
+  yellow: false,
+}
+let colorTagSelected = colorsTagArr[0] // Tag color defualt
+let categorySelected = CATEGORY_CONST[1] // Category defualt
 const CreateTag = () => {
   const router = useRouter()
-  const user = useSelector(getUser)
-  const [disabled, setDisabled] = useState(false)
+  const tags = useSelector(getTags)
+  const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' })
+  const [category, setCategory] = useState(CATEGORY_CONST[1].id) //defualt category is subject
+  const [major, setMajor] = useState(MAJOR_CONST[0].id) //defualt major is CNTT
+  const [nameTag, setNameTag] = useState('')
+  const [nameErr, setNameErr] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [colorTag, setColorTag] = useState({
+    default: true,
+    red: false,
+    blue: false,
+    green: false,
+    yellow: false,
+  })
+  const handleChangeTagName = (event) => {
+    setNameTag(event.target.value)
+    !event.target.value ? setDisabled(true) : setDisabled(false)
+  }
+  const handleChangeCategory = (event) => {
+    setCategory(event.target.value)
+    categorySelected = CATEGORY_CONST.find((cate) => cate.id == event.target.value)
+  }
+  const handleChangeMajor = (event) => {
+    setMajor(event.target.value)
+  }
+  const handleChangeColor = (event) => {
+    const colorNameSelected = event.target.name
+    colorTagSelected = colorsTagArr.find((colorTag) => colorTag.name == colorNameSelected)
+    setColorTag({ ...colorObj, [colorNameSelected]: true })
+  }
   const handleSubmit = async (event) => {
     event.preventDefault()
     setLoading(true)
     const data = new FormData(event.currentTarget)
+    const checkedNameTag = tags.find((tag) => tag.Name == nameTag)
+    if (checkedNameTag) {
+      // Check name tag already exist
+      setNameErr(true)
+      setMsg({ err: 'Name tag already exist', success: '' })
+      setLoading(false)
+      return
+    }
     try {
-      console.log('data', user)
+      const response = await axiosClient.post('/tags', {
+        Name: nameTag,
+        Description: data.get('TagContent'),
+        AvatarURL: categorySelected.photoURL,
+        ColorTag: colorTagSelected.color,
+        Category: category,
+        Majors: major,
+        Status: TAG_STATUS.UNPUBLISH,
+      })
+      setMsg({ err: '', success: 'Create tag success' })
     } catch (error) {
       console.log(error)
     }
     setLoading(false)
   }
+
   const showAvatarTag = () => {
     return (
       <Card>
@@ -49,20 +116,29 @@ const CreateTag = () => {
             }}
           >
             <Avatar
-              src={user.avatar}
+              src={categorySelected.photoURL}
               sx={{
-                height: 64,
+                height: 65,
                 mb: 2,
-                width: 64,
+                width: 65,
               }}
             />
           </Box>
         </CardContent>
         <Divider />
         <CardActions>
-          <Button color="primary" fullWidth variant="text">
-            Upload picture
-          </Button>
+          <Grid container spacing={2} justifyContent={'flex-start'}>
+            <Grid item>
+              <Typography>Preview</Typography>
+            </Grid>
+            <Grid item>
+              <Chip
+                icon={<Avatar sx={{ width: 25, height: 25 }} src={categorySelected.photoURL} />}
+                label={nameTag}
+                sx={{ color: '#FFFFFF', backgroundColor: colorTagSelected.color }}
+              />
+            </Grid>
+          </Grid>
         </CardActions>
       </Card>
     )
@@ -75,11 +151,19 @@ const CreateTag = () => {
         <CardContent>
           <Grid container direction="column" spacing={3}>
             <Grid item>
-              <TextField required fullWidth id="NameTag" label="NameTag" name="NameTag" autoFocus />
+              <TextField
+                onChange={handleChangeTagName}
+                required
+                fullWidth
+                error={nameErr}
+                id="NameTag"
+                label="NameTag"
+                name="NameTag"
+                autoFocus
+              />
             </Grid>
             <Grid item>
               <TextField
-                required
                 fullWidth
                 multiline
                 rows={5}
@@ -87,6 +171,43 @@ const CreateTag = () => {
                 label="Tag Description"
                 id="TagContent"
               />
+            </Grid>
+            <Grid item>
+              <Typography>Color Tag:</Typography>
+              {colorsTagArr.map((color, index) => (
+                <Checkbox
+                  sx={{
+                    color: color.color,
+                    '&.Mui-checked': {
+                      color: color.color,
+                    },
+                  }}
+                  key={index}
+                  name={color.name}
+                  checked={colorTag[color.name]}
+                  onChange={handleChangeColor}
+                />
+              ))}
+            </Grid>
+            <Grid item>
+              <Typography sx={{ mb: 2 }}>Select Category:</Typography>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select value={category} label="Category" onChange={handleChangeCategory}>
+                  <MenuItem value={1}>Teacher</MenuItem>
+                  <MenuItem value={2}>Subject</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <Typography sx={{ mb: 2 }}>Select Major:</Typography>
+              <FormControl fullWidth>
+                <InputLabel>Major</InputLabel>
+                <Select value={major} label="Category" onChange={handleChangeMajor}>
+                  <MenuItem value={1}>{MAJOR_CONST[0].name}</MenuItem>
+                  <MenuItem value={2}>{MAJOR_CONST[1].name}</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </CardContent>
@@ -103,12 +224,18 @@ const CreateTag = () => {
             variant="contained"
             sx={{ mr: 2 }}
             onClick={() => {
-              router.push('/admin/UsersActive')
+              router.back()
             }}
           >
             Back
           </Button>
-          <LoadingButton color="secondary" loading={loading} variant="contained" type="submit">
+          <LoadingButton
+            disabled={disabled}
+            color="secondary"
+            loading={loading}
+            variant="contained"
+            type="submit"
+          >
             Create tag
           </LoadingButton>
         </Box>
@@ -132,6 +259,8 @@ const CreateTag = () => {
           {showAvatarTag()}
         </Grid>
         <Grid item xs={6} md={6}>
+          {msg.success && showSuccessMsg(msg.success)}
+          {msg.err && showErrMsg(msg.err)}
           {showDetailTag()}
         </Grid>
       </Grid>
