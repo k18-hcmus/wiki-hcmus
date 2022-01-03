@@ -7,36 +7,43 @@ import Contributions from '../dashboard/contributions'
 import TotalUpvoteDownvote from '../dashboard/total-upvote-downvote'
 import TotalContribution from '../dashboard/total-contribution'
 import TotalPostComment from '../dashboard/total-post-comment'
-import axiosClient from '../../../axiosClient'
+import { getTotalContribution, getMonthlyContribution } from '../../../utils/contribution-utils'
+import { getTotalVote } from '../../../utils/vote-utils'
 
-const Dashboard = () => {
-  const [cPLastMonth, setCPLastMonth] = useState(101)
-  const [cPThisMonth, setCPThisMonth] = useState(129)
-  const [totalCP, setTotalCP] = useState(1432)
-  const [totalUpvote, setTotalUpvote] = useState(213)
-  const [totalDownvote, setTotalDownvote] = useState(56)
-  const [totalPost, setTotalPost] = useState(19)
-  const [totalComment, setTotalComment] = useState(43)
+
+const Dashboard = ({ userData, updateReduxData }) => {
+  const [cPLastMonth, setCPLastMonth] = useState(0)
+  const [cPThisMonth, setCPThisMonth] = useState(0)
+  const [totalCP, setTotalCP] = useState(0)
+  const [totalUpvote, setTotalUpvote] = useState(0)
+  const [totalDownvote, setTotalDownvote] = useState(0)
+  const [totalPost, setTotalPost] = useState(0)
+  const [totalComment, setTotalComment] = useState(0)
   const [commentData, setCommentData] = useState([])
   const contributionRef = useRef()
   const [cPRawData, setCPRawData] = useState(null)
   useEffect(() => {
     async function fetchData() {
-      const id = 1
       try {
-        const cPResult = await axiosClient.get(`/contributions?User.id=${id}`)
-        const cPRawData = cPResult.data
-        setCPRawData(cPRawData)
+        setCPRawData(userData.Contributions)
         contributionRef.current.updateChartData()
-        const commentDataResult = await axiosClient.get(`/comments?User.id=${id}`)
-        const commentRawData = commentDataResult.data
-        setCommentData(commentRawData)
+        setCommentData(userData.Comments)
+        const totalCP = await getTotalContribution('object', userData)
+        setTotalCP(totalCP)
+        const [lastMonthCP, thisMonthCP] = await getMonthlyContribution('object', userData)
+        setCPLastMonth(lastMonthCP)
+        setCPThisMonth(thisMonthCP)
+        const [upvoteSum, downvoteSum] = await getTotalVote('object', userData)
+        setTotalUpvote(upvoteSum)
+        setTotalDownvote(downvoteSum)
+        setTotalPost(userData.Posts.length)
+        setTotalComment(userData.Comments.length)
       } catch (error) {
         console.log(error)
       }
     }
     fetchData()
-  }, [])
+  }, [userData])
   return (
     <Box
       component="main"
@@ -61,11 +68,11 @@ const Dashboard = () => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Contributions ref={contributionRef} cPRawData={cPRawData} />
           </Grid>
-          <Grid item lg={4} md={6} xl={3} xs={12}>
-            <LatestComments sx={{ height: '100%' }} data={commentData} />
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <LatestPosts data={userData.Posts}/>
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
-            <LatestPosts />
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <LatestComments data={commentData} />
           </Grid>
         </Grid>
       </Container>

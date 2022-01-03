@@ -6,14 +6,14 @@ import FollowTab from '../follow/follow-tab'
 import TabPanel from '../commons/tab-pannel'
 import { addHistory } from '../../../utils/history-utils'
 import { HISTORY_CONST } from '../../../shared/constants'
+import { userId } from '../../../mock/data'
 
-const Follow = () => {
+const Follow = ({ userData, updateReduxData }) => {
   const [followData, setFollowData] = useState([])
   const [followerData, setFollowerData] = useState([])
   const [rawFollowData, setRawFollowData] = useState([])
   const [rawFollowerData, setRawFollowerData] = useState([])
   const [value, setValue] = React.useState(0)
-  const userId = 1
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -28,6 +28,7 @@ const Follow = () => {
         const newFollowData = {
           FollowUsers: rawFollowData,
         }
+        updateReduxData('FollowUsers', newFollowData)
         const followResult = await axiosClient({
           method: 'put',
           url: `/account-users/${userId}`,
@@ -55,6 +56,7 @@ const Follow = () => {
           data: newFollowerData,
           headers: {},
         })
+        updateReduxData('FollowedByUsers', newFollowerData)
         if (followerResult) {
           addHistory(
             { const: HISTORY_CONST.ACTOR.SELF, id: userId },
@@ -67,28 +69,25 @@ const Follow = () => {
   }
   useEffect(() => {
     async function fetchData() {
-      const id = 1
       try {
-        const result = await axiosClient.get(`/account-users?id=${id}`)
-        const data = result.data[0]
-        setRawFollowData(data.FollowUsers)
-        setRawFollowerData(data.FollowedByUsers)
-        const refinedFollowData = data.FollowUsers.map((record, index) => {
+        setRawFollowData(userData.FollowUsers)
+        setRawFollowerData(userData.FollowedByUsers)
+        const refinedFollowData = userData.FollowUsers.map((record, index) => {
           return {
             id: index,
             displayName: record.DisplayName,
-            followerNum: record.FollowerNum,
+            followerNum: record.FollowedByUsers ? record.FollowedByUsers.length : 0,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar
+            AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }
         })
-        const refinedFollowerData = data.FollowedByUsers.map((record, index) => {
+        const refinedFollowerData = userData.FollowedByUsers.map((record, index) => {
           return {
             id: index,
             displayName: record.DisplayName,
             followerNum: record.FollowerNum,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
-            avatarURL: record.Avatar
+            AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }
         })
         setFollowData(refinedFollowData)
@@ -98,7 +97,7 @@ const Follow = () => {
       }
     }
     fetchData()
-  }, [])
+  }, [userData])
   return (
     <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

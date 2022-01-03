@@ -1,6 +1,7 @@
-export const INFORMATION_CONST = {
-  GENDER: ['Male', 'Female', 'Unknown'],
-}
+import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-constants'
+import { POST_CONST } from './post-constants'
+import { FEATURE_MESSAGE } from './notification-constants'
+import { REPORT_CONST } from './report-constants'
 
 export const HISTORY_CONST = {
   ACTOR: {
@@ -50,6 +51,11 @@ export const HISTORY_CONST = {
       label: 'Unfollow',
       context: 'Unfollowed',
     },
+    REPORT: {
+      id: 6,
+      label: 'Report',
+      context: 'Reported',
+    }
   },
   TARGET: {
     POST: {
@@ -117,6 +123,7 @@ export const HISTORY_LIST = {
     HISTORY_CONST.ACTION.REMOVE,
     HISTORY_CONST.ACTION.FOLLOW,
     HISTORY_CONST.ACTION.UNFOLLOW,
+    HISTORY_CONST.ACTION.REPORT,
   ],
   TARGET: [
     HISTORY_CONST.TARGET.POST,
@@ -198,4 +205,25 @@ export const BUTTON_POST = {
   Delete: {
     label: 'Delete',
   },
+}
+export const VOTE_CONST = {
+  TYPE: {
+    POST: {
+      context: 'Post',
+      url: '/posts',
+    },
+    COMMENT: {
+      context: 'Comment',
+      url: '/comments',
+    },
+  },
+}
+
+export {
+  INFORMATION_CONST,
+  DASHBOARD_CONST,
+  VIEWOTHER_CONST,
+  POST_CONST,
+  FEATURE_MESSAGE,
+  REPORT_CONST,
 }

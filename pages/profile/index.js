@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
 import LazyLoad from 'react-lazyload'
 import Information from '../../components/profile/tabs/information.js'
@@ -6,25 +6,9 @@ import History from '../../components/profile/tabs/history.js'
 import Follow from '../../components/profile/tabs/follow.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
-
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  )
-}
+import TabPanel from '../../components/profile/commons/tab-panel'
+import { getUser, getAccUser, userUpdateDetail } from '../../redux/slices/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 function allyProps(index) {
   return {
@@ -38,9 +22,44 @@ const Profile = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+  const [userData, setUserData] = useState({
+    DisplayName: '',
+    AvatarURL: null,
+    Comments: [],
+    Posts: [],
+    Contributions: [],
+    FollowUsers: [],
+    FollowedByUsers: [],
+    Email: '',
+  })
+  const userDataObject = useSelector(getAccUser)
+  const userObject = useSelector(getUser)
+  const updateReduxUserDetail = (property, data) => {
+    const currentDataObject = useSelector(getAccUser)
+    useDispatch(userUpdateDetail({ ...currentDataObject, [property]: data }))
+  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (
+        userDataObject &&
+        userObject &&
+        Object.keys(userDataObject).length !== 0 &&
+        Object.keys(userObject).length !== 0
+      ) {
+        try {
+          setUserData({
+            ...userDataObject,
+            Email: userObject.email,
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+    fetchData()
+  }, [userDataObject, userObject])
   return (
     <Container>
-      <Typography variant="h5">User settings</Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Dashboard" {...allyProps(0)} />
@@ -53,27 +72,27 @@ const Profile = () => {
       <Box pt={4}>
         <LazyLoad once={true}>
           <TabPanel value={value} index={0}>
-            <Dashboard />
+            <Dashboard userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={1}>
-            <Information />
+            <Information userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={2}>
-            <Follow />
+            <Follow userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={3}>
-            <History />
+            <History userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
         <LazyLoad once={true}>
           <TabPanel value={value} index={5}>
-            <Setting />
+            <Setting userData={userData} updateReduxData={updateReduxUserDetail} />
           </TabPanel>
         </LazyLoad>
       </Box>

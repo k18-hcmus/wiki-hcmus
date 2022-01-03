@@ -3,10 +3,10 @@ import { Container, Box, Grid } from '@mui/material'
 import FilterTab from '../history/filter-tab'
 import HistoryTab from '../history/history-tab'
 import axiosClient from '../../../axiosClient'
-import { HISTORY_CONST, HISTORY_LIST } from '../../../shared/constants'
+import { HISTORY_LIST } from '../../../shared/constants'
 import { getHistoryString, getHistoryUrl } from '../../../utils/history-utils'
 
-const History = () => {
+const History = ({ userData, updateReduxData }) => {
   const option = {
     actors: HISTORY_LIST.ACTOR.map((actor) => actor.label),
     actions: HISTORY_LIST.ACTION.map((action) => action.label),
@@ -36,7 +36,6 @@ const History = () => {
   const [deleteHistoryData, setDeleteHistoryData] = useState([])
   const [filterOptions, setFilterOptions] = useState({ actors: [], actions: [], targets: [] })
   const [timeFilter, setTimeFilter] = useState(timeFilterOptions[0])
-  const myDisplayName = 'Zhāng Zhōng Réin'
   const [checkboxStatus, setCheckboxStatus] = useState([])
   const [checkedAll, setCheckedAll] = useState(false)
   const [actorChecked, setActorChecked] = useState(option.actors.map((actor) => true))
@@ -73,7 +72,7 @@ const History = () => {
     // Todo: add a alert to nortify whether the deletion was successful or not
     deleteHistoryData.every((record) => {
       const newData = {
-        Deleted: true
+        Deleted: true,
       }
       axiosClient({
         method: 'put',
@@ -81,8 +80,7 @@ const History = () => {
         data: newData,
         headers: {},
       })
-  })
-
+    })
     setCachedHistoryData([])
     setDeleteHistoryData([])
   }
@@ -109,16 +107,18 @@ const History = () => {
   }
   useEffect(() => {
     async function fetchData() {
-      const userId = 1
       try {
-        const results = await axiosClient.get(`/history-details?Deleted=false&User.id=${userId}&`)
+        const results = await axiosClient.get(
+          `/history-details?Deleted=false&User.id=${userData.id}&`
+        )
         const data = results.data
         const refinedData = data.map((record) => {
           return {
             id: record.id,
-            avatarURL: record.User.AvatarURL,
-            actor: record.User.DisplayName === myDisplayName ? 'You' : record.User.DisplayName,
-            action: getHistoryString(record, true, myDisplayName),
+            AvatarURL: record.User.AvatarURL || '/static/avatars/avatar_1.jpg',
+            actor:
+              record.User.DisplayName === userData.DisplayName ? 'You' : record.User.DisplayName,
+            action: getHistoryString(record, true, userData.DisplayName),
             gotoUrl: getHistoryUrl(record),
             created_at: record.created_at,
             actorId: record.ActorId,
@@ -133,7 +133,7 @@ const History = () => {
       }
     }
     fetchData()
-  }, [])
+  }, [userData])
   useEffect(() => {
     setCheckboxStatus(historyData.map(() => false))
   }, [historyData])
@@ -165,6 +165,7 @@ const History = () => {
           <Grid item lg={9} md={12} xl={9} xs={12}>
             <HistoryTab
               data={historyData}
+              setData={setHistoryData}
               timeFilter={timeFilter}
               timeFilterOptions={timeFilterOptions}
               checkboxStatus={checkboxStatus}

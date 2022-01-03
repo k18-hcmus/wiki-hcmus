@@ -108,3 +108,5 @@ Nullam leo odio, tristique nec scelerisque id, dictum nec ipsum. Nullam risus do
     }
   }
 ]
+
+export const userId = 16;

@@ -6,7 +6,7 @@ import { NORTIFICATION_CONST, HISTORY_LIST, HISTORY_CONST } from '../shared/cons
 // addHistory(
 //   { const: HISTORY_CONST.ACTOR.SELF, id: newUserData.id },
 //   { const: HISTORY_CONST.ACTION.UPDATE },
-//   { const: HISTORY_CONST.TARGET.PROFILE, id: newUserData.id }
+//   { const: HISTORY_CONST.TARGET.PROFILE, id: newUserData.id}
 
 // Problem 1: Current History implementation can be fooled by
 // user change their DisplayName. We should use a dynamic
