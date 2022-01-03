@@ -1,5 +1,5 @@
 import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-constants'
-import { POST_CONST } from './post-constants'
+import { POST_CONST, POST_STATUS } from './post-constants'
 import { FEATURE_MESSAGE } from './notification-constants'
 import { REPORT_CONST } from './report-constants'
 import { TAG_DETAIL } from './tag-constants'
