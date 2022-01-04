@@ -39,14 +39,14 @@ export const downvote = async (type, id) => {
   if (result.statusCode !== 200) console.log(result)
 }
 
-export const getTotalVote = async (type, user) => {
+export const getUserTotalVote = async (type, user) => {
   var data
   var upvoteSum = 0
   var downvoteSum = 0
   if (type === 'id') {
     const userData = await axiosClient.get(`/account-users?id=${user}`)
     if (!userData || userData.data.length === 0) {
-      console.log(`getTotalVote failed with userId=${user}`)
+      console.log(`getUserTotalVote failed with userId=${user}`)
       return
     }
     data = userData.data[0]
@@ -61,5 +61,28 @@ export const getTotalVote = async (type, user) => {
     upvoteSum += comment.UpvoteCount
     downvoteSum += comment.DownvoteCount
   })
+  return [upvoteSum, downvoteSum]
+}
+
+// Current separate with getUserTotalVote for readability, maybe merge later
+export const getTagTotalVote = async (type, tag) => {
+  var data
+  var upvoteSum = 0
+  var downvoteSum = 0
+  if (type === 'id') {
+    const tagData = await axiosClient.get(`/tags?id=${tag}`)
+    if (!userData || tagData.data.length === 0) {
+      console.log(`getTagTotalVote failed with tagId=${tag}`)
+      return
+    }
+    data = tagData.data[0]
+  } else {
+    data = tag
+  }
+  data.Posts.forEach((post) => {
+    upvoteSum += post.UpvoteCount
+    downvoteSum += post.DownvoteCount
+  })
+  // Should we consider all comments' vote of each post when calculating?
   return [upvoteSum, downvoteSum]
 }

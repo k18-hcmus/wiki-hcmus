@@ -2,6 +2,7 @@ import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-c
 import { POST_CONST } from './post-constants'
 import { FEATURE_MESSAGE } from './notification-constants'
 import { REPORT_CONST } from './report-constants'
+import { TAG_DETAIL } from './tag-constants'
 
 export const HISTORY_CONST = {
   ACTOR: {
@@ -219,6 +220,10 @@ export const VOTE_CONST = {
   },
 }
 
+export const COLOR_SET = {
+  BLUE: '#1976D2',
+}
+
 export {
   INFORMATION_CONST,
   DASHBOARD_CONST,
@@ -226,4 +231,5 @@ export {
   POST_CONST,
   FEATURE_MESSAGE,
   REPORT_CONST,
+  TAG_DETAIL,
 }

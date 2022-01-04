@@ -130,5 +130,5 @@ export {
   contributionListToChartData,
   addContribution,
   getMonthlyContribution,
-  getTotalContribution,
+  getTotalContribution
 }
