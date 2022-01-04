@@ -10,6 +10,7 @@ import { Avatar, Box, Button, Card, IconButton, Typography } from "@mui/material
 import { styled } from "@mui/material/styles";
 import draftToHtml from 'draftjs-to-html';
 import { useRef, useEffect, useState } from "react"
+import { useRouter } from 'next/router'
 
 
 const PostCard = styled(Card)({
@@ -80,6 +81,7 @@ const NameTime = styled(Box)({
 
 const NameUser = styled(Typography)({
     fontSize: "16px",
+    color:"#000",
     fontWeight: "bold",
 })
 
@@ -166,17 +168,22 @@ const SeeMoreButton = styled(Button)({
 
 })
 
-const PostNoImageCard = ({ title, user, comments, tags, publishDate, upvote, content }) => {
+const PostNoImageCard = ({ title, user, comments, tags, publishDate, upvote, content,id }) => {
 
     const [widthPost, setWidthPost] = useState()
     const draftContent = JSON.parse(content)
     const htmlContent = draftToHtml(draftContent)
+    const router = useRouter()
 
     const ref = useRef(null);
 
     useEffect(() => {
         setWidthPost(ref.current.offsetHeight)
     })
+
+    const handlePostDetail=(id)=>{
+        router.push(`/posts/${id}`)
+    }
 
     return (
         <PostCard ref={ref}>
@@ -197,7 +204,7 @@ const PostNoImageCard = ({ title, user, comments, tags, publishDate, upvote, con
                         <NameTime>
                             {
                                 user ?
-                                    (< NameUser>{user.DisplayName}</NameUser>) :
+                                    (<IconButton>< NameUser>{user.DisplayName}</NameUser></IconButton>) :
                                     (< NameUser>NoName</NameUser>)
                             }
 
@@ -207,9 +214,11 @@ const PostNoImageCard = ({ title, user, comments, tags, publishDate, upvote, con
                             {
                                 tags ? (
                                     tags.map((tag, index) => (
-                                        <TagName key={index}>
-                                            #{tag.Name}
-                                        </TagName>
+                                        <IconButton>
+                                            <TagName key={index}>
+                                                #{tag.Name}
+                                            </TagName>
+                                        </IconButton>
                                     ))
                                 ) : (
                                     <Typography>0</Typography>
@@ -222,11 +231,13 @@ const PostNoImageCard = ({ title, user, comments, tags, publishDate, upvote, con
                 </TitleComponent>
                 <JoinButton variant="contained">Join</JoinButton>
                 <TitlePost>{title}</TitlePost>
-                <ContexCom>
+                <ContexCom
+                onClick={()=>handlePostDetail(id)}
+                >
                     <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>
                 </ContexCom>
                 {
-                    (widthPost >= 600) && <SeeMoreButton color="primary" variant="contained">See more</SeeMoreButton>
+                    (widthPost >= 600) && <SeeMoreButton color="primary" variant="contained" onClick={()=>handlePostDetail(id)}>See more</SeeMoreButton>
                 }
                 <CommentComponent>
                     <ItemButton>
