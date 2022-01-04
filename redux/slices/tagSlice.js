@@ -7,7 +7,6 @@ export const fetchTags = createAsyncThunk('tag/fetchTag', async () => {
   try {
     const response = await axiosClient.get('/tags')
     const tagArr = response.data.filter((tag) => tag.Status == TAG_STATUS.PUBLISH)
-    console.log('Tag', tagArr, response.data)
     return tagArr
   } catch (error) {
     console.log(error.response)

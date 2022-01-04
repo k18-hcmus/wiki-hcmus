@@ -28,11 +28,13 @@ import { useRouter } from 'next/router'
 import axiosClient from '../../axiosClient'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { styled } from '@mui/styles'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '../../redux/slices/userSlice'
 import { colorsTagArr, CATEGORY_CONST, MAJOR_CONST, TAG_STATUS } from '../../shared/tag-constant'
 import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
-import { getTags } from '../../redux/slices/tagSlice'
+import { fetchTags, getTags } from '../../redux/slices/tagSlice'
+import { checkAdmin } from '../../utils/validation'
+import AuthRoute from '../../utils/ProtectedRoute'
 const colorObj = {
   default: false,
   red: false,
@@ -45,6 +47,8 @@ let categorySelected = CATEGORY_CONST[1] // Category defualt
 const CreateTag = () => {
   const router = useRouter()
   const tags = useSelector(getTags)
+  const user = useSelector(getUser)
+  const dispatch = useDispatch()
   const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' })
   const [category, setCategory] = useState(CATEGORY_CONST[1].id) //defualt category is subject
@@ -79,6 +83,11 @@ const CreateTag = () => {
     event.preventDefault()
     setLoading(true)
     const data = new FormData(event.currentTarget)
+    let status = TAG_STATUS.UNPUBLISH
+    if (checkAdmin(user)) {
+      // if Admin will publish tag
+      status = TAG_STATUS.PUBLISH
+    }
     const checkedNameTag = tags.find((tag) => tag.Name == nameTag)
     if (checkedNameTag) {
       // Check name tag already exist
@@ -95,8 +104,12 @@ const CreateTag = () => {
         ColorTag: colorTagSelected.color,
         Category: category,
         Majors: major,
-        Status: TAG_STATUS.UNPUBLISH,
+        Status: status,
       })
+      if (status == TAG_STATUS.PUBLISH) {
+        // Update tags state
+        dispatch(fetchTags())
+      }
       setMsg({ err: '', success: 'Create tag success' })
     } catch (error) {
       console.log(error)
@@ -243,28 +256,36 @@ const CreateTag = () => {
     )
   }
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-      component="form"
-      onSubmit={handleSubmit}
-      noValidate
-    >
-      <Grid container spacing="10" direction="row" justifyContent="center" alignItems="flex-start">
-        <Grid item xs={6} md={2}>
-          {showAvatarTag()}
+    <AuthRoute>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
+        <Grid
+          container
+          spacing="10"
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-start"
+        >
+          <Grid item xs={6} md={2}>
+            {showAvatarTag()}
+          </Grid>
+          <Grid item xs={6} md={6}>
+            {msg.success && showSuccessMsg(msg.success)}
+            {msg.err && showErrMsg(msg.err)}
+            {showDetailTag()}
+          </Grid>
         </Grid>
-        <Grid item xs={6} md={6}>
-          {msg.success && showSuccessMsg(msg.success)}
-          {msg.err && showErrMsg(msg.err)}
-          {showDetailTag()}
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </AuthRoute>
   )
 }
 export default CreateTag

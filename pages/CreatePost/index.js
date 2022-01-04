@@ -96,7 +96,6 @@ const CreatePost = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     const body = JSON.stringify(content)
-    console.log(draftToHtml(content))
     try {
       const response = axiosClient.post('posts', {
         Title: title,
