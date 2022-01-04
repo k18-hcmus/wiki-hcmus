@@ -85,7 +85,7 @@ const Follow = ({ userData, updateReduxData }) => {
           return {
             id: index,
             displayName: record.DisplayName,
-            followerNum: record.FollowerNum,
+            followerNum: record.FollowedByUsers ? record.FollowedByUsers.length : 0,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
             AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }

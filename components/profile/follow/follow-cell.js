@@ -90,7 +90,6 @@ const FollowCell = ({ type, data, setData, callbackDelete }) => {
           >
             {type === 'Follow' && <MenuItem onClick={handleDelete}>Unfollow</MenuItem>}
             {type === 'Follower' &&  <MenuItem onClick={handleDelete}>Remove</MenuItem>}
-            <MenuItem onClick={handleDelete}>Unfollow</MenuItem>
           </Menu>
         </MoreButton>
       </CenteredGrid>

@@ -41,6 +41,7 @@ export const addHistory = async (
     ActorId: actor.const.id,
     ActionId: action.const.id,
     TargetId: target.const.id,
+    Deleted: false,
   }
   const historyResult = await axiosClient.post('/history-details', data)
   // Add nortification records

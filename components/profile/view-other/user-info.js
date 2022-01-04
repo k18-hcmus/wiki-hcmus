@@ -1,14 +1,79 @@
-import React, { useEffect, useState } from 'react'
-import { Card, Box, CardHeader, Avatar, CardContent, Typography, Grid } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import axiosClient from '../../../axiosClient'
+import { HISTORY_CONST } from '../../../shared/constants'
+import { addHistory } from '../../../utils/history-utils'
+import { Card, Box, CardHeader, Avatar, CardContent, Typography, Grid, Button } from '@mui/material'
 
-const UserInfo = ({ data, setData }) => {
+const UserInfo = ({ data, setData, ownUserData, callbackUpdateUserData }) => {
   const [imgErr, setImgErr] = useState(false)
+  const [followed, setFollowed] = useState(false)
   const handleImgError = () => {
     if (!imgErr) {
-      setData({...data, AvatarURL: '/static/avatars/avatar_1.jpg'})
+      setData({ ...data, AvatarURL: '/static/avatars/avatar_1.jpg' })
       setImgErr(true)
     }
   }
+  const handleFollowClick = () => {
+    setFollowed(true)
+    handleFollowUser()
+  }
+  const handleFollowUser = async () => {
+    try {
+      const followArray = ownUserData.FollowUsers.filter((follow) => follow.id !== data.id)
+      const followData = {
+        FollowUsers: followArray,
+      }
+      const result = await axiosClient({
+        method: 'put',
+        url: `/account-users/${ownUserData.id}`,
+        data: followData,
+        headers: {},
+      })
+      if (result) {
+        callbackUpdateUserData('FollowUsers', followArray)
+        addHistory(
+          { const: HISTORY_CONST.ACTOR.SELF, id: ownUserData.id },
+          { const: HISTORY_CONST.ACTION.FOLLOW },
+          { const: HISTORY_CONST.TARGET.USER, id: data.id }
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleUnfollowClick = () => {
+    setFollowed(false)
+    handleUnfollowUser()
+  }
+  const handleUnfollowUser = async () => {
+    try {
+      const followArray = ownUserData.FollowUsers.filter((follow) => follow.id !== data.id)
+      const followData = {
+        FollowUsers: followArray,
+      }
+      const result = await axiosClient({
+        method: 'put',
+        url: `/account-users/${ownUserData.id}`,
+        data: followData,
+        headers: {},
+      })
+      if (result) {
+        callbackUpdateUserData('FollowUsers', followArray)
+        addHistory(
+          { const: HISTORY_CONST.ACTOR.SELF, id: ownUserData.id },
+          { const: HISTORY_CONST.ACTION.UNFOLLOW },
+          { const: HISTORY_CONST.TARGET.USER, id: data.id }
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    if (data.id && ownUserData && ownUserData.FollowUsers) {
+      if (ownUserData.FollowUsers.find((follow) => follow.id === data.id)) setFollowed(true)
+    }
+  }, [])
 
   return (
     <Card elevation={3}>
@@ -27,11 +92,24 @@ const UserInfo = ({ data, setData }) => {
         />
       </Box>
       <CardContent>
-        <Typography component="div" variant="body2" color="text.primary" display="block" textAlign="center">
+        <Typography
+          component="div"
+          variant="body2"
+          color="text.primary"
+          display="block"
+          textAlign="center"
+        >
           {data.UserType}
         </Typography>
-        <Typography component="div" variant="body2" color="text.primary" display="block" textAlign="center" sx={{mb: 2}}>
-          {data.DisplayName}
+        <Typography
+          component="div"
+          variant="body2"
+          color="text.primary"
+          display="block"
+          textAlign="center"
+          sx={{ mb: 2 }}
+        >
+          {ownUserData.id === data.id ? '(You) ' + data.DisplayName : data.DisplayName}
         </Typography>
         <Grid container spacing={1}>
           <Grid item lg={6} md={6} xl={6} xs={12}>
@@ -82,6 +160,24 @@ const UserInfo = ({ data, setData }) => {
               {data.email}
             </Typography>
           </Grid>
+          {ownUserData.id !== data.id && followed && (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Button onClick={handleUnfollowClick} variant="contained">
+                  Followed
+                </Button>
+              </Box>
+            </Grid>
+          )}
+          {ownUserData.id !== data.id && !followed && (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Button onClick={handleFollowClick} variant="outlined">
+                  Follow
+                </Button>
+              </Box>
+            </Grid>
+          )}
         </Grid>
       </CardContent>
     </Card>
