@@ -7,7 +7,7 @@ import Follow from '../../components/profile/tabs/follow.js'
 import Setting from '../../components/profile/tabs/setting.js'
 import Dashboard from '../../components/profile/tabs/dashboard.js'
 import TabPanel from '../../components/profile/commons/tab-panel'
-import { getUser, getAccUser, userUpdateDetail } from '../../redux/slices/userSlice'
+import { getUser, getAccUser, fetchUser } from '../../redux/slices/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 
 function allyProps(index) {
@@ -34,9 +34,8 @@ const Profile = () => {
   })
   const userDataObject = useSelector(getAccUser)
   const userObject = useSelector(getUser)
-  const updateReduxUserDetail = (property, data) => {
-    const currentDataObject = useSelector(getAccUser)
-    useDispatch(userUpdateDetail({ ...currentDataObject, [property]: data }))
+  const updateReduxUserDetail = () => {
+    useDispatch(fetchUser())
   }
   useEffect(() => {
     const fetchData = async () => {

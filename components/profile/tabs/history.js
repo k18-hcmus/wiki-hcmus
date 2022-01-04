@@ -83,6 +83,7 @@ const History = ({ userData, updateReduxData }) => {
     })
     setCachedHistoryData([])
     setDeleteHistoryData([])
+    updateReduxData()
   }
   const handleCancel = () => {
     setHistoryData(cachedHistoryData)

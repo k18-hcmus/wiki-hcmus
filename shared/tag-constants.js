@@ -20,3 +20,28 @@ export const TAG_DETAIL = {
     EXTRA_TITLE: 'Extras',
   },
 }
+
+export const TAG_COLOR = {
+  DEFAULT: { color: '#C4CDD5', name: 'default' },
+  RED: { color: '#FF4842', name: 'red' },
+  BLUE: { color: '#1890FF', name: 'blue' },
+  GREEN: { color: '#54D62C', name: 'green' },
+  YELLOW: { color: '#FFE16A', name: 'yellow' },
+}
+
+export const CATEGORY_CONST = {
+  SUBJECT: { id: 1, name: 'Subject', photoURL: '/static/avatars/subject.png' },
+  TEACHER: { id: 2, name: 'Teacher', photoURL: '/static/avatars/teacher.png' },
+}
+
+export const TAG_STATUS = {
+  PUBLISH: 'Publish',
+  UNPUBLISH: 'Unpublish',
+}
+
+export const MAJOR_CONST = [
+  { id: 1, name: 'CNTT' },
+  { id: 2, name: 'Toan' },
+  { id: 3, name: 'Vat Ly' },
+  { id: 4, name: 'Hoa hoc' },
+]

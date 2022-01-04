@@ -30,7 +30,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { styled } from '@mui/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '../../redux/slices/userSlice'
-import { colorsTagArr, CATEGORY_CONST, MAJOR_CONST, TAG_STATUS } from '../../shared/tag-constant'
+import { TAG_COLOR, CATEGORY_CONST, MAJOR_CONST, TAG_STATUS } from '../../shared/constants'
 import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
 import { fetchTags, getTags } from '../../redux/slices/tagSlice'
 import { checkAdmin } from '../../utils/validation'
@@ -42,8 +42,8 @@ const colorObj = {
   green: false,
   yellow: false,
 }
-let colorTagSelected = colorsTagArr[0] // Tag color defualt
-let categorySelected = CATEGORY_CONST[1] // Category defualt
+let colorTagSelected = TAG_COLOR.DEFAULT // Tag color defualt
+let categorySelected = CATEGORY_CONST.TEACHER // Category defualt
 const CreateTag = () => {
   const router = useRouter()
   const tags = useSelector(getTags)
@@ -51,7 +51,7 @@ const CreateTag = () => {
   const dispatch = useDispatch()
   const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' })
-  const [category, setCategory] = useState(CATEGORY_CONST[1].id) //defualt category is subject
+  const [category, setCategory] = useState(CATEGORY_CONST.TEACHER.id) //defualt category is subject
   const [major, setMajor] = useState(MAJOR_CONST[0].id) //defualt major is CNTT
   const [nameTag, setNameTag] = useState('')
   const [nameErr, setNameErr] = useState(false)
@@ -69,14 +69,18 @@ const CreateTag = () => {
   }
   const handleChangeCategory = (event) => {
     setCategory(event.target.value)
-    categorySelected = CATEGORY_CONST.find((cate) => cate.id == event.target.value)
+    categorySelected = Object.keys(CATEGORY_CONST)
+      .map((key) => CATEGORY_CONST[key])
+      .find((cate) => cate.id == event.target.value)
   }
   const handleChangeMajor = (event) => {
     setMajor(event.target.value)
   }
   const handleChangeColor = (event) => {
     const colorNameSelected = event.target.name
-    colorTagSelected = colorsTagArr.find((colorTag) => colorTag.name == colorNameSelected)
+    colorTagSelected = Object.keys(TAG_COLOR)
+      .map((key) => TAG_COLOR[key])
+      .find((colorTag) => colorTag.name == colorNameSelected)
     setColorTag({ ...colorObj, [colorNameSelected]: true })
   }
   const handleSubmit = async (event) => {
@@ -187,17 +191,17 @@ const CreateTag = () => {
             </Grid>
             <Grid item>
               <Typography>Color Tag:</Typography>
-              {colorsTagArr.map((color, index) => (
+              {Object.keys(TAG_COLOR).map((key, index) => (
                 <Checkbox
                   sx={{
-                    color: color.color,
+                    color: TAG_COLOR[key].color,
                     '&.Mui-checked': {
-                      color: color.color,
+                      color: TAG_COLOR[key].color,
                     },
                   }}
                   key={index}
-                  name={color.name}
-                  checked={colorTag[color.name]}
+                  name={TAG_COLOR[key].name}
+                  checked={colorTag[TAG_COLOR[key].name]}
                   onChange={handleChangeColor}
                 />
               ))}

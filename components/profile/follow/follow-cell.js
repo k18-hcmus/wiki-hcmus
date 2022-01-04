@@ -14,7 +14,7 @@ const CenteredGrid = styled(Grid)({
   justifyContent: 'center',
 })
 
-const FollowCell = ({ type, data, setData, callbackDelete }) => {
+const FollowCell = ({ type, data, callbackDelete }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [imgErr, setImgErr] = useState(false)
   const open = Boolean(anchorEl)
@@ -28,9 +28,8 @@ const FollowCell = ({ type, data, setData, callbackDelete }) => {
     setAnchorEl(null)
     callbackDelete(data)
   }
-  const handleImgError = () => {
+  const handleImgError = (evt) => {
     if (!imgErr) {
-      setData({...data, AvatarURL: '/static/avatars/avatar_1.jpg'})
       setImgErr(true)
     }
   }

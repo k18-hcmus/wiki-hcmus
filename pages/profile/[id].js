@@ -10,6 +10,7 @@ import axiosClient from '../../axiosClient'
 import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
 import { getAccUser, fetchUser } from '../../redux/slices/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import { getUserTier } from '../../utils/contribution-utils'
 
 const Profile = () => {
   const [value, setValue] = React.useState(0)
@@ -85,12 +86,7 @@ const Profile = () => {
         const results = await axiosClient.get(`/account-users?id=${id}`)
         var userObject = results.data[0]
         const totalCP = await getTotalContribution('object', userObject)
-        var currentTier = 'Untiered'
-        for (const tierName in CONTRIBUTION_CONST.TIER) {
-          if (totalCP < CONTRIBUTION_CONST.TIER[tierName]) {
-            break
-          } else currentTier = tierName
-        }
+        var [currentTier, nextTierCP] = getUserTier(totalCP)
         userObject = {
           ...userObject,
           totalCP: totalCP,
@@ -100,7 +96,7 @@ const Profile = () => {
         }
         setUserData(userObject)
         const postResult = await axiosClient.get(
-          `/posts?User.id=${id}&_start=${start}&_limit=${limit}&${dataOrder}`
+          `/posts?User.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.HOT}`
         )
         if (postResult.data.length === 0) setHasMoreData(false)
         else {
@@ -123,7 +119,7 @@ const Profile = () => {
       setOwnUserData(userDataObject)
     }
   }, [userDataObject])
-  const updateReduxUserDetail = (property, data) => {
+  const updateReduxUserDetail = () => {
     useDispatch(fetchUser())
   }
   return (
