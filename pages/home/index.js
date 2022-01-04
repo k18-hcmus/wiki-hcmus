@@ -1,10 +1,10 @@
-import { Box, Button, Card, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
-import { getPosts } from "../../utils/home-utils"
-import { useState, useEffect, useRef } from "react"
+import { Box, Button, Card, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { useEffect, useState } from "react";
 import LazyLoad from 'react-lazyload';
-import PostNoImageCard from './post-no-image-card'
-import { animateScroll as scroll } from 'react-scroll'
+import { animateScroll as scroll } from 'react-scroll';
+import { getPosts } from "../../utils/home-utils";
+import PostNoImageCard from './post-no-image-card';
 
 
 const HorizoneFeature = styled(Box)({
@@ -45,17 +45,17 @@ const SpinnerLoadding = () => {
 const Home = () => {
     const [postsData, setPostsData] = useState([])
     const [isLoading, setLoading] = useState(false)
-    const [visible,setVisible]=useState(false)
+    const [visible, setVisible] = useState(false)
 
-    useEffect(()=>{
+    useEffect(() => {
         window.addEventListener("scroll", () => {
             if (window.pageYOffset > 600) {
-              setVisible(true);
+                setVisible(true);
             } else {
-              setVisible(false);
+                setVisible(false);
             }
-          });
-    },[])
+        });
+    }, [])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,7 +73,7 @@ const Home = () => {
         fetchData()
     }, [])
 
-    const scrollToTop=()=>{
+    const scrollToTop = () => {
         scroll.scrollToTop()
     }
 
@@ -82,21 +82,21 @@ const Home = () => {
             <HorizoneFeature>
                 {
                     (postsData.length !== 0) ? (
-                        postsData.map((post, index) => (
+                        postsData.map((post) => (
                             <LazyLoad
-                                key={index}
+                                key={post.id}
                                 height={150}
                                 once={true}
                             >
-                                <PostNoImageCard title={post.Title} user={post.User} comments={post.Comments.length} tags={post.Tags} publishDate={post.published_at} upvote={post.UpvoteCount} content={post.Content} />
+                                <PostNoImageCard key={post.id} title={post.Title} user={post.User} comments={post.Comments.length} tags={post.Tags} publishDate={post.published_at} upvote={post.UpvoteCount} content={post.Content} id={post.id} />
                             </LazyLoad>
                         ))) : (
                         <Typography>There is no post</Typography>
                     )
                 }
-            {
-                visible && <BackToTopButton color="primary" variant="contained" onClick={scrollToTop}>Back To Top</BackToTopButton>
-            }
+                {
+                    visible && <BackToTopButton color="primary" variant="contained" onClick={scrollToTop}>Back To Top</BackToTopButton>
+                }
             </HorizoneFeature>
 
     )

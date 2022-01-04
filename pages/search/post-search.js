@@ -9,13 +9,14 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, Button, Card, IconButton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const PostCard = styled(Card)({
+const PostCard = styled(Box)({
     width: "900px",
     height: "150px",
     display: "flex",
     flexDirection: "row",
     marginTop: "10px",
     marginBottom: "10px",
+    borderRadius: "10px"
 })
 
 const UpDownVote = styled(Box)({
@@ -38,7 +39,7 @@ const MainCom = styled(Box)({
 const ImageBox = styled(Box)({
     height: "100%",
     width: "15%",
-    paddingTop:"5px"
+    paddingTop: "5px"
 })
 
 const ContentCom = styled(Box)({
@@ -68,7 +69,7 @@ const ArtButton = styled(Button)({
     borderRadius: "15px",
     backgroundColor: "#d98444",
     color: "#fff",
-    marginLeft:"30px"
+    marginLeft: "30px"
 })
 
 const TagUserTimeBox = styled(Box)({
@@ -83,26 +84,22 @@ const TagUserTimeBox = styled(Box)({
 const TagName = styled(Typography)({
     fontSize: "15px",
     fontWeight: "bold",
-    color:"#0d6b9f"
+    color: "#0d6b9f",
+    marginLeft: "5px"
 })
 
 const PostBy = styled(Typography)({
     fontSize: "15px",
     color: "#999993",
-    marginLeft:"5px"
+    marginLeft: "5px"
 })
 
 const UserName = styled(Typography)({
     fontSize: "15px",
     fontWeight: "bold",
     backgroundColor: "#a7a7a0",
-    marginLeft: "3px"
-})
-
-const Time = styled(Typography)({
-    fontSize: "15px",
-    color: "#999993",
-    marginLeft:"5px"
+    marginLeft: "3px",
+    height: "25px"
 })
 
 const ReactBox = styled(Box)({
@@ -114,6 +111,15 @@ const ReactBox = styled(Box)({
 
 const ReactCommentBox = styled(Box)({
     width: "9%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+})
+
+const CommentBox = styled(Box)({
+    width: "100%",
     height: "100%",
     display: "flex",
     flexDirection: "row",
@@ -136,15 +142,24 @@ const UpDownVoteText = styled(Typography)({
     marginBottom: "2px"
 })
 
-const PostSearch = () => {
+const CommentButton = styled(IconButton)({
+    width: "21%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+})
+
+const PostSearch = ({ post }) => {
     return (
-        <PostCard>
+        <PostCard sx={{ boxShadow: 3 }}>
             <UpDownVote>
                 <IconButton>
                     <ArrowCircleUpIcon />
                 </IconButton>
                 <UpDownVoteText>
-                    asdha
+                    {post.UpvoteCount}
                 </UpDownVoteText>
                 <IconButton>
                     <ArrowCircleDownIcon />
@@ -153,82 +168,88 @@ const PostSearch = () => {
             <MainCom>
                 <ImageBox>
                     <img
-                    width="100px"
-                    heigt="100px"
+                        width="100px"
+                        heigt="100px"
                         src={"https://vnn-imgs-a1.vgcloud.vn/icdn.dantri.com.vn/2021/05/26/ngo-ngang-voi-ve-dep-cua-hot-girl-anh-the-chua-tron-18-docx-1622043349706.jpeg"}
                     />
                 </ImageBox>
                 <ContentCom>
                     <TitleBox>
                         < TitleName>
-                            abc
+                            {post.Title}
                         </TitleName>
                         < ArtButton>
                             Art
                         </ArtButton>
                     </TitleBox>
                     <TagUserTimeBox>
-                        <TagName>
-                            #asdasd
-                        </TagName>
+                        {
+                            (post.Tags.map((tag => (
+                                <TagName>
+                                    #{tag.Name}
+                                </TagName>
+                            ))))
+                        }
                         <PostBy>
                             Post by
                         </PostBy>
-                        <UserName>
-                            asdasdasd asdasd
-                        </UserName>
-                        < Time>
-                            asdasdasd
-                        </Time>
+
+                        {
+                            post.User && (
+                                <UserName>
+                                    {post.User.DisplayName}
+                                </UserName>
+                            )
+                        }
                     </TagUserTimeBox>
                     <ReactBox>
+                        <CommentButton>
+                            <CommentBox>
+                                <ChatBubbleOutlineIcon />
+                                <CommentText>
+                                    {post.Comments.length} Comments
+                                </CommentText>
+                            </CommentBox>
+                        </CommentButton>
                         <IconButton>
-                        <ReactCommentBox>
-                            <ChatBubbleOutlineIcon />
-                            <CommentText>
-                                Comment
-                            </CommentText>
-                        </ReactCommentBox>
+                            <ReactCommentBox>
+                                <CardGiftcardIcon />
+                                <CommentText>
+                                    Award
+                                </CommentText>
+                            </ReactCommentBox>
                         </IconButton>
                         <IconButton>
-                        <ReactCommentBox>
-                            <CardGiftcardIcon />
-                            <CommentText>
-                                Award
-                            </CommentText>
-                        </ReactCommentBox>
+                            <ReactCommentBox>
+                                <ShareIcon />
+                                <CommentText>
+                                    Share
+                                </CommentText>
+                            </ReactCommentBox>
                         </IconButton>
                         <IconButton>
-                        <ReactCommentBox>
-                            <ShareIcon />
-                            <CommentText>
-                                Share
-                            </CommentText>
-                        </ReactCommentBox>
-                        </IconButton>
-                       <IconButton>
-                       <ReactCommentBox>
-                            <BookmarkBorderIcon />
-                            <CommentText>
-                                Save
-                            </CommentText>
-                        </ReactCommentBox>
-                       </IconButton>
-                        <IconButton>
-                        <ReactCommentBox>
-                            <VisibilityOffIcon />
-                            <CommentText>
-                                Hide
-                            </CommentText>
-                        </ReactCommentBox>
+                            <ReactCommentBox>
+                                <BookmarkBorderIcon />
+                                <CommentText>
+                                    Save
+                                </CommentText>
+                            </ReactCommentBox>
                         </IconButton>
                         <IconButton>
-                        <ReactCommentBox>
-                            <FlagIcon />
-                            <CommentText>
-                                Report
-                            </CommentText>
-                        </ReactCommentBox>
+                            <ReactCommentBox>
+                                <VisibilityOffIcon />
+                                <CommentText>
+                                    Hide
+                                </CommentText>
+                            </ReactCommentBox>
+                        </IconButton>
+                        <IconButton>
+                            <ReactCommentBox>
+                                <FlagIcon />
+                                <CommentText>
+                                    Report
+                                </CommentText>
+                            </ReactCommentBox>
                         </IconButton>
                     </ReactBox>
                 </ContentCom>
