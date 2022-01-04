@@ -3,9 +3,11 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { fetchUser } from '../redux/slices/userSlice'
 import { useDispatch } from 'react-redux'
+import { fetchTags } from '../redux/slices/tagSlice'
 const Layout = ({ children }) => {
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(fetchTags())
     if (!localStorage.getItem('token')) {
       return
     }

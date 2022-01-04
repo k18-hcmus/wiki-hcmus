@@ -49,7 +49,7 @@ export default function ActivationEmail() {
         {msg.success && showSuccessMsg(msg.success)}
         {msg.err && showErrMsg(msg.err)}
         <Button onClick={handleGoBackLogin} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-          Go back login
+          Go back home
         </Button>
       </Box>
     </Container>

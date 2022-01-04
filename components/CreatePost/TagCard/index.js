@@ -41,7 +41,7 @@ const InfoStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function BlogTagCard({ tag }) {
-  const { Name, Posts, iconTag, created_at, Description } = tag[0]
+  const { Name, Posts, AvatarURL, created_at, Description, ColorTag } = tag[0]
   return (
     <Card sx={{ position: 'relative' }}>
       <CardMediaStyle
@@ -53,7 +53,7 @@ export default function BlogTagCard({ tag }) {
             width: '100%',
             height: '100%',
             position: 'absolute',
-            bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+            bgcolor: ColorTag,
           },
         }}
       >
@@ -68,7 +68,7 @@ export default function BlogTagCard({ tag }) {
             position: 'absolute',
           }}
         />
-        <AvatarStyle alt={Name} src={iconTag} />
+        <AvatarStyle alt={Name} src={AvatarURL} />
       </CardMediaStyle>
 
       <CardContent>
