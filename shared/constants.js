@@ -2,7 +2,7 @@ import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-c
 import { POST_CONST } from './post-constants'
 import { FEATURE_MESSAGE } from './notification-constants'
 import { REPORT_CONST } from './report-constants'
-import { TAG_DETAIL } from './tag-constants'
+import { TAG_DETAIL, CATEGORY_CONST, TAG_STATUS, TAG_COLOR, MAJOR_CONST } from './tag-constants'
 
 export const HISTORY_CONST = {
   ACTOR: {
@@ -232,4 +232,8 @@ export {
   FEATURE_MESSAGE,
   REPORT_CONST,
   TAG_DETAIL,
+  CATEGORY_CONST,
+  TAG_STATUS,
+  TAG_COLOR,
+  MAJOR_CONST,
 }

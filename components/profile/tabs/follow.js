@@ -3,7 +3,7 @@ import { Box, Container, Tab, Tabs } from '@mui/material'
 import axiosClient from '../../../axiosClient'
 import LazyLoad from 'react-lazyload'
 import FollowTab from '../follow/follow-tab'
-import TabPanel from '../commons/tab-pannel'
+import TabPanel from '../commons/tab-panel'
 import { addHistory } from '../../../utils/history-utils'
 import { HISTORY_CONST } from '../../../shared/constants'
 import { userId } from '../../../mock/data'
@@ -28,7 +28,7 @@ const Follow = ({ userData, updateReduxData }) => {
         const newFollowData = {
           FollowUsers: rawFollowData,
         }
-        updateReduxData('FollowUsers', newFollowData)
+        updateReduxData()
         const followResult = await axiosClient({
           method: 'put',
           url: `/account-users/${userId}`,
@@ -56,7 +56,7 @@ const Follow = ({ userData, updateReduxData }) => {
           data: newFollowerData,
           headers: {},
         })
-        updateReduxData('FollowedByUsers', newFollowerData)
+        updateReduxData()
         if (followerResult) {
           addHistory(
             { const: HISTORY_CONST.ACTOR.SELF, id: userId },
@@ -85,7 +85,7 @@ const Follow = ({ userData, updateReduxData }) => {
           return {
             id: index,
             displayName: record.DisplayName,
-            followerNum: record.FollowerNum,
+            followerNum: record.FollowedByUsers ? record.FollowedByUsers.length : 0,
             gotoUrl: `${window.location.origin}/profile/${record.id}`,
             AvatarURL: record.AvatarURL || '/static/avatars/avatar_1.jpg',
           }

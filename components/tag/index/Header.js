@@ -5,7 +5,7 @@ import { animateScroll as scroll } from 'react-scroll'
 
 const HeadAbsContainer = styled(Container)({
   position: 'relative',
-  height: '80px'
+  height: '80px',
 })
 
 const HeadGrid = styled(Grid)({
@@ -42,11 +42,16 @@ const Header = ({ data }) => {
       scrolledOut = false
     }
   }
-  const [avatarURL, setAvatarURL] = useState(data.AvatarURL || '/static/avatars/avatar_1.jpg')
+  const [avatarURL, setAvatarURL] = useState(null)
   const [imgErr, setImgErr] = useState(false)
   const handleImgError = () => {
     if (!imgErr) {
-      setAvatarURL('/static/avatars/avatar_1.jpg')
+      if (data.Category) {
+        if (data.Category.Name === CATEGORY_CONST.TEACHER)
+          setAvatarURL('/static/avatars/teacher.png')
+        else if (data.Category.Name === CATEGORY_CONST.SUBJECT)
+          setAvatarURL('/static/avatars/subject.png')
+      } else setAvatarURL('/static/avatars/avatar_1.jpg')
       setImgErr(true)
     }
   }
@@ -56,6 +61,17 @@ const Header = ({ data }) => {
   useEffect(() => {
     window.onscroll = handleScroll
   }, [])
+  useEffect(() => {
+    if (!data)
+      return
+    if (data.Category) {
+      if (data.AvatarURL && data.AvatarURL !== '') setAvatarURL(data.AvatarURL)
+      else if (data.Category.Name === CATEGORY_CONST.TEACHER)
+        setAvatarURL('/static/avatars/teacher.png')
+      else if (data.Category.Name === CATEGORY_CONST.SUBJECT)
+        setAvatarURL('/static/avatars/subject.png')
+    } else setAvatarURL('/static/avatars/avatar_1.jpg')
+  }, [data])
   return (
     <div>
       <div

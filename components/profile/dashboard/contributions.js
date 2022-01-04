@@ -1,10 +1,9 @@
 import React, { forwardRef, useEffect, useState, useImperativeHandle } from 'react'
 import { contributionListToChartData } from '../../../utils/contribution-utils'
+import { Chart as ChartJS } from 'chart.js/auto'
 import { Bar } from 'react-chartjs-2'
-import Chart from 'chart.js/auto'
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -15,8 +14,6 @@ import {
   useTheme,
   Select,
 } from '@mui/material'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
 const Contributions = forwardRef((props, ref) => {
   const cPChartDisplay = [
@@ -52,8 +49,11 @@ const Contributions = forwardRef((props, ref) => {
     setChartDisplay(selectedChartDisplay)
   }
   useEffect(() => {
-    setCPChartData(contributionListToChartData(cPRawData, chartDisplay.dateValue))
+    if (cPRawData) setCPChartData(contributionListToChartData(cPRawData, chartDisplay.dateValue))
   }, [chartDisplay])
+  useEffect(() => {
+    if (chartDisplay) setCPChartData(contributionListToChartData(cPRawData, chartDisplay.dateValue))
+  }, [cPRawData])
   const theme = useTheme()
   const data = {
     datasets: [

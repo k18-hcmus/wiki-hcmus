@@ -7,8 +7,9 @@ import Header from '../../components/tag/index/Header'
 import Content from '../../components/tag/index/Content'
 import SidebarDetail from '../../components/tag/index/SidebarDetail'
 import { getTagTotalVote } from '../../utils/vote-utils'
-import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
+import { VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
 import { getAccUser } from '../../redux/slices/userSlice'
+import { getTags } from '../../redux/slices/tagSlice'
 import { useSelector } from 'react-redux'
 
 const Tag = () => {
@@ -20,7 +21,7 @@ const Tag = () => {
     createdDate: null,
     voteNum: 0,
     relatedTags: [],
-    majors: []
+    majors: [],
   })
   const [headerData, setHeaderData] = useState({
     avatarURL: '/static/avatars/avatar_1.jpg',
@@ -29,21 +30,41 @@ const Tag = () => {
   })
   const [backgroundImgBody, setBackgroundImgBody] = useState('/static/backgroundImgs/tag_2.jpg')
   const [postData, setPostData] = useState([])
+  const [ownUserData, setOwnUserData] = useState({
+    id: null,
+  })
+  const userDataObject = useSelector(getAccUser)
+  useEffect(() => {
+    if (userDataObject && Object.keys(userDataObject).length !== 0) {
+      setOwnUserData(userDataObject)
+    }
+  }, [userDataObject])
+  const [tagData, setTagData] = useState([])
+  const tagObject = useSelector(getTags)
+  useEffect(() => {
+    if (tagObject && tagObject.length !== 0) {
+      setTagData(tagObject)
+    }
+  }, [tagObject])
   useEffect(() => {
     async function fetchData() {
       try {
-        if (!id)
-          return
+        if (!id) return
         const results = await axiosClient.get(`/tags?id=${id}`)
         var tagObject = results.data[0]
         const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagObject)
+        const postResults = await axiosClient.get(`/posts?Tags.id=${id}`)
+        let relatedTags = {}
+        postResults.data.forEach((post) => {
+          if (post.Tags) post.Tags.forEach((tag) => (relatedTags[tag.id] = tag))
+        })
         const sidebarDetail = {
           description: tagObject.Description,
           postNum: tagObject.Posts.length,
           createdDate: format(new Date(tagObject.created_at), 'MMM dd, yyyy'),
           voteNum: upvoteSum - downvoteSum,
-          relatedTags: tagObject.RelatedTags,
-          majors: tagObject.Majors
+          relatedTags: Object.keys(relatedTags).map((key) => relatedTags[key]),
+          majors: tagObject.Majors,
         }
         setSidebarDetailData(sidebarDetail)
         const headerDetail = {
@@ -54,7 +75,7 @@ const Tag = () => {
         setHeaderData(headerDetail)
         setBackgroundImgBody(tagObject.BackgroundBodyURL || '/static/backgroundImgs/tag_2.jpg')
         const postResult = await axiosClient.get(
-          `/posts?Tags.id=${id}&_start=${start}&_limit=${limit}&${dataOrder}`
+          `/posts?Tags.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.NEW}`
         )
         setPostData(postResult.data)
       } catch (error) {
@@ -66,7 +87,7 @@ const Tag = () => {
   const [hasMoreData, setHasMoreData] = useState(true)
   const [start, setStart] = useState(0)
   const limit = VIEWOTHER_CONST.LIMIT_VIEW
-  const [dataOrder, setDataOrder] = useState(POST_CONST.DATA_ORDER.HOT)
+  const [dataOrder, setDataOrder] = useState(POST_CONST.DATA_ORDER.NEW)
   const getMoreData = async () => {
     if (!id) return
     try {
@@ -100,8 +121,7 @@ const Tag = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        if (!id)
-          return
+        if (!id) return
         const newStart = 0
         setStart(newStart)
         setHasMoreData(true)
@@ -115,15 +135,6 @@ const Tag = () => {
     }
     fetchData()
   }, [dataOrder])
-  const [ownUserData, setOwnUserData] = useState({
-    id: null,
-  })
-  const userDataObject = useSelector(getAccUser)
-  useEffect(() => {
-    if (userDataObject && Object.keys(userDataObject).length !== 0) {
-      setOwnUserData(userDataObject)
-    }
-  }, [userDataObject])
   return (
     <div>
       <Header data={headerData} />

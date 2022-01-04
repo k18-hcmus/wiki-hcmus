@@ -83,6 +83,7 @@ const History = ({ userData, updateReduxData }) => {
     })
     setCachedHistoryData([])
     setDeleteHistoryData([])
+    updateReduxData()
   }
   const handleCancel = () => {
     setHistoryData(cachedHistoryData)
@@ -109,7 +110,7 @@ const History = ({ userData, updateReduxData }) => {
     async function fetchData() {
       try {
         const results = await axiosClient.get(
-          `/history-details?Deleted=false&User.id=${userData.id}&`
+          `/history-details?Deleted=false&User.id=${userData.id}&_sort=created_at:desc`
         )
         const data = results.data
         const refinedData = data.map((record) => {

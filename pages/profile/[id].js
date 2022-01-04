@@ -8,8 +8,9 @@ import TabPanel from '../../components/profile/commons/tab-panel'
 import { getTotalContribution } from '../../utils/contribution-utils'
 import axiosClient from '../../axiosClient'
 import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
-import { getAccUser, userUpdateDetail } from '../../redux/slices/userSlice'
+import { getAccUser, fetchUser } from '../../redux/slices/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import { getUserTier } from '../../utils/contribution-utils'
 
 const Profile = () => {
   const [value, setValue] = React.useState(0)
@@ -35,7 +36,10 @@ const Profile = () => {
         `/posts?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
       )
       if (postResult.data.length === 0) setHasMoreData(false)
-      else setOverviewData([...overviewData, ...postResult.data])
+      else {
+        setOverviewData([...overviewData, ...postResult.data])
+        setHasMoreData(true)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -59,13 +63,17 @@ const Profile = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        if (!id) return
         const newStart = 0
         setStart(newStart)
-        setHasMoreData(true)
         const postResult = await axiosClient.get(
           `/posts?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
         )
-        setOverviewData(postResult.data)
+        if (postResult.data.length === 0) setHasMoreData(false)
+        else {
+          setHasMoreData(true)
+          setOverviewData(postResult.data)
+        }
       } catch (error) {
         console.log(error)
       }
@@ -78,12 +86,7 @@ const Profile = () => {
         const results = await axiosClient.get(`/account-users?id=${id}`)
         var userObject = results.data[0]
         const totalCP = await getTotalContribution('object', userObject)
-        var currentTier = 'Untiered'
-        for (const tierName in CONTRIBUTION_CONST.TIER) {
-          if (totalCP < CONTRIBUTION_CONST.TIER[tierName]) {
-            break
-          } else currentTier = tierName
-        }
+        var [currentTier, nextTierCP] = getUserTier(totalCP)
         userObject = {
           ...userObject,
           totalCP: totalCP,
@@ -93,9 +96,13 @@ const Profile = () => {
         }
         setUserData(userObject)
         const postResult = await axiosClient.get(
-          `/posts?User.id=${id}&_start=${start}&_limit=${limit}&${dataOrder}`
+          `/posts?User.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.HOT}`
         )
-        setOverviewData(postResult.data)
+        if (postResult.data.length === 0) setHasMoreData(false)
+        else {
+          setHasMoreData(true)
+          setOverviewData(postResult.data)
+        }
       } catch (error) {
         console.log(error)
       }
@@ -104,6 +111,7 @@ const Profile = () => {
   }, [id])
   const [ownUserData, setOwnUserData] = useState({
     id: null,
+    FollowUsers: [],
   })
   const userDataObject = useSelector(getAccUser)
   useEffect(() => {
@@ -111,6 +119,9 @@ const Profile = () => {
       setOwnUserData(userDataObject)
     }
   }, [userDataObject])
+  const updateReduxUserDetail = () => {
+    useDispatch(fetchUser())
+  }
   return (
     <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -136,7 +147,12 @@ const Profile = () => {
         </Grid>
         <Grid item lg={3} md={3} xl={3} xs={12}>
           <Box sx={{ pt: 2 }}>
-            <UserInfo data={userData} setdata={setUserData} />
+            <UserInfo
+              data={userData}
+              setdata={setUserData}
+              ownUserData={ownUserData}
+              callbackUpdateUserData={updateReduxUserDetail}
+            />
           </Box>
         </Grid>
       </Grid>

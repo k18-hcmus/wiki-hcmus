@@ -8,7 +8,7 @@ import TotalUpvoteDownvote from '../dashboard/total-upvote-downvote'
 import TotalContribution from '../dashboard/total-contribution'
 import TotalPostComment from '../dashboard/total-post-comment'
 import { getTotalContribution, getMonthlyContribution } from '../../../utils/contribution-utils'
-import { getTotalVote } from '../../../utils/vote-utils'
+import { getUserTotalVote } from '../../../utils/vote-utils'
 
 
 const Dashboard = ({ userData, updateReduxData }) => {
@@ -25,7 +25,9 @@ const Dashboard = ({ userData, updateReduxData }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        setCPRawData(userData.Contributions)
+        if (!userData)
+          return
+        setCPRawData(userData)
         contributionRef.current.updateChartData()
         setCommentData(userData.Comments)
         const totalCP = await getTotalContribution('object', userData)
@@ -33,7 +35,7 @@ const Dashboard = ({ userData, updateReduxData }) => {
         const [lastMonthCP, thisMonthCP] = await getMonthlyContribution('object', userData)
         setCPLastMonth(lastMonthCP)
         setCPThisMonth(thisMonthCP)
-        const [upvoteSum, downvoteSum] = await getTotalVote('object', userData)
+        const [upvoteSum, downvoteSum] = await getUserTotalVote('object', userData)
         setTotalUpvote(upvoteSum)
         setTotalDownvote(downvoteSum)
         setTotalPost(userData.Posts.length)

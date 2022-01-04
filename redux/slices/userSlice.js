@@ -36,9 +36,6 @@ export const userSlice = createSlice({
       state.accUser = undefined
       state.isLogged = false
     },
-    userUpdateDetail: (state, action) => {
-      state.accUser = action.payload
-    },
   },
   extraReducers: {
     [fetchUser.fulfilled]: (state, action) => {
@@ -56,6 +53,6 @@ export const getAccUser = (state) => state.user.accUser
 // Reducers and actions
 const { actions, reducer } = userSlice
 
-export const { userLogin, userLogout, userUpdateDetail } = actions
+export const { userLogin, userLogout } = actions
 
 export default reducer

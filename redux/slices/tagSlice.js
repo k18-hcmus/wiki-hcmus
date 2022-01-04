@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import axiosClient from '../../axiosClient'
-import { TAG_STATUS } from '../../shared/tag-constant'
+import { TAG_STATUS } from '../../shared/constants'
 
 export const fetchTags = createAsyncThunk('tag/fetchTag', async () => {
   try {
@@ -13,7 +13,7 @@ export const fetchTags = createAsyncThunk('tag/fetchTag', async () => {
   }
 })
 const initialState = {
-  tags: {},
+  tags: [],
 }
 
 export const tagsSlice = createSlice({

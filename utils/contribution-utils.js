@@ -1,76 +1,63 @@
-import { format, compareAsc } from 'date-fns'
+import { format } from 'date-fns'
 import axiosClient from '../axiosClient'
+import { CONTRIBUTION_CONST, STATUS_POST } from '../shared/constants'
 
-function contributionListToChartData(data, startDate) {
-  const today = new Date()
-  if (data === null)
-    return {
-      data: null,
-      labels: null,
+function getContributionDate(user) {
+  if (user === null || (user.Posts.length === 0 && user.Comments.length === 0)) return []
+  var contributionData = {}
+  user.Posts.forEach((post) => {
+    if (post.status === STATUS_POST.Publish) {
+      const date = new Date(post.PublishTime || post.created_at)
+      const DMYDate = new Date(date.getFullYear(), date.getMonth(), date.getDay())
+      if (DMYDate in contributionData) {
+        contributionData[DMYDate] +=
+          contributionData[DMYDate] +
+          CONTRIBUTION_CONST.RECIEVED_PTS.postReview +
+          post.UpvoteCount -
+          post.DownvoteCount
+      } else {
+        contributionData[DMYDate] =
+          CONTRIBUTION_CONST.RECIEVED_PTS.postReview + post.UpvoteCount - post.DownvoteCount
+      }
     }
+  })
+  user.Comments.forEach((comment) => {
+    const date = new Date(comment.created_at)
+    const DMYDate = new Date(date.getFullYear(), date.getMonth(), date.getDay())
+    if (DMYDate in contributionData) {
+      contributionData[DMYDate] +=
+        contributionData[DMYDate] +
+        CONTRIBUTION_CONST.RECIEVED_PTS.postComment +
+        comment.UpvoteCount -
+        comment.DownvoteCount
+    } else {
+      contributionData[DMYDate] =
+        CONTRIBUTION_CONST.RECIEVED_PTS.postComment + comment.UpvoteCount - comment.DownvoteCount
+    }
+  })
+  return Object.keys(contributionData).map((key) => {
+    return { value: contributionData[key], date: new Date(key) }
+  })
+}
+
+function contributionListToChartData(user, startDate) {
+  var convertedData = getContributionDate(user)
+  if (convertedData.length === 0)
+    return {
+      data: [],
+      labels: [],
+    }
+  var refinedData = convertedData.filter((data) => data.date > startDate)
   var result = {
     data: [],
     labels: [],
   }
-  var convertedData = data.map((record) => {
-    return { value: record.Value, date: Date.parse(record.Date) }
-  })
-  var refinedData = convertedData.filter((data) => data.date > startDate)
-  // var curDate = startDate;
-  // while (curDate <= today) {
-  //     console.log(refinedData[0].date);
-  //     console.log(Date.parse(curDate));
-  //     if (refinedData.find(data => data.date.getDay() === curDate.date.getDay) === undefined)
-  //         refinedData.push({
-  //             value: 0,
-  //             date: curDate
-  //         });
-  //     curDate = new Date(new Date().setDate(curDate.getDate()+1))
-  // }
   refinedData.sort((a, b) => (a.date > b.date ? 0 : -1))
   refinedData.forEach((data) => {
-    result.labels.push(format(data.date, 'dd/MM'))
+    result.labels.push(format(data.date, 'dd/MM/yy'))
     result.data.push(data.value)
   })
   return result
-}
-
-// Example: User Add a new post (published)
-// addContribution(userId, CONTRIBUTION_CONST.RECIEVED_PTS.postReview)
-async function addContribution(userId, value) {
-  const userResult = await axiosClient.get(`/account-users?id=${userId}`)
-  if (userResult.data.length > 0) {
-    const userData = userResult.data[0]
-    const result = await axiosClient.get(
-      `/contributions?User.id=${userId}&Date=${format(new Date(), 'yyyy-MM-dd')}`
-    )
-    if (result.data.length > 0) {
-      const totalValue = result.data[0].Value + value
-      const contributionId = result.data[0].id
-      const newContributionData = {
-        ...result.data[0],
-        Value: totalValue,
-      }
-      axiosClient({
-        method: 'put',
-        url: `/contributions/${contributionId}`,
-        data: newContributionData,
-        headers: {},
-      })
-    } else {
-      const newContributionData = {
-        Date: format(new Date(), 'yyyy-MM-dd'),
-        Value: value,
-        User: userData,
-      }
-      axiosClient({
-        method: 'post',
-        url: `/contributions`,
-        data: newContributionData,
-        headers: {},
-      })
-    }
-  } else console.log(`AddContribution Error: User.id=${userId} not found`)
 }
 
 async function getMonthlyContribution(type, user) {
@@ -92,7 +79,7 @@ async function getMonthlyContribution(type, user) {
   const today = new Date()
   var resultLastMonth = 0
   var resultThisMonth = 0
-  data.Contributions.forEach((con) => {
+  getContributionDate(data).forEach((con) => {
     const dateValue = new Date(con.date)
     if (today.getMonth() === dateValue.getMonth() && today.getYear() === dateValue.getYear()) {
       resultThisMonth += con.value
@@ -120,15 +107,22 @@ async function getTotalContribution(type, user) {
     data = user
   }
   var result = 0
-  data.Contributions.forEach((con) => {
+  getContributionDate(data).forEach((con) => {
     result += con.value
   })
   return result
 }
 
-export {
-  contributionListToChartData,
-  addContribution,
-  getMonthlyContribution,
-  getTotalContribution
+const getUserTier = (userCP) => {
+  var currentTier = 'Untiered'
+  var nextTierCP = 0
+  for (const tierName in CONTRIBUTION_CONST.TIER) {
+    if (userCP < CONTRIBUTION_CONST.TIER[tierName]) {
+      nextTierCP = CONTRIBUTION_CONST.TIER[tierName]
+      break
+    } else currentTier = tierName
+  }
+  return [currentTier, nextTierCP]
 }
+
+export { contributionListToChartData, getMonthlyContribution, getTotalContribution, getUserTier }

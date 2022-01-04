@@ -31,7 +31,7 @@ const Information = ({ user, userData, updateReduxData }) => {
       data: newUserData,
       headers: {},
     })
-    updateReduxData(property, value)
+    updateReduxData()
     if (result) {
       addHistory(
         { const: HISTORY_CONST.ACTOR.SELF, id: data.id },
