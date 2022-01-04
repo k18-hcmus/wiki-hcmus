@@ -19,7 +19,7 @@ import axiosClient from '../../../axiosClient'
 import { showErrMsg, showSuccessMsg } from '../../../utils/Notifications'
 import { convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { POST_STATUS } from '../../../utils/constants'
+import { POST_STATUS } from '../../../shared/constants'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
@@ -98,7 +98,7 @@ function Announce() {
       const response = await axiosClient.post('posts', {
         Title: title,
         Content: body,
-        Status: POST_STATUS.PUBLISH,
+        Status: POST_STATUS.Publish.value,
         User: ownUserData,
       })
       const textContent = `Admin ${ownUserData.DisplayName} created notification ${response.data.Title}`

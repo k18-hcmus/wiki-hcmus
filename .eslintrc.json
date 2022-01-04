@@ -9,9 +9,9 @@
     "ecmaVersion": 2018
   },
   "rules": {
-    "prettier/prettier": ["error"],
+    "prettier/prettier": ["warning"],
     "no-unused-vars": [
-      "warn",
+      "warning",
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
     ]
   }

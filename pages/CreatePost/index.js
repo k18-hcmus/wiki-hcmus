@@ -23,7 +23,7 @@ import axiosClient from '../../axiosClient'
 import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
 import { convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { POST_STATUS } from '../../utils/constants'
+import { POST_STATUS } from '../../shared/constants'
 import TagSearch from '../../components/CreatePost/TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import AddIcon from '@mui/icons-material/Add'
@@ -101,7 +101,7 @@ const CreatePost = () => {
         Title: title,
         Content: body,
         Tags: tagArr,
-        Status: POST_STATUS.PUBLISH, // Waiting approve post function
+        Status: POST_STATUS.Publish.value, // Waiting approve post function
         User: user.DetailUser,
       })
       response && setMsg({ err: '', success: 'Create post succeed' })
