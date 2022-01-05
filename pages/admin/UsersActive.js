@@ -17,16 +17,14 @@ import { Card } from '@mui/material'
 import axiosClient from '../../axiosClient'
 import { useEffect } from 'react'
 import styled from '@emotion/styled'
-import ListPost from './post'
+import { formatDistanceToNow } from 'date-fns'
 
 const CustomPagination = styled.div`
   display: 'flex';
 `
 export default function Users() {
   const [page, setPage] = useState(0)
-  const [order, setOrder] = useState('asc')
   const [selected, setSelected] = useState([])
-  const [orderBy, setOrderBy] = useState('name')
   const [filterName, setFilterName] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [userList, setUserList] = useState([])
@@ -34,6 +32,7 @@ export default function Users() {
   const [user, setUser] = useState({})
   const [userCached, setUserCached] = useState()
   const [totalUser, setTotalUser] = useState()
+
   const handleFilterByName = (event) => {
     setFilterName(event.target.value)
     if (filterName.length > 0) {
@@ -79,7 +78,6 @@ export default function Users() {
 
     FetchUser()
   }, [])
-
   return (
     <div>
       <Card sx={{ mt: 5 }}>
@@ -96,6 +94,7 @@ export default function Users() {
                 <TableCell align="left">DisplayName</TableCell>
                 <TableCell>Username</TableCell>
                 <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Created_at</TableCell>
                 <TableCell align="left">Status</TableCell>
                 <TableCell align="left">Action</TableCell>
               </TableRow>
@@ -108,6 +107,9 @@ export default function Users() {
                   </TableCell>
                   <TableCell align="left">{user.Username}</TableCell>
                   <TableCell align="left">{user.Email}</TableCell>
+                  <TableCell align="left">
+                    {formatDistanceToNow(new Date(user.created_at))}
+                  </TableCell>
                   <TableCell align="left">{user.Status}</TableCell>
                   <TableCell align="left">
                     <UserMoreMenu

@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { useRouter } from 'next/router'
 import { CardActions } from '@mui/material'
 import { BUTTON_POST } from '../../../shared/constants'
+import { formatDistanceToNow } from 'date-fns'
 function ListPost() {
   const router = useRouter()
   const [listPost, setListPost] = React.useState()
@@ -15,16 +16,16 @@ function ListPost() {
   const [cachedPost, setCachedPost] = useState()
   const [disable, setDisable] = useState(true)
   const [delPost, setDelPost] = useState({})
-
+  const [formatDate, setFormatDate] = useState()
   useEffect(() => {
     async function FetchPost() {
       const result = await axiosClient.get('/posts')
       setListPost(result.data)
       setCachedPost(result.data)
+      setFormatDate(result.data.map((post) => formatDistanceToNow(new Date(post.created_at))))
     }
     FetchPost()
   }, [])
-
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'Title', headerName: 'title', width: 300 },
@@ -38,6 +39,11 @@ function ListPost() {
       field: 'Status',
       headerName: 'Status',
       width: 100,
+    },
+    {
+      field: 'created_at',
+      headerName: 'Create_at',
+      width: 150,
     },
 
     {
@@ -72,9 +78,7 @@ function ListPost() {
     setDisable(true)
   }
   const handleClickSave = async () => {
-    console.log('idPost:', delPost[0].id)
     let id = delPost[0].id
-    console.log('id:', id)
     await axiosClient.delete(`/posts/${id}`)
     setDisable(true)
   }
