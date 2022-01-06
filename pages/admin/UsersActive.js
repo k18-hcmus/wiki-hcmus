@@ -33,7 +33,6 @@ export default function Users() {
   const [user, setUser] = useState({})
   const [userCached, setUserCached] = useState()
   const [totalUser, setTotalUser] = useState()
-
   const handleFilterByName = (event) => {
     setFilterName(event.target.value)
     if (filterName.length > 0) {
