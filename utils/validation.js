@@ -13,3 +13,9 @@ export const checkAdmin = (user) => {
   }
   return false
 }
+export const checkUser = (user) => {
+  if (user.role.name == 'User') {
+    return true
+  }
+  return false
+}

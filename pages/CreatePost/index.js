@@ -23,7 +23,7 @@ import axiosClient from '../../axiosClient'
 import { showErrMsg, showSuccessMsg } from '../../utils/Notifications'
 import { convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { POST_STATUS } from '../../shared/constants'
+import { POST_STATUS } from '../../shared/post-constants'
 import TagSearch from '../../components/CreatePost/TagSearch'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import AddIcon from '@mui/icons-material/Add'
@@ -31,6 +31,9 @@ import { useSelector } from 'react-redux'
 import { getUser } from '../../redux/slices/userSlice'
 import AuthRoute from '../../utils/ProtectedRoute'
 import { getTags } from '../../redux/slices/tagSlice'
+import { useRouter } from 'next/router'
+import { checkUser } from '../../utils/validation'
+import LoadingButton from '@mui/lab/LoadingButton'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
@@ -83,6 +86,8 @@ const CreatePost = () => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [tagArr, setTagArr] = useState([])
   const user = useSelector(getUser)
+  const router = useRouter()
+  const [isloading, setIsloading] = useState(false)
   const handleTagArr = (tags) => {
     setTagArr(tags)
   }
@@ -93,20 +98,27 @@ const CreatePost = () => {
   const handlePopoverClose = () => {
     setAnchorEl(null)
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
+    setIsloading(true)
     const body = JSON.stringify(content)
+    let status = POST_STATUS.Publish.value
+    if (checkUser(user)) {
+      status = POST_STATUS.UnPublish.value
+    }
     try {
-      const response = axiosClient.post('posts', {
+      const response = await axiosClient.post('posts', {
         Title: title,
         Content: body,
         Tags: tagArr,
-        Status: POST_STATUS.Publish.value, // Waiting approve post function
+        Status: status, // Waiting approve post function
         User: user.DetailUser,
       })
       response && setMsg({ err: '', success: 'Create post succeed' })
+      router.push(`/posts/${response.data.id}`)
     } catch (error) {
       setMsg({ err: error.message, success: '' })
+      setDisabled(false)
     }
     setDisabled(true)
   }
@@ -253,14 +265,14 @@ const CreatePost = () => {
                 >
                   <Grid item />
                   <Grid item>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{ mt: 3, mb: 2 }}
+                    <LoadingButton
                       disabled={disabled}
+                      loading={isloading}
+                      variant="contained"
+                      type="submit"
                     >
                       POST
-                    </Button>
+                    </LoadingButton>
                   </Grid>
                 </Grid>
               </FormBox>

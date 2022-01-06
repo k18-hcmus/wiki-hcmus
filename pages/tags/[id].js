@@ -102,9 +102,9 @@ const Tag = () => {
       console.log(error)
     }
   }
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-  }
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue)
+  // }
   const handleDataOptionChange = (option) => {
     switch (option) {
       case 'hot':

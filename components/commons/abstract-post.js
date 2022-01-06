@@ -115,13 +115,13 @@ const AbstractPost = ({ data, ownUserId }) => {
           <Box display="flex" flexDirection="row" sx={{ ml: 1 }}>
             {data.Tags.map((tag, index) =>
               index !== data.Tags.length - 1 ? (
-                <Link href={`/tags/${tag.id}`} underline="hover">
+                <Link key={index} href={`/tags/${tag.id}`} underline="hover">
                   <Typography variant="body2" color="text.secondary">
                     #{tag.Name},&nbsp;
                   </Typography>
                 </Link>
               ) : (
-                <Link href={`/tags/${tag.id}`} underline="hover">
+                <Link key={index} href={`/tags/${tag.id}`} underline="hover">
                   <Typography variant="body2" color="text.secondary">
                     #{tag.Name}
                   </Typography>
