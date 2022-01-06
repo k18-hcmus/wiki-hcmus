@@ -34,6 +34,7 @@ import { toggleLoginForm } from '../../redux/slices/authSlice'
 import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
 import { fDate } from '../../utils/formatTime'
+import { REPORT_CONST } from '../../shared/report-constants'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -111,6 +112,7 @@ const Post = ({ post }) => {
   const [loadingComment, setLoadingComment] = useState(true)
   const [visible, setVisible] = useState(false)
   const [votes, setVotes] = useState(PostVotes)
+  const [isOpenReport, setIsOpenReport] = useState(false)
 
   const userState = useSelector(getUser)
   const dispatch = useDispatch()
@@ -204,6 +206,14 @@ const Post = ({ post }) => {
     }
   }
 
+  const handleReportOpen = () => {
+    setIsOpenReport(true)
+  }
+
+  const handleReportClose = () => {
+    setIsOpenReport(false)
+  }
+
   useEffect(() => {
     const fetchComments = async () => {
       const response = await getCommentsByPostId(post.id)
@@ -264,9 +274,20 @@ const Post = ({ post }) => {
                 <IconStatistic>
                   <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
-                <Button component="span" sx={{ color: (theme) => theme.palette.grey[600] }}>
+                <Button
+                  component="span"
+                  sx={{ color: (theme) => theme.palette.grey[600] }}
+                  onClick={handleReportOpen}
+                >
                   <FlagIcon /> Report
                 </Button>
+                <ReportDialog
+                  open={isOpenReport}
+                  type={REPORT_CONST.TYPE.POST}
+                  data={post}
+                  callbackClose={handleReportClose}
+                  userId={16}
+                />
               </Box>
             </PostStatisticSection>
 
@@ -303,7 +324,11 @@ const Post = ({ post }) => {
                 <IconStatistic>
                   <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
-                <Button component="span" sx={{ color: (theme) => theme.palette.grey[600] }}>
+                <Button
+                  component="span"
+                  sx={{ color: (theme) => theme.palette.grey[600] }}
+                  onClick={handleReportOpen}
+                >
                   <FlagIcon /> Report
                 </Button>
               </Box>
