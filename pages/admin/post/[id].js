@@ -135,12 +135,7 @@ function DetailPost() {
                 />
 
                 {/* noi day handle refuse */}
-                <Button
-                  onClick={handleClose}
-                  variant="outlined"
-                  sx={{ mt: 2 }}
-                  onClick={handleSubmit}
-                >
+                <Button variant="outlined" sx={{ mt: 2 }} onClick={handleSubmit}>
                   DONE
                 </Button>
               </Box>
