@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Typography, Grid, Button, Avatar, styled } from '@mui/material'
-import { TAG_DETAIL } from '../../../shared/constants'
+import { TAG_DETAIL, CATEGORY_CONST } from '../../../shared/constants'
 import { animateScroll as scroll } from 'react-scroll'
 
 const HeadAbsContainer = styled(Container)({
@@ -62,8 +62,7 @@ const Header = ({ data }) => {
     window.onscroll = handleScroll
   }, [])
   useEffect(() => {
-    if (!data)
-      return
+    if (!data) return
     if (data.Category) {
       if (data.AvatarURL && data.AvatarURL !== '') setAvatarURL(data.AvatarURL)
       else if (data.Category.Name === CATEGORY_CONST.TEACHER)
@@ -80,7 +79,7 @@ const Header = ({ data }) => {
       ></div>
       <HeadAbsContainer sx={{ mb: 5 }}>
         <HeadGrid container display="flex" alignItems="center">
-          <Grid item auto>
+          <Grid item auto="true">
             <Avatar
               display="inline"
               alt="Tag Avatar"
@@ -92,7 +91,7 @@ const Header = ({ data }) => {
               }}
             />
           </Grid>
-          <Grid item auto>
+          <Grid item auto="true">
             <Typography variant="h6" color="text.primary" display="inline">
               {data.name}
             </Typography>

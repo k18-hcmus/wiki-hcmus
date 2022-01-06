@@ -10,8 +10,19 @@ import axiosClient from '../../axiosClient'
 import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
 import { getAccUser, fetchUser } from '../../redux/slices/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import SortPost from '../../components/commons/sort-post-controller'
 import { getUserTier } from '../../utils/contribution-utils'
-
+import { styled } from '@mui/material/styles'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import LinearProgress from '@mui/material/LinearProgress'
+import PostNoImageCard from '../../components/home/post-no-image-card'
+const HorizoneFeature = styled(Box)({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+})
 const Profile = () => {
   const [value, setValue] = React.useState(0)
   const router = useRouter()
@@ -27,6 +38,10 @@ const Profile = () => {
   const [start, setStart] = useState(0)
   const limit = VIEWOTHER_CONST.LIMIT_VIEW
   const [dataOrder, setDataOrder] = useState(POST_CONST.DATA_ORDER.HOT)
+  const [checked, setChecked] = useState([true, false, false])
+  const [isloading, setIsloading] = useState(false)
+  const dispatch = useDispatch()
+  const options = ['new', 'hot', 'best']
   const getMoreData = async () => {
     if (!id) return
     try {
@@ -47,7 +62,7 @@ const Profile = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
-  const handleOverviewChange = (option) => {
+  const handleDataOptionChange = (option) => {
     switch (option) {
       case 'hot':
         setDataOrder(POST_CONST.DATA_ORDER.HOT)
@@ -60,10 +75,18 @@ const Profile = () => {
         break
     }
   }
+  const handleCheck = (event) => {
+    const id = parseInt(event.target.id)
+    const newChecked = checked.fill(false)
+    newChecked[id] = true
+    setChecked(newChecked)
+    handleDataOptionChange(options[id])
+  }
   useEffect(() => {
     async function fetchData() {
       try {
         if (!id) return
+        setIsloading(true)
         const newStart = 0
         setStart(newStart)
         const postResult = await axiosClient.get(
@@ -76,6 +99,8 @@ const Profile = () => {
         }
       } catch (error) {
         console.log(error)
+      } finally {
+        setIsloading(false)
       }
     }
     fetchData()
@@ -120,8 +145,24 @@ const Profile = () => {
     }
   }, [userDataObject])
   const updateReduxUserDetail = () => {
-    useDispatch(fetchUser())
+    dispatch(fetchUser())
   }
+  const renderPosts = (
+    <>
+      <InfiniteScroll
+        dataLength={overviewData.length}
+        next={getMoreData}
+        hasMore={hasMoreData}
+        loader={<LinearProgress />}
+      >
+        <HorizoneFeature>
+          {overviewData.map((post, index) => (
+            <PostNoImageCard key={index} post={post} />
+          ))}
+        </HorizoneFeature>
+      </InfiniteScroll>
+    </>
+  )
   return (
     <Container>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -131,19 +172,8 @@ const Profile = () => {
       </Box>
       <Grid container spacing={3}>
         <Grid item lg={9} md={9} xl={9} xs={12}>
-          <Box>
-            <LazyLoad once={true}>
-              <TabPanel value={value} index={0}>
-                <Overview
-                  data={overviewData}
-                  ownUserId={ownUserData.id}
-                  callbackSetDataOption={handleOverviewChange}
-                  callbackLoadData={getMoreData}
-                  hasMoreData={hasMoreData}
-                />
-              </TabPanel>
-            </LazyLoad>
-          </Box>
+          <SortPost checked={checked} handleCheck={handleCheck} />
+          {isloading ? <LinearProgress /> : renderPosts}
         </Grid>
         <Grid item lg={3} md={3} xl={3} xs={12}>
           <Box sx={{ pt: 2 }}>

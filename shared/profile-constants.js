@@ -25,5 +25,5 @@ export const DASHBOARD_CONST = {
 }
 
 export const VIEWOTHER_CONST = {
-  LIMIT_VIEW: 5
+  LIMIT_VIEW: 5,
 }

@@ -43,7 +43,7 @@ const colorObj = {
   yellow: false,
 }
 let colorTagSelected = TAG_COLOR.DEFAULT // Tag color defualt
-let categorySelected = CATEGORY_CONST.TEACHER // Category defualt
+let categorySelected = CATEGORY_CONST.SUBJECT // Category defualt
 const CreateTag = () => {
   const router = useRouter()
   const tags = useSelector(getTags)
@@ -51,8 +51,8 @@ const CreateTag = () => {
   const dispatch = useDispatch()
   const [disabled, setDisabled] = useState(true)
   const [msg, setMsg] = useState({ err: '', success: '' })
-  const [category, setCategory] = useState(CATEGORY_CONST.TEACHER.id) //defualt category is subject
-  const [major, setMajor] = useState(MAJOR_CONST[0].id) //defualt major is CNTT
+  const [category, setCategory] = useState(CATEGORY_CONST.SUBJECT.id) //defualt category is subject
+  const [major, setMajor] = useState(MAJOR_CONST[0].id)
   const [nameTag, setNameTag] = useState('')
   const [nameErr, setNameErr] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -211,8 +211,8 @@ const CreateTag = () => {
               <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select value={category} label="Category" onChange={handleChangeCategory}>
-                  <MenuItem value={1}>Teacher</MenuItem>
-                  <MenuItem value={2}>Subject</MenuItem>
+                  <MenuItem value={2}>Teacher</MenuItem>
+                  <MenuItem value={1}>Subject</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -221,8 +221,11 @@ const CreateTag = () => {
               <FormControl fullWidth>
                 <InputLabel>Major</InputLabel>
                 <Select value={major} label="Category" onChange={handleChangeMajor}>
-                  <MenuItem value={1}>{MAJOR_CONST[0].name}</MenuItem>
-                  <MenuItem value={2}>{MAJOR_CONST[1].name}</MenuItem>
+                  {MAJOR_CONST.map((major, index) => (
+                    <MenuItem key={index} value={major.id}>
+                      {major.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>

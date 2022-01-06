@@ -17,8 +17,7 @@ const RelatedTagCell = ({ data, lastItem }) => {
     }
   }
   useEffect(() => {
-    if (!data)
-      return
+    if (!data) return
     if (data.Category) {
       if (data.AvatarURL && data.AvatarURL !== '') setAvatarURL(data.AvatarURL)
       else if (data.Category.Name === CATEGORY_CONST.TEACHER)
@@ -33,7 +32,7 @@ const RelatedTagCell = ({ data, lastItem }) => {
       <ListItem>
         <Link href={gotoUrl} underline="none">
           <Grid container spacing={1} display="flex" alignItems="center">
-            <Grid item auto sx={{ mr: 1 }}>
+            <Grid item auto="true" sx={{ mr: 1 }}>
               <Avatar
                 display="inline"
                 alt="Tag Avatar"
@@ -45,7 +44,7 @@ const RelatedTagCell = ({ data, lastItem }) => {
                 }}
               />
             </Grid>
-            <Grid item auto>
+            <Grid item auto="true">
               <Typography variant="body2" color="text.primary" display="inline">
                 {data.Name}
               </Typography>

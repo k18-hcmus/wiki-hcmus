@@ -40,8 +40,6 @@ export const TAG_STATUS = {
 }
 
 export const MAJOR_CONST = [
-  { id: 1, name: 'CNTT' },
-  { id: 2, name: 'Toan' },
-  { id: 3, name: 'Vat Ly' },
-  { id: 4, name: 'Hoa hoc' },
+  { id: 1, name: 'Information Technology' },
+  { id: 2, name: 'Mathematics' },
 ]
