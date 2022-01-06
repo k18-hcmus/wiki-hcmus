@@ -1,11 +1,12 @@
 import * as React from 'react'
-
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import { useEffect, useState } from 'react'
 import axiosClient from '../../../axiosClient.js'
-import styled from '@emotion/styled'
+import draftToHtml from 'draftjs-to-html'
+import { NORTIFICATION_CONST } from '../../../shared/constants.js'
+import { addNortification } from '../../../utils/nortification-utils.js'
+import { useSelector } from 'react-redux'
 import {
   Card,
   CardActionArea,
@@ -16,11 +17,10 @@ import {
   Button,
   TextField,
 } from '@mui/material'
-import ThumbUpIcon from '@mui/icons-material/ThumbUp'
-import ThumbDownIcon from '@mui/icons-material/ThumbDown'
 import { STATUS_POST } from '../../../shared/constants.js'
 import { useRouter } from 'next/router'
 import { Modal } from '@mui/material'
+import { getAccUser } from '../../../redux/slices/userSlice'
 
 const style = {
   position: 'absolute',
@@ -33,14 +33,15 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
+
 function DetailPost() {
   const [userDetail, setUserDetail] = useState([])
   const [postDetail, setPostDetail] = useState([])
-  const [disable, setDisable] = useState(true)
+  const [changeContent, setChangeContent] = useState()
   const router = useRouter()
   const { id } = router.query
   const [open, setOpen] = useState(false)
-
+  const [contentRefuse, setContentRefuse] = useState()
   const handleOpen = () => {
     setOpen(true)
   }
@@ -51,8 +52,10 @@ function DetailPost() {
     async function FetchPost() {
       const response = await axiosClient.get(`/posts/${id}`)
       setPostDetail(response.data)
-
-      setUserDetail(response.data.User)
+      const user = await axiosClient.get(`/account-users/${response.data.User}`)
+      setUserDetail(user.data)
+      const content = response.data.Content
+      setChangeContent(draftToHtml(JSON.parse(content)))
     }
     FetchPost()
   }, [])
@@ -61,6 +64,34 @@ function DetailPost() {
       Status: STATUS_POST.Publish.value,
     })
   }
+  const [ownUserData, setOwnUserData] = useState({
+    id: null,
+    DisplayName: '',
+  })
+  const userDataObject = useSelector(getAccUser)
+  useEffect(() => {
+    if (userDataObject && Object.keys(userDataObject).length !== 0) {
+      setOwnUserData(userDataObject)
+    }
+  }, [userDataObject])
+
+  const handleSubmit = async () => {
+    try {
+      const textContent = `Admin ${ownUserData.DisplayName}  refused your post ${postDetail.Title}`
+      addNortification(NORTIFICATION_CONST.TYPE.ADMIN, postDetail.User, postDetail.id, textContent)
+
+      const response = await axiosClient.put(`/posts/${id}`, {
+        Status: STATUS_POST.Refused.value,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    setOpen(false)
+  }
+  const handleChangeRefuseDescription = (e) => {
+    setContentRefuse(e.target.value)
+  }
+
   return (
     <Grid container spacing={2} sx={{ mt: 5, marginRight: 5 }}>
       <Grid item xs={8}>
@@ -69,9 +100,11 @@ function DetailPost() {
             <Typography gutterBottom variant="h5" component="div">
               {postDetail.Title}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {postDetail.Content}
-            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              dangerouslySetInnerHTML={{ __html: changeContent }}
+            ></Typography>
           </CardContent>
 
           <CardActions>
@@ -94,9 +127,15 @@ function DetailPost() {
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   reason for refusal
                 </Typography>
-                <TextField fullWidth sx={{ mt: 2 }} />
+                <TextField
+                  label="Description"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                  onChange={handleChangeRefuseDescription}
+                />
+
                 {/* noi day handle refuse */}
-                <Button onClick={handleClose} variant="outlined" sx={{ mt: 2 }}>
+                <Button variant="outlined" sx={{ mt: 2 }} onClick={handleSubmit}>
                   DONE
                 </Button>
               </Box>
@@ -114,9 +153,6 @@ function DetailPost() {
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 phone:{userDetail.Phone}
-              </Typography>
-              <Typography gutterBottom variant="body1" component="div">
-                Email:{userDetail.Email}
               </Typography>
             </CardContent>
           </CardActionArea>

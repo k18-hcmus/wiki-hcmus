@@ -17,16 +17,15 @@ import { Card } from '@mui/material'
 import axiosClient from '../../axiosClient'
 import { useEffect } from 'react'
 import styled from '@emotion/styled'
-import ListPost from './post'
+import { formatDistanceToNow } from 'date-fns'
+import { getTotalContribution, getUserTier } from '../../utils/contribution-utils'
 
 const CustomPagination = styled.div`
   display: 'flex';
 `
 export default function Users() {
   const [page, setPage] = useState(0)
-  const [order, setOrder] = useState('asc')
   const [selected, setSelected] = useState([])
-  const [orderBy, setOrderBy] = useState('name')
   const [filterName, setFilterName] = useState('')
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [userList, setUserList] = useState([])
@@ -69,9 +68,14 @@ export default function Users() {
     async function FetchUser() {
       try {
         const response = await axiosClient.get('/account-users')
-        setUserList(response.data)
-        setUserCached(response.data)
-        setTotalUser(response.data)
+        let users = response.data
+        await response.data.forEach(async (user, index) => {
+          users[index].contribution = await getTotalContribution('object', user)
+          users[index].tier = getUserTier(users[index].contribution)[0]
+        })
+        setUserList(users)
+        setUserCached(users)
+        setTotalUser(users)
       } catch (error) {
         console.log(error)
       }
@@ -79,7 +83,6 @@ export default function Users() {
 
     FetchUser()
   }, [])
-
   return (
     <div>
       <Card sx={{ mt: 5 }}>
@@ -94,8 +97,10 @@ export default function Users() {
             <TableHead>
               <TableRow>
                 <TableCell align="left">DisplayName</TableCell>
-                <TableCell>Username</TableCell>
                 <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Created_at</TableCell>
+                <TableCell align="left">Contribution</TableCell>
+                <TableCell align="left">Tier</TableCell>
                 <TableCell align="left">Status</TableCell>
                 <TableCell align="left">Action</TableCell>
               </TableRow>
@@ -106,8 +111,12 @@ export default function Users() {
                   <TableCell component="th" scope="row">
                     {user.DisplayName}
                   </TableCell>
-                  <TableCell align="left">{user.Username}</TableCell>
                   <TableCell align="left">{user.Email}</TableCell>
+                  <TableCell align="left">
+                    {formatDistanceToNow(new Date(user.created_at))}
+                  </TableCell>
+                  <TableCell align="left">{user.contribution}</TableCell>
+                  <TableCell align="left">{user.tier}</TableCell>
                   <TableCell align="left">{user.Status}</TableCell>
                   <TableCell align="left">
                     <UserMoreMenu

@@ -15,6 +15,8 @@ import axiosClient from '../../../../axiosClient'
 import _ from 'lodash'
 import { ROLE_STATUS } from '../../../../shared/moderator-constants'
 import { CONTRIBUTION_CONST } from '../../../../shared/constants'
+import { getTotalContribution, getUserTier } from '../../../../utils/contribution-utils'
+
 export const AccountProfile = (props) => {
   const [user, setUser] = useState([])
   const [posts, setPosts] = useState()
@@ -25,16 +27,16 @@ export const AccountProfile = (props) => {
   useEffect(() => {
     async function FetchUser() {
       const response = await axiosClient.get(`/account-users/${id}`)
+      let userDetail = response.data
+      userDetail.contribution = await getTotalContribution('object', userDetail)
+      userDetail.tier = getUserTier(userDetail.contribution)[0]
       setUser(response.data)
       setPosts(response.data.Posts)
-      console.log('user', response.data)
-      let c = _.get(response.data.Contributions[0], 'Value')
-      setContribution(c)
       //get contribution to use decentralization user
     }
     FetchUser()
   }, [])
-
+  console.log('user', user)
   const handleClick = async () => {
     try {
       const userId = user.User.id
@@ -77,7 +79,7 @@ export const AccountProfile = (props) => {
       </CardContent>
       <Divider />
       <CardActions>
-        {contribution >= CONTRIBUTION_CONST.TIER.Silver && user.Posts.length ? (
+        {user.contribution >= CONTRIBUTION_CONST.TIER.Silver ? (
           <Button
             color="primary"
             fullWidth
@@ -86,7 +88,7 @@ export const AccountProfile = (props) => {
             onClick={handleClick}
             disabled={disable}
           >
-            Decentralization
+            promote
           </Button>
         ) : (
           <Typography></Typography>
