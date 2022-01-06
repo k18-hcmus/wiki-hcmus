@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import { Box, IconButton, Typography, Grid, Link } from '@mui/material'
@@ -6,6 +7,8 @@ import { styled } from '@mui/material/styles'
 import { format } from 'date-fns'
 import PostActionButtons from './post-action-buttons'
 import axiosClient from '../../axiosClient'
+import isEmpty from 'lodash/isEmpty'
+import { getUser } from '../../redux/slices/userSlice'
 
 const CenteredGrid = styled(Grid)({
   display: 'flex',
@@ -18,7 +21,10 @@ const AbstractPost = ({ data, ownUserId }) => {
   const [postVoteId, setPostVoteId] = useState(undefined)
   const [upvoteNum, setUpvoteNum] = useState(0)
   const [downvoteNum, setDownvoteNum] = useState(0)
+  const userState = useSelector(getUser)
   const handleVote = async (event, index) => {
+    if (isEmpty(userState))
+      return
     const newVotes = votes
     newVotes[index] = !newVotes[index]
     if (index === 0 && newVotes[1] === true) newVotes[1] = false

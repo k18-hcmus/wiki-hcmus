@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import FlagIcon from '@mui/icons-material/Flag'
@@ -10,6 +11,9 @@ import { useRouter } from 'next/router'
 import { FEATURE_MESSAGE, REPORT_CONST } from '../../shared/constants'
 import CloseIcon from '@mui/icons-material/Close'
 import ReportDialog from './report-dialog'
+import isEmpty from 'lodash/isEmpty'
+import { toggleLoginForm } from '../../redux/slices/authSlice'
+import { getUser } from '../../redux/slices/userSlice'
 
 const ActionBox = styled(Box)({
   display: 'flex',
@@ -20,6 +24,8 @@ const ActionBox = styled(Box)({
 
 const PostActionButtons = ({ post }) => {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const userState = useSelector(getUser)
   const [openAlert, setOpenAlert] = useState(false)
   const handleClickComment = () => {
     router.push(`/posts/${post.id}`)
@@ -50,7 +56,12 @@ const PostActionButtons = ({ post }) => {
   }
   const [openReportDialog, setOpenReportDialog] = useState(false)
   const handleClickReport = () => {
-    setOpenReportDialog(true)
+    if (!isEmpty(userState)) {
+      setOpenReportDialog(true)
+    }
+    else {
+      dispatch(toggleLoginForm())
+    }
   }
   const handleReportClose = () => {
     setOpenReportDialog(false)
