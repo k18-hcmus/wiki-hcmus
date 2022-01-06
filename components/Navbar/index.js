@@ -3,6 +3,7 @@ import { styled, alpha } from '@mui/material/styles'
 import {
   AppBar,
   Box,
+  Divider,
   Toolbar,
   IconButton,
   Typography,
@@ -28,11 +29,11 @@ import Login from './Login'
 import Register from './Register'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogout, getUserAuth } from '../../redux/slices/userSlice'
+import { userLogout, getUserAuth, getUser } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 import axiosClient from '../../axiosClient'
-import Link from 'next/link'
 import CloseIcon from '@mui/icons-material/Close'
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -122,8 +123,10 @@ export default function PrimarySearchAppBar() {
   const isLoggedIn = useSelector(getUserAuth)
   const [search, setSearch] = useState('')
   const [isAuth, setIsAuth] = useState(false)
+  const user = useSelector(getUser)
   const router = useRouter()
   const dispatch = useDispatch()
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsAuth(!!localStorage.getItem('token')) //Check authenticate
@@ -195,6 +198,12 @@ export default function PrimarySearchAppBar() {
   }
 
   const menuId = 'primary-search-account-menu'
+
+  let role
+  if (user) {
+    role = user.role
+  }
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -212,6 +221,13 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+      {role && (role.type === 'moderator' || role.type === 'adminstrator') && (
+        <>
+          <MenuItem onClick={() => router.push('/admin/Dashboard')}> Admin </MenuItem>
+          <Divider />
+        </>
+      )}
+
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={handleLogOut}>Log out</MenuItem>
@@ -258,11 +274,7 @@ export default function PrimarySearchAppBar() {
     </Menu>
   )
 
-  const pages = [
-    { page: 'Home', href: '/' },
-    { page: 'Teacher', href: '/' },
-    { page: 'Subject', href: '/' },
-  ]
+  const pages = [{ page: 'Home', href: '/home' }]
 
   return (
     <Box sx={{ flexGrow: 1 }}>

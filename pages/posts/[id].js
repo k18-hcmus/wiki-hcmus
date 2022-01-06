@@ -15,6 +15,7 @@ import {
   Add as AddIcon,
   Message as MessageIcon,
   Visibility as VisibilityIcon,
+  Flag as FlagIcon,
 } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
@@ -25,6 +26,7 @@ import get from 'lodash/get'
 import TagCard from './components/TagCard'
 import Comment from './components/Comment'
 import Vote from './components/Vote'
+import ReportDialog from '../../components/commons/report-dialog'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
 import { getUser } from '../../redux/slices/userSlice'
@@ -80,6 +82,7 @@ const IconStatistic = styled(Box)`
   display: flex;
   align-items: center;
   margin: 0 ${({ theme }) => theme.spacing(2)};
+  color: ${({ theme }) => theme.palette.grey[600]};
 `
 
 const BackToTopButton = styled(Button)({
@@ -261,6 +264,9 @@ const Post = ({ post }) => {
                 <IconStatistic>
                   <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
+                <Button component="span" sx={{ color: (theme) => theme.palette.grey[600] }}>
+                  <FlagIcon /> Report
+                </Button>
               </Box>
             </PostStatisticSection>
 
@@ -289,13 +295,17 @@ const Post = ({ post }) => {
                 handleDownVote={handleDownVote}
                 handleUpVote={handleUpVote}
               />
-              <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
+              <Box sx={{ ml: 3, display: 'flex', spacing: 2, alignItems: 'center' }}>
+                <Typography> {fDate(post.created_at)}</Typography>
                 <IconStatistic>
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
                 <IconStatistic>
                   <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
+                <Button component="span" sx={{ color: (theme) => theme.palette.grey[600] }}>
+                  <FlagIcon /> Report
+                </Button>
               </Box>
             </PostStatisticSection>
 

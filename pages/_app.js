@@ -6,6 +6,7 @@ import store from '../redux/store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import Router from 'next/router'
+import RoleBasedComponent from '../components/commons/RoleBasedComponent'
 
 NProgress.configure({
   minimum: 0.3,
@@ -23,7 +24,7 @@ function MyApp({ Component, pageProps }) {
     <Provider store={store}>
       <ThemeConfig>
         <Layout>
-          <Component {...pageProps} />
+          <RoleBasedComponent Component={Component} pageProps={pageProps} />
         </Layout>
       </ThemeConfig>
     </Provider>
