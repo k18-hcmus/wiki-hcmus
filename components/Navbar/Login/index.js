@@ -80,7 +80,6 @@ export default function Login() {
     } catch (err) {
       setDisabled(false)
       setMsg({ err: err.response.data.message[0].messages[0].message, success: '' })
-      console.log('test', err.response)
     }
     setLoading(false)
   }
