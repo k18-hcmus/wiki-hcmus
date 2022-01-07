@@ -34,6 +34,7 @@ import { getTags } from '../../redux/slices/tagSlice'
 import { useRouter } from 'next/router'
 import { checkUser } from '../../utils/validation'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { STATUS_POST } from '../../shared/constants'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,
 })
@@ -102,16 +103,16 @@ const CreatePost = () => {
     event.preventDefault()
     setIsloading(true)
     const body = JSON.stringify(content)
-    let status = POST_STATUS.Publish.value
+    let status = STATUS_POST.Publish.value
     if (checkUser(user)) {
-      status = POST_STATUS.UnPublish.value
+      status = STATUS_POST.Unpublish.value
     }
     try {
       const response = await axiosClient.post('posts', {
         Title: title,
         Content: body,
         Tags: tagArr,
-        Status: status, // Waiting approve post function
+        Status: status,
         User: user.DetailUser,
       })
       response && setMsg({ err: '', success: 'Create post succeed' })

@@ -26,7 +26,6 @@ const Home = () => {
           const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagArray[index])
           tagDetails[index].voteNum = upvoteSum - downvoteSum
         })
-        console.log(tagDetails)
         setTagData(tagDetails)
       }
     }

@@ -177,6 +177,10 @@ export const STATUS_POST = {
     value: 'Publish',
     label: 'Publish',
   },
+  Unpublish: {
+    value: 'Unpublish',
+    label: 'Unpublish',
+  },
   Report: {
     value: 'Report',
     label: 'Report',

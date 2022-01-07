@@ -39,7 +39,7 @@ const ListBriefPost = () => {
       const newStart = start + limit
       setStart(newStart)
       const postResult = await axiosClient.get(
-        `/posts?&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        `/posts/publish?&_start=${newStart}&_limit=${limit}&${dataOrder}`
       )
       if (postResult.data.length === 0) setHasMoreData(false)
       else setPostsData([...postsData, ...postResult.data])
@@ -53,7 +53,9 @@ const ListBriefPost = () => {
         const newStart = 0
         setStart(newStart)
         setHasMoreData(true)
-        const result = await axiosClient.get(`/posts?&${dataOrder}`)
+        const result = await axiosClient.get(
+          `/posts/publish?&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        )
         setPostsData(result.data)
       } catch {
         console.log('Error get Post at Home')
@@ -75,7 +77,9 @@ const ListBriefPost = () => {
         const newStart = 0
         setStart(newStart)
         setHasMoreData(true)
-        const result = await axiosClient.get(`/posts?&${dataOrder}`)
+        const result = await axiosClient.get(
+          `/posts/publish?&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        )
         setPostsData(result.data)
       } catch {
         console.log('Error get Post at Home')

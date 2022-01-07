@@ -31,12 +31,15 @@ import Vote from '../../components/post/Vote'
 import ReportDialog from '../../components/commons/report-dialog'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
-import { getUser } from '../../redux/slices/userSlice'
+import { getUser, getUserAuth } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
-import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
+import { getPostById, getCommentsByPostId, validViewPost } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
 import { fDate } from '../../utils/formatTime'
 import { REPORT_CONST } from '../../shared/report-constants'
+import { POST_STATUS } from '../../shared/post-constants'
+import { STATUS_POST } from '../../shared/constants'
+import { useRouter } from 'next/router'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -107,6 +110,7 @@ const Post = ({ post }) => {
     Tags: tags,
     Comments: CommentsProps,
     PostVotes,
+    Status,
   } = post
 
   const [comments, setComments] = useState([])
@@ -115,17 +119,32 @@ const Post = ({ post }) => {
   const [visible, setVisible] = useState(false)
   const [votes, setVotes] = useState(PostVotes)
   const [isOpenReport, setIsOpenReport] = useState(false)
+  const [isAuth, setIsAuth] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-
+  const [isloading, setIsloading] = useState(true)
+  const router = useRouter()
   const userState = useSelector(getUser)
+  const islogged = useSelector(getUserAuth)
   const dispatch = useDispatch()
-
   const htmlContent = Content ? draftToHtml(JSON.parse(Content)) : ''
 
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
   let userVote
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isAuth = !!localStorage.getItem('token')
+      if (!isAuth && Status !== STATUS_POST.Publish.value) {
+        //Guest only can see post with publish status
+        router.replace('/')
+      }
+    }
+  }, [])
   if (!isEmpty(userState)) {
+    if (!validViewPost(userState, user, Status)) {
+      //Except Mod and Admin or user who post this post, no one can can see this post with status !== publish
+      router.replace('/')
+    }
     userVote = votes.find((v) => {
       return (
         v.User == get(userState, 'DetailUser', '') || v.User == get(userState, 'DetailUser.id', '')
@@ -267,7 +286,6 @@ const Post = ({ post }) => {
 
     increaseViewCount()
   }, [])
-
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (window.pageYOffset > 600) {
@@ -277,7 +295,25 @@ const Post = ({ post }) => {
       }
     })
   }, [])
-
+  const showStatusPost = (
+    <>
+      {Status === STATUS_POST.Unpublish.value && (
+        <Typography variant="h6" color={'secondary'} sx={{ mb: 1 }}>
+          Waitting approve
+        </Typography>
+      )}
+      {Status === STATUS_POST.Refused.value && (
+        <Typography variant="h6" color={'error'} sx={{ mb: 1 }}>
+          Refuse
+        </Typography>
+      )}
+      {Status === STATUS_POST.Report.value && (
+        <Typography variant="h6" color={'error'} sx={{ mb: 1 }}>
+          Banned
+        </Typography>
+      )}
+    </>
+  )
   return (
     <>
       <Container maxWidth="lg">
@@ -286,7 +322,7 @@ const Post = ({ post }) => {
             <Typography variant="h3" component="div" sx={{ mb: 1 }}>
               {Title}
             </Typography>
-
+            {Status !== STATUS_POST.Publish && showStatusPost}
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
               <Vote
