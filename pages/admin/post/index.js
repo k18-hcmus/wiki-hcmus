@@ -2,12 +2,14 @@ import * as React from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import axiosClient from '../../../axiosClient'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import { useRouter } from 'next/router'
-import { CardActions } from '@mui/material'
+import { CardActions, Grid } from '@mui/material'
 import { BUTTON_POST } from '../../../shared/constants'
 import { formatDistanceToNow } from 'date-fns'
+import { TAG_STATUS } from '../../../shared/tag-constants'
+
 function ListPost() {
   const router = useRouter()
   const [listPost, setListPost] = React.useState()
@@ -17,6 +19,9 @@ function ListPost() {
   const [disable, setDisable] = useState(true)
   const [delPost, setDelPost] = useState({})
   const [formatDate, setFormatDate] = useState()
+  //tags
+  const [tags, setTags] = useState()
+  const [selectionTag, setSelectionTag] = useState()
   useEffect(() => {
     async function FetchPost() {
       const result = await axiosClient.get('/posts')
@@ -25,6 +30,13 @@ function ListPost() {
       setFormatDate(result.data.map((post) => formatDistanceToNow(new Date(post.created_at))))
     }
     FetchPost()
+  }, [])
+  useEffect(() => {
+    async function FetchTags() {
+      const result = await axiosClient.get('/tags')
+      setTags(result.data)
+    }
+    FetchTags()
   }, [])
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -65,6 +77,25 @@ function ListPost() {
       },
     },
   ]
+  const columnTags = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'Name', headerName: 'Name', width: 400 },
+    {
+      field: 'Status',
+      headerName: 'Status',
+      width: 120,
+    },
+    {
+      field: 'created_at',
+      headerName: 'Create_at',
+      width: 200,
+    },
+    {
+      field: 'updated_at',
+      headerName: 'Updated_at',
+      width: 200,
+    },
+  ]
   const handleClickDelPost = async () => {
     let tempPost = await listPost.filter((p) => p.id !== selectionModel[0])
     let temp = await listPost.filter((p) => p.id === selectionModel[0])
@@ -82,37 +113,120 @@ function ListPost() {
     await axiosClient.delete(`/posts/${id}`)
     setDisable(true)
   }
+  const handleChangeStatusTag = async () => {
+    try {
+      let tagId = selectionTag[0]
+      const result = await axiosClient.put(`/tags/${tagId}`, {
+        Status: TAG_STATUS.PUBLISH,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleChangeStatusTagUnpublish = async () => {
+    try {
+      let tagId = selectionTag[0]
+      const result = await axiosClient.put(`/tags/${tagId}`, {
+        Status: TAG_STATUS.UNPUBLISH,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleDeleteTag = async () => {
+    let tagId = selectionTag[0]
+    await axiosClient.delete(`/tags/${tagId}`)
+  }
   return (
-    <div style={{ height: 400, width: '80%', marginLeft: 40, marginTop: 30 }}>
-      <DataGrid
-        rows={listPost}
-        columns={columns}
-        disableSelectionOnClick
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-        onSelectionModelChange={(ids) => {
-          setSelectionModel(ids)
-          setDisableDelete(false)
-        }}
-      />
-      <CardActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickDelPost}
-          disabled={disableDelete}
-        >
-          {BUTTON_POST.Delete.label}
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleClickUndo} disabled={disable}>
-          {BUTTON_POST.Undo.label}
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleClickSave} disabled={disable}>
-          {BUTTON_POST.Save.label}
-        </Button>
-      </CardActions>
-    </div>
+    <Grid container spacing={3}>
+      <Grid item xs={1}></Grid>
+      <Grid item xs={10}>
+        <div>
+          <div style={{ height: 400, marginTop: 30 }}>
+            <Typography variant="h3">Post</Typography>
+            <DataGrid
+              rows={listPost}
+              columns={columns}
+              disableSelectionOnClick
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+              onSelectionModelChange={(ids) => {
+                setSelectionModel(ids)
+                setDisableDelete(false)
+              }}
+            />
+            <CardActions>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleClickDelPost}
+                disabled={disableDelete}
+              >
+                {BUTTON_POST.Delete.label}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleClickUndo}
+                disabled={disable}
+              >
+                {BUTTON_POST.Undo.label}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleClickSave}
+                disabled={disable}
+              >
+                {BUTTON_POST.Save.label}
+              </Button>
+            </CardActions>
+          </div>
+          <div style={{ height: 400, marginTop: 140 }}>
+            <Typography variant="h3">Tags</Typography>
+            <DataGrid
+              rows={tags}
+              columns={columnTags}
+              disableSelectionOnClick
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+              onSelectionModelChange={(ids) => {
+                setSelectionTag(ids)
+              }}
+            />
+            <CardActions>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleChangeStatusTag}
+                variant="outlined"
+              >
+                {TAG_STATUS.PUBLISH}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleChangeStatusTagUnpublish}
+                variant="outlined"
+              >
+                {TAG_STATUS.UNPUBLISH}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleDeleteTag}
+                variant="outlined"
+              >
+                {TAG_STATUS.DELETE.label}
+              </Button>
+            </CardActions>
+          </div>
+        </div>
+      </Grid>
+      <Grid item xs={1}></Grid>
+    </Grid>
   )
 }
 export default ListPost

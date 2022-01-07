@@ -36,7 +36,6 @@ export const AccountProfile = (props) => {
     }
     FetchUser()
   }, [])
-  console.log('user', user)
   const handleClick = async () => {
     try {
       const userId = user.User.id
