@@ -1,10 +1,4 @@
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard'
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import FlagIcon from '@mui/icons-material/Flag'
-import ShareIcon from '@mui/icons-material/Share'
-import { Avatar, Box, Button, Card, Chip, Grid, IconButton, Typography } from '@mui/material'
+import { Avatar, Box, Button, Card, Chip, Grid, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import draftToHtml from 'draftjs-to-html'
 import { useRef, useEffect, useState } from 'react'
@@ -17,156 +11,10 @@ import { getUser } from '../../redux/slices/userSlice'
 import VoteVertical from './vote-vertical'
 import Link from 'next/link'
 import PostActionButtons from '../commons/post-action-buttons'
-import { fDateTime } from '../../utils/formatTime'
-const PostCard = styled(Card)({
-  width: '858px',
-  minHeight: '300px',
-  maxHeight: '600px',
-  display: 'flex',
-  flexDirection: 'row',
-  marginTop: '10px',
-  marginBottom: '10px',
-})
-
-const UpdownBox = styled(Box)({
-  width: '35px',
-  minHeight: '100%',
-  borderRadius: '2px',
-  backgroundColor: '#F9FAFB',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  paddingTop: '3px',
-})
-
-const UpdownText = styled(Typography)({
-  fontSize: '14px',
-  align: 'center',
-  width: '100%',
-  textAlign: 'center',
-  fontWeight: 'bold',
-})
-
-const MainComponent = styled(Box)({
-  width: '90%',
-  minHeight: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'relative',
-})
-
-const TitleComponent = styled(Box)({
-  width: '100%',
-  height: '50px',
-  display: 'flex',
-  flexDirection: 'row',
-  marginLeft: '7px',
-  marginTop: '5px',
-})
-
-const AvatarPerson = styled(Avatar)({
-  width: '40px',
-  height: '40px',
-})
-
-const TitleName = styled(Box)({
-  width: '70%',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  marginLeft: '7px',
-})
-
-const NameTime = styled(Box)({
-  wdith: '100%',
-  height: '50%',
-  display: 'flex',
-  flexDirection: 'row',
-})
-
-const NameUser = styled(Typography)({
-  fontSize: '16px',
-  color: '#000',
-  fontWeight: 'bold',
-})
-
-const Time = styled(Typography)({
-  fontSize: '16px',
-  color: '#a7a7a0',
-  marginLeft: '5px',
-})
-
-const TagBox = styled(Box)({
-  width: '100%',
-  height: '50%',
-  display: 'flex',
-  flexDirection: 'row',
-  marginTop: '-5px',
-})
-
-const TagName = styled(Typography)({
-  fontSize: '15px',
-  color: '#1680b2',
-  marginLeft: '5px',
-})
-
-const TitlePost = styled(Typography)({
-  fontSize: '20px',
-  marginLeft: '7px',
-  fontWeight: 'bold',
-})
-
-const ContexCom = styled(Box)({
-  marginLeft: '7px',
-  fontSize: '16px',
-  maxHeight: '80%',
-  overflow: 'hidden',
-})
-
-const JoinButton = styled(Button)({
-  position: 'absolute',
-  right: '5px',
-  top: '10px',
-  borderRadius: '20px',
-  width: '60px',
-  height: '40px',
-})
-
-const CommentComponent = styled(Box)({
-  position: 'absolute',
-  bottom: '0px',
-  width: '100%',
-  backgroundColor: '#fff',
-})
-
-const TitleComment = styled(Typography)({
-  color: '#bcbebf',
-  fontSize: '14px',
-  fontWeight: 'bold',
-})
-
-const ItemButton = styled(IconButton)({
-  borderRadius: '0px',
-  marginLeft: '10px',
-  marginRight: '10px',
-})
-
-const UpDownVoteButton = styled(IconButton)({
-  width: '25px',
-  height: '25px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginLeft: '3px',
-})
+import { formatDistanceToNow } from 'date-fns'
 
 const SeeMoreButton = styled(Button)({
-  width: '200px',
-  height: '30px',
   borderRadius: '15px',
-  position: 'absolute',
-  bottom: '50px',
-  left: '300px',
   zIndex: 10,
 })
 
@@ -245,72 +93,110 @@ const PostNoImageCard = ({ post }) => {
     }
   }
   return (
-    <PostCard ref={ref}>
-      <UpdownBox>
-        <VoteVertical
-          upvoteCount={upvotes.length}
-          downvoteCount={downvotes.length}
-          userVote={userVote}
-          handleDownVote={handleDownVote}
-          handleUpVote={handleUpVote}
-        />
-      </UpdownBox>
-      <MainComponent>
-        <TitleComponent>
-          <Link href={`/profile/${post.User.id}`} passHref>
-            <a>
-              <AvatarPerson src="/static/avatars/avatar_1.jpg" />
-            </a>
-          </Link>
-          <TitleName>
-            <NameTime>
-              <Link href={`/profile/${post.User.id}`} passHref>
-                <a>
-                  <NameUser>{post.User.DisplayName}</NameUser>
-                </a>
-              </Link>
-              <Time>{fDateTime(post.published_at)}</Time>
-            </NameTime>
-            <TagBox>
-              <Grid container direction="row" spacing={1}>
-                {post.Tags &&
-                  post.Tags.map((tag, index) => (
-                    <Grid item key={index}>
-                      <Chip
-                        size="small"
-                        id={tag.id}
-                        label={tag.Name}
-                        icon={<Avatar sx={{ width: 25, height: 25 }} src={tag.AvatarURL} />}
-                        sx={{ color: '#FFFFFF', backgroundColor: tag.ColorTag }}
-                        onClick={handleClickTag}
+    <Card ref={ref} sx={{ mb: 3 }}>
+      <Grid container>
+        <Grid item lg={1} md={1} xl={1} xs={2} sx={{ p: 1, mt: 3 }}>
+          <VoteVertical
+            upvoteCount={upvotes.length}
+            downvoteCount={downvotes.length}
+            userVote={userVote}
+            handleDownVote={handleDownVote}
+            handleUpVote={handleUpVote}
+          />
+        </Grid>
+        <Grid item lg={11} md={11} xl={11} xs={10} sx={{ pt: 1, pr: 1 }}>
+          <Grid container spacing={1} sx={{ p: 1 }}>
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Grid container sx={{ pr: 1 }}>
+                <Grid item lg={1} md={1} xl={1} xs={1}>
+                  <Link href={`/profile/${post.User.id}`} passHref>
+                    <a>
+                      <Avatar
+                        sx={{ width: '50px', height: '50px' }}
+                        src={
+                          !post.User.AvatarURL || post.User.AvatarURL === ''
+                            ? '/static/avatars/avatar_1.jpg'
+                            : post.User.AvatarURL
+                        }
                       />
-                    </Grid>
-                  ))}
+                    </a>
+                  </Link>
+                </Grid>
+                <Grid
+                  item
+                  lg={11}
+                  md={11}
+                  xl={11}
+                  xs={11}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Link href={`/profile/${post.User.id}`} passHref>
+                    <a>
+                      <Typography color="text.primary" variant="body1" sx={{ ml: 1 }}>
+                        {post.User.DisplayName}
+                      </Typography>
+                    </a>
+                  </Link>
+                  <Typography color="text.secondary" variant="caption">
+                    {formatDistanceToNow(new Date(post.published_at))} ago
+                  </Typography>
+                </Grid>
               </Grid>
-            </TagBox>
-          </TitleName>
-        </TitleComponent>
-        <JoinButton onClick={handlePostDetail} variant="contained">
-          Join
-        </JoinButton>
-        <TitlePost>{post.Title}</TitlePost>
-        <ContexCom>
-          <Link href={`/posts/${post.id}`} passHref>
-            <a>
-              <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>
-            </a>
-          </Link>
-        </ContexCom>
-        {widthPost >= 600 && (
-          <SeeMoreButton color="primary" variant="contained" onClick={handlePostDetail}>
-            See more
-          </SeeMoreButton>
-        )}
-        <CommentComponent>
-          <PostActionButtons post={post} />
-        </CommentComponent>
-      </MainComponent>
-    </PostCard>
+            </Grid>
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Typography color="text.primary" variant="body1">
+                {post.Title}
+                <Box style={{ marginTop: '-5px' }} display="flex" flexDirection="row">
+                  <Grid container direction="row" spacing={1}>
+                    {post.Tags &&
+                      post.Tags.map((tag, index) => (
+                        <Grid item key={index}>
+                          <Chip
+                            size="small"
+                            id={tag.id}
+                            label={tag.Name}
+                            icon={<Avatar sx={{ width: 25, height: 25 }} src={tag.AvatarURL} />}
+                            sx={{ color: '#FFFFFF', backgroundColor: tag.ColorTag }}
+                            onClick={handleClickTag}
+                          />
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Box>
+              </Typography>
+            </Grid>
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Grid container>
+                <Grid item lg={12} md={12} xl={12} xs={12} display="flex" justifyContent="center">
+                  <Link href={`/posts/${post.id}`} passHref>
+                    <a>
+                      <Typography
+                        style={{ maxHeight: '400px', overflowY: 'hidden' }}
+                        variant="body2"
+                        color="primary"
+                        dangerouslySetInnerHTML={{ __html: htmlContent }}
+                      ></Typography>
+                    </a>
+                  </Link>
+                </Grid>
+                <Grid item lg={12} md={12} xl={12} xs={12} display="flex" justifyContent="center">
+                  {widthPost >= 400 && (
+                    <SeeMoreButton color="primary" variant="contained" onClick={handlePostDetail}>
+                      See more
+                    </SeeMoreButton>
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <PostActionButtons post={post} />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Card>
   )
 }
 

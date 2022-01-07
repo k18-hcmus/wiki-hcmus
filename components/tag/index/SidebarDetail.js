@@ -17,10 +17,10 @@ const SidebarDetail = ({ data }) => {
   }
   return (
     <div>
-      <AbstractTag data={data} isDetailPage/>
+      <AbstractTag data={data} isDetailPage />
       <Card sx={{ mb: 3 }}>
         <CardHeader
-          sx={{ backgroundColor: COLOR_SET.BLUE, color: 'white' }}
+          sx={{ backgroundColor: data.color || COLOR_SET.BLUE, color: 'white' }}
           title={<Typography variant="body2">{DETAIL_CONST.RELATED_TAG.TITLE}</Typography>}
         />
         <CardContent sx={{ p: 0 }}>
@@ -43,13 +43,14 @@ const SidebarDetail = ({ data }) => {
                     )
                   )}
           </List>
-          {!viewExpand ? (
+          {data.length > DETAIL_CONST.RELATED_TAG.OVERFLOW_NUM && !viewExpand && (
             <Button sx={{ width: '100%' }} variant="outlined" onClick={handleExpandRelatedTag}>
               <ExpandMoreIcon />
               <Typography>{DETAIL_CONST.RELATED_TAG.EXPAND}</Typography>
               <ExpandMoreIcon />
             </Button>
-          ) : (
+          )}
+          {data.length > DETAIL_CONST.RELATED_TAG.OVERFLOW_NUM && viewExpand && (
             <Button sx={{ width: '100%' }} variant="outlined" onClick={handleReduceRelatedTag}>
               <ExpandLessIcon />
               <Typography>{DETAIL_CONST.RELATED_TAG.REDUCE}</Typography>

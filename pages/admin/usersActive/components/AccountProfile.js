@@ -36,12 +36,14 @@ export const AccountProfile = (props) => {
     }
     FetchUser()
   }, [])
-  console.log('user', user)
   const handleClick = async () => {
     try {
       const userId = user.User.id
       const response = await axiosClient.put(`/users/${userId}`, {
         role: ROLE_STATUS.MODERATOR.value,
+      })
+      const userTypeRespone = await axiosClient.put(`/account-users/${user.id}`, {
+        UserType: ROLE_STATUS.MODERATOR.label,
       })
       setDisable(true)
     } catch (error) {

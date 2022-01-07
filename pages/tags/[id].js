@@ -22,6 +22,7 @@ const Tag = () => {
     voteNum: 0,
     relatedTags: [],
     majors: [],
+    color: null
   })
   const [headerData, setHeaderData] = useState({
     avatarURL: '/static/avatars/avatar_1.jpg',
@@ -65,6 +66,7 @@ const Tag = () => {
           voteNum: upvoteSum - downvoteSum,
           relatedTags: Object.keys(relatedTags).map((key) => relatedTags[key]),
           majors: tagObject.Majors,
+          color: tagObject.ColorTag
         }
         setSidebarDetailData(sidebarDetail)
         const headerDetail = {
