@@ -112,6 +112,7 @@ function ListPost() {
     let id = delPost[0].id
     await axiosClient.delete(`/posts/${id}`)
     setDisable(true)
+    setDisableDelete(true)
   }
   const handleChangeStatusTag = async () => {
     try {
