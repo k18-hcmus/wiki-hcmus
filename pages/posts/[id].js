@@ -13,8 +13,9 @@ import {
 } from '@mui/material'
 import {
   Add as AddIcon,
-  Message as MessageIcon,
   Visibility as VisibilityIcon,
+  Flag as FlagIcon,
+  ChatBubbleOutline as ChatBubbleOutlineIcon,
 } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
@@ -22,9 +23,10 @@ import { animateScroll as scroll } from 'react-scroll'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
-import TagCard from './components/TagCard'
-import Comment from './components/Comment'
-import Vote from './components/Vote'
+import TagCard from '../../components/post/TagCard'
+import Comment from '../../components/post/Comment'
+import Vote from '../../components/post/Vote'
+import ReportDialog from '../../components/commons/report-dialog'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
 import { getUser } from '../../redux/slices/userSlice'
@@ -32,6 +34,7 @@ import { toggleLoginForm } from '../../redux/slices/authSlice'
 import { getPostById, getCommentsByPostId } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
 import { fDate } from '../../utils/formatTime'
+import { REPORT_CONST } from '../../shared/report-constants'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -80,6 +83,7 @@ const IconStatistic = styled(Box)`
   display: flex;
   align-items: center;
   margin: 0 ${({ theme }) => theme.spacing(2)};
+  color: ${({ theme }) => theme.palette.grey[600]};
 `
 
 const BackToTopButton = styled(Button)({
@@ -108,6 +112,7 @@ const Post = ({ post }) => {
   const [loadingComment, setLoadingComment] = useState(true)
   const [visible, setVisible] = useState(false)
   const [votes, setVotes] = useState(PostVotes)
+  const [isOpenReport, setIsOpenReport] = useState(false)
 
   const userState = useSelector(getUser)
   const dispatch = useDispatch()
@@ -201,6 +206,14 @@ const Post = ({ post }) => {
     }
   }
 
+  const handleReportOpen = () => {
+    setIsOpenReport(true)
+  }
+
+  const handleReportClose = () => {
+    setIsOpenReport(false)
+  }
+
   useEffect(() => {
     const fetchComments = async () => {
       const response = await getCommentsByPostId(post.id)
@@ -259,8 +272,22 @@ const Post = ({ post }) => {
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
                 <IconStatistic>
-                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                  <ChatBubbleOutlineIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
+                <Button
+                  component="span"
+                  sx={{ color: (theme) => theme.palette.grey[600] }}
+                  onClick={handleReportOpen}
+                >
+                  <FlagIcon /> Report
+                </Button>
+                <ReportDialog
+                  open={isOpenReport}
+                  type={REPORT_CONST.TYPE.POST}
+                  data={post}
+                  callbackClose={handleReportClose}
+                  userId={16}
+                />
               </Box>
             </PostStatisticSection>
 
@@ -289,13 +316,21 @@ const Post = ({ post }) => {
                 handleDownVote={handleDownVote}
                 handleUpVote={handleUpVote}
               />
-              <Box sx={{ ml: 3, display: 'flex', spacing: 2 }}>
+              <Box sx={{ ml: 3, display: 'flex', spacing: 2, alignItems: 'center' }}>
+                <Typography> {fDate(post.created_at)}</Typography>
                 <IconStatistic>
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
                 <IconStatistic>
-                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                  <ChatBubbleOutlineIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
+                <Button
+                  component="span"
+                  sx={{ color: (theme) => theme.palette.grey[600] }}
+                  onClick={handleReportOpen}
+                >
+                  <FlagIcon /> Report
+                </Button>
               </Box>
             </PostStatisticSection>
 
@@ -306,7 +341,7 @@ const Post = ({ post }) => {
 
             <InputCommentField onSubmit={handleSubmitComment}>
               <TextField
-                placeholder="Bình luận mới"
+                placeholder="Enter new comment"
                 multiline
                 fullWidth
                 value={newComment}
@@ -317,7 +352,7 @@ const Post = ({ post }) => {
                 sx={{ mb: 2 }}
               />
               <Button type="submit" variant="contained" style={{ marginLeft: 'auto' }}>
-                Đăng
+                Comment
               </Button>
             </InputCommentField>
 
