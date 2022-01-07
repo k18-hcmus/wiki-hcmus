@@ -39,14 +39,6 @@ const UpdownBox = styled(Box)({
   paddingTop: '3px',
 })
 
-const UpdownText = styled(Typography)({
-  fontSize: '14px',
-  align: 'center',
-  width: '100%',
-  textAlign: 'center',
-  fontWeight: 'bold',
-})
-
 const MainComponent = styled(Box)({
   width: '90%',
   minHeight: '100%',
