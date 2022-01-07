@@ -274,10 +274,10 @@ export default function PrimarySearchAppBar() {
     </Menu>
   )
 
-  const pages = [{ page: 'Home', href: '/home' }]
+  const pages = [{ page: 'Home', href: '/' }]
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, position: 'sticky', top: 0, zIndex: 999 }}>
       <Login />
       <Register open={isRegisterOpen} handleClose={handleCloseRegister} />
       <AppBar position="static">

@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import { Box, Grid, Avatar, Paper, Button, TextField } from '@mui/material'
 import { ChatBubbleOutline as ChatBubbleOutlineIcon } from '@mui/icons-material'
-
+import { useSnackbar } from 'notistack'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import trim from 'lodash/trim'
 
 import axiosClient from '../../axiosClient'
 import { getUser } from '../../redux/slices/userSlice'
@@ -30,6 +31,7 @@ const Comment = ({ comment }) => {
   const [replyComments, setReplyComments] = useState(ReplyComments)
   const [isOpenReplyComment, setIsOpenReplyComment] = useState(false)
   const [replyCommentContent, setReplyCommentContent] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
   const userState = useSelector(getUser)
 
   let upvotes = votes.filter((v) => v.Upvote)
@@ -106,15 +108,30 @@ const Comment = ({ comment }) => {
 
   const handleSubmitReplyComment = async (e) => {
     e.preventDefault()
-    const response = await axiosClient.post('/comments', {
-      Content: replyCommentContent,
-      User: userState.DetailUser,
-      CommentRepliedTo: comment.id,
-    })
+    if (!replyCommentContent || trim(replyCommentContent).length === 0) {
+      enqueueSnackbar('Can not post empty comment.', {
+        variant: 'error',
+      })
+    } else {
+      try {
+        const response = await axiosClient.post('/comments', {
+          Content: trim(replyCommentContent),
+          User: userState.DetailUser,
+          CommentRepliedTo: comment.id,
+        })
 
-    setReplyComments((prevState) => [response.data, ...prevState])
-    setReplyCommentContent('')
-    setIsOpenReplyComment(false)
+        setReplyComments((prevState) => [response.data, ...prevState])
+        setReplyCommentContent('')
+        setIsOpenReplyComment(false)
+        enqueueSnackbar('Reply comment successful.', {
+          variant: 'success',
+        })
+      } catch (error) {
+        enqueueSnackbar('Error while replying comment.', {
+          variant: 'error',
+        })
+      }
+    }
   }
 
   return (
