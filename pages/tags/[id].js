@@ -53,7 +53,7 @@ const Tag = () => {
         const results = await axiosClient.get(`/tags?id=${id}`)
         var tagObject = results.data[0]
         const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagObject)
-        const postResults = await axiosClient.get(`/posts?Tags.id=${id}`)
+        const postResults = await axiosClient.get(`/posts/publish?Tags.id=${id}`)
         let relatedTags = {}
         postResults.data.forEach((post) => {
           if (post.Tags) post.Tags.forEach((tag) => (relatedTags[tag.id] = tag))
@@ -75,7 +75,7 @@ const Tag = () => {
         setHeaderData(headerDetail)
         setBackgroundImgBody(tagObject.BackgroundBodyURL || '/static/backgroundImgs/tag_2.jpg')
         const postResult = await axiosClient.get(
-          `/posts?Tags.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.NEW}`
+          `/posts/publish?Tags.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.NEW}`
         )
         setPostData(postResult.data)
       } catch (error) {
@@ -94,7 +94,7 @@ const Tag = () => {
       const newStart = start + limit
       setStart(newStart)
       const postResult = await axiosClient.get(
-        `/posts?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        `/posts/publish?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
       )
       if (postResult.data.length === 0) setHasMoreData(false)
       else setPostData([...postData, ...postResult.data])
@@ -126,7 +126,7 @@ const Tag = () => {
         setStart(newStart)
         setHasMoreData(true)
         const postResult = await axiosClient.get(
-          `/posts?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+          `/posts/publish?Tags.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
         )
         setPostData(postResult.data)
       } catch (error) {

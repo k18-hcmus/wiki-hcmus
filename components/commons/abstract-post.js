@@ -23,8 +23,7 @@ const AbstractPost = ({ data, ownUserId }) => {
   const [downvoteNum, setDownvoteNum] = useState(0)
   const userState = useSelector(getUser)
   const handleVote = async (event, index) => {
-    if (isEmpty(userState))
-      return
+    if (isEmpty(userState)) return
     const newVotes = votes
     newVotes[index] = !newVotes[index]
     if (index === 0 && newVotes[1] === true) newVotes[1] = false

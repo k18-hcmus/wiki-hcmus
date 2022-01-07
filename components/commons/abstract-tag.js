@@ -10,10 +10,14 @@ const AbstractTag = ({ data, isDetailPage }) => {
         sx={{ backgroundColor: COLOR_SET.BLUE }}
         title={
           isDetailPage ? (
-            <Typography variant="body1" sx={{color: 'white'}}>{DETAIL_CONST.ABOUT.TITLE}</Typography>
+            <Typography variant="body1" sx={{ color: 'white' }}>
+              {DETAIL_CONST.ABOUT.TITLE}
+            </Typography>
           ) : (
             <Link href={`/tags/${data.id}`} underline="hover">
-              <Typography variant="body1" sx={{color: 'white'}}>{data.name}</Typography>
+              <Typography variant="body1" sx={{ color: 'white' }}>
+                {data.name}
+              </Typography>
             </Link>
           )
         }
