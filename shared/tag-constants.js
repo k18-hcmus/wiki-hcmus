@@ -37,6 +37,9 @@ export const CATEGORY_CONST = {
 export const TAG_STATUS = {
   PUBLISH: 'Publish',
   UNPUBLISH: 'Unpublish',
+  DELETE: {
+    label: 'Delete',
+  },
 }
 
 export const MAJOR_CONST = [

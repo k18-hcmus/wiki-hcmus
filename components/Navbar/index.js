@@ -223,7 +223,7 @@ export default function PrimarySearchAppBar() {
     >
       {role && (role.type === 'moderator' || role.type === 'adminstrator') && (
         <>
-          <MenuItem onClick={() => router.push('/admin/Dashboard')}> Admin </MenuItem>
+          <MenuItem onClick={() => router.push('/admin')}> Admin </MenuItem>
           <Divider />
         </>
       )}

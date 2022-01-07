@@ -24,11 +24,11 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
     allowed = false
   }
 
-  useEffect(() => {
-    if (!allowed) {
-      router.push('/')
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!allowed) {
+  //     router.push('/')
+  //   }
+  // }, [])
 
   return <Component {...pageProps} />
 }
