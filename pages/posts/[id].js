@@ -341,7 +341,7 @@ const Post = ({ post }) => {
 
             <InputCommentField onSubmit={handleSubmitComment}>
               <TextField
-                placeholder="Bình luận mới"
+                placeholder="Enter new comment"
                 multiline
                 fullWidth
                 value={newComment}

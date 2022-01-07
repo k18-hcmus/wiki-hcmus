@@ -157,7 +157,7 @@ const Comment = ({ comment }) => {
       {isOpenReplyComment && (
         <InputCommentField onSubmit={handleSubmitReplyComment}>
           <TextField
-            placeholder="Trả lời bình luận"
+            placeholder="Reply comment"
             multiline
             fullWidth
             value={replyCommentContent}
