@@ -2,7 +2,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { alpha, styled } from '@mui/material/styles'
 import { Box, Card, Avatar, Typography, CardContent } from '@mui/material'
-import { fDate } from '../../../utils/formatTime'
+import { fDate } from '../../utils/formatTime'
 import SvgIconStyle from './SvgIconStyle'
 import Link from 'next/link'
 

@@ -5,8 +5,8 @@ import { styled } from '@mui/material/styles'
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material'
 import isEmpty from 'lodash/isEmpty'
 
-import { getUser } from '../../../redux/slices/userSlice'
-import { toggleLoginForm } from '../../../redux/slices/authSlice'
+import { getUser } from '../../redux/slices/userSlice'
+import { toggleLoginForm } from '../../redux/slices/authSlice'
 
 const StyledVote = styled('div')`
   align-items: center;

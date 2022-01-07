@@ -13,9 +13,9 @@ import {
 } from '@mui/material'
 import {
   Add as AddIcon,
-  Message as MessageIcon,
   Visibility as VisibilityIcon,
   Flag as FlagIcon,
+  ChatBubbleOutline as ChatBubbleOutlineIcon,
 } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
@@ -23,9 +23,9 @@ import { animateScroll as scroll } from 'react-scroll'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
-import TagCard from './components/TagCard'
-import Comment from './components/Comment'
-import Vote from './components/Vote'
+import TagCard from '../../components/post/TagCard'
+import Comment from '../../components/post/Comment'
+import Vote from '../../components/post/Vote'
 import ReportDialog from '../../components/commons/report-dialog'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
@@ -272,7 +272,7 @@ const Post = ({ post }) => {
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
                 <IconStatistic>
-                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                  <ChatBubbleOutlineIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
                 <Button
                   component="span"
@@ -322,7 +322,7 @@ const Post = ({ post }) => {
                   <VisibilityIcon sx={{ marginRight: 1 }} /> {ViewCount}
                 </IconStatistic>
                 <IconStatistic>
-                  <MessageIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
+                  <ChatBubbleOutlineIcon sx={{ marginRight: 1 }} /> {CommentsProps.length}
                 </IconStatistic>
                 <Button
                   component="span"
@@ -352,7 +352,7 @@ const Post = ({ post }) => {
                 sx={{ mb: 2 }}
               />
               <Button type="submit" variant="contained" style={{ marginLeft: 'auto' }}>
-                Đăng
+                Comment
               </Button>
             </InputCommentField>
 

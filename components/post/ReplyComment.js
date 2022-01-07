@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { styled } from '@mui/material/styles'
-import { Grid, Avatar, Paper } from '@mui/material'
+import { Box, Grid, Avatar, Paper } from '@mui/material'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
-import axiosClient from '../../../axiosClient'
-import { getUser } from '../../../redux/slices/userSlice'
+import axiosClient from '../../axiosClient'
+import { getUser } from '../../redux/slices/userSlice'
 import Vote from './Vote'
 
 const CommentPaper = styled(Paper)`
@@ -14,17 +14,19 @@ const CommentPaper = styled(Paper)`
   margin: 20px 0;
 `
 
-const Comment = ({ comment }) => {
-  const { Content: content, User: user, createdAt, CommentVotes } = comment
+const ReplyComment = (props) => {
+  const id = props.comment.id
 
-  const [votes, setVotes] = useState(CommentVotes)
+  const [comment, setComment] = useState({})
 
+  const [votes, setVotes] = useState([])
   const userState = useSelector(getUser)
 
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
 
   let userVote
+
   if (!isEmpty(userState)) {
     userVote = votes.find((v) => {
       return (
@@ -81,34 +83,57 @@ const Comment = ({ comment }) => {
     }
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axiosClient.get(`/comments/${id}`)
+      setComment(response.data)
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (!comment || !comment.CommentVotes) {
+      setVotes([])
+    } else {
+      setVotes(comment.CommentVotes)
+    }
+  }, [comment])
+
   return (
-    <CommentPaper>
-      <Grid container wrap="nowrap" spacing={2}>
-        <Grid
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Avatar alt="Remy Sharp" src={user.AvatarURL} />
-          <Vote
-            upvoteCount={upvotes.length}
-            downvoteCount={downvotes.length}
-            userVote={userVote}
-            handleUpVote={handleUpVote}
-            handleDownVote={handleDownVote}
-          />
+    <Box sx={{ ml: 10 }}>
+      <CommentPaper>
+        <Grid container wrap="nowrap" spacing={2}>
+          <Grid
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Avatar alt="Remy Sharp" src={comment.User && comment.User.AvatarURL} />
+            <Vote
+              upvoteCount={upvotes.length}
+              downvoteCount={downvotes.length}
+              userVote={userVote}
+              handleUpVote={handleUpVote}
+              handleDownVote={handleDownVote}
+            />
+          </Grid>
+          <Grid justifyContent="left" item xs zeroMinWidth>
+            <Box>
+              <h4 style={{ margin: 0, textAlign: 'left' }}>
+                {comment.User && comment.User.DisplayName}
+              </h4>
+              <p style={{ margin: 0, textAlign: 'left', color: 'gray' }}>{comment.createdAt}</p>
+              <p style={{ textAlign: 'left' }}>{comment.Content}</p>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid justifyContent="left" item xs zeroMinWidth>
-          <h4 style={{ margin: 0, textAlign: 'left' }}>{user.DisplayName}</h4>
-          <p style={{ margin: 0, textAlign: 'left', color: 'gray' }}>{createdAt}</p>
-          <p style={{ textAlign: 'left' }}>{content}</p>
-        </Grid>
-      </Grid>
-    </CommentPaper>
+      </CommentPaper>
+    </Box>
   )
 }
 
-export default Comment
+export default ReplyComment
