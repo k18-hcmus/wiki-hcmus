@@ -20,8 +20,10 @@ import {
 import { styled } from '@mui/material/styles'
 import LazyLoad from 'react-lazyload'
 import { animateScroll as scroll } from 'react-scroll'
+import { useSnackbar } from 'notistack'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import trim from 'lodash/trim'
 
 import TagCard from '../../components/post/TagCard'
 import Comment from '../../components/post/Comment'
@@ -113,6 +115,7 @@ const Post = ({ post }) => {
   const [visible, setVisible] = useState(false)
   const [votes, setVotes] = useState(PostVotes)
   const [isOpenReport, setIsOpenReport] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
 
   const userState = useSelector(getUser)
   const dispatch = useDispatch()
@@ -136,16 +139,31 @@ const Post = ({ post }) => {
 
   const handleSubmitComment = async (e) => {
     e.preventDefault()
-    const response = await addNewComment({
-      User: userState.DetailUser,
-      Post: post.id,
-      Content: newComment,
-    })
-    setNewComment('')
-    setComments((prevState) => {
-      const comment = response.data
-      return [comment, ...prevState]
-    })
+    if (!newComment || trim(newComment).length === 0) {
+      enqueueSnackbar('Can not post empty comment.', {
+        variant: 'error',
+      })
+    } else {
+      try {
+        const response = await addNewComment({
+          User: userState.DetailUser,
+          Post: post.id,
+          Content: trim(newComment),
+        })
+        setNewComment('')
+        setComments((prevState) => {
+          const comment = response.data
+          return [comment, ...prevState]
+        })
+        enqueueSnackbar('Post comment successful.', {
+          variant: 'success',
+        })
+      } catch (error) {
+        enqueueSnackbar('Error while posting comment.', {
+          variant: 'error',
+        })
+      }
+    }
   }
 
   const scrollToTop = () => {
@@ -153,50 +171,62 @@ const Post = ({ post }) => {
   }
 
   const handleDownVote = async () => {
-    if (userVote) {
-      const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
-        Downvote: !userVote.Downvote,
-        Upvote: false,
-      })
+    try {
+      if (userVote) {
+        const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
+          Downvote: !userVote.Downvote,
+          Upvote: false,
+        })
 
-      setVotes((prevState) => {
-        const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
-        prevState[updatedObjIndex] = response.data
-        return [...prevState]
-      })
-    } else {
-      const response = await axiosClient.post('/post-votes', {
-        Downvote: true,
-        Upvote: false,
-        Post: post.id,
-        User: userState.DetailUser,
-      })
+        setVotes((prevState) => {
+          const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
+          prevState[updatedObjIndex] = response.data
+          return [...prevState]
+        })
+      } else {
+        const response = await axiosClient.post('/post-votes', {
+          Downvote: true,
+          Upvote: false,
+          Post: post.id,
+          User: userState.DetailUser,
+        })
 
-      setVotes((prevState) => [response.data, ...prevState])
+        setVotes((prevState) => [response.data, ...prevState])
+      }
+    } catch (error) {
+      enqueueSnackbar('Error while down vote.', {
+        variant: 'error',
+      })
     }
   }
 
   const handleUpVote = async () => {
-    if (userVote) {
-      const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
-        Downvote: false,
-        Upvote: !userVote.Upvote,
-      })
+    try {
+      if (userVote) {
+        const response = await axiosClient.put(`/post-votes/${userVote.id}`, {
+          Downvote: false,
+          Upvote: !userVote.Upvote,
+        })
 
-      setVotes((prevState) => {
-        const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
-        prevState[updatedObjIndex] = response.data
-        return [...prevState]
-      })
-    } else {
-      const response = await axiosClient.post('/post-votes', {
-        Downvote: false,
-        Upvote: true,
-        Post: post.id,
-        User: userState.DetailUser,
-      })
+        setVotes((prevState) => {
+          const updatedObjIndex = prevState.findIndex((v) => v.id == response.data.id)
+          prevState[updatedObjIndex] = response.data
+          return [...prevState]
+        })
+      } else {
+        const response = await axiosClient.post('/post-votes', {
+          Downvote: false,
+          Upvote: true,
+          Post: post.id,
+          User: userState.DetailUser,
+        })
 
-      setVotes((prevState) => [response.data, ...prevState])
+        setVotes((prevState) => [response.data, ...prevState])
+      }
+    } catch (error) {
+      enqueueSnackbar('Error while up vote.', {
+        variant: 'error',
+      })
     }
   }
 
