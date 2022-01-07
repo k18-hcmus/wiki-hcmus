@@ -7,7 +7,7 @@ const AbstractTag = ({ data, isDetailPage }) => {
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
-        sx={{ backgroundColor: COLOR_SET.BLUE }}
+        sx={{ backgroundColor: data.color || COLOR_SET.BLUE }}
         title={
           isDetailPage ? (
             <Typography variant="body1" sx={{color: 'white'}}>{DETAIL_CONST.ABOUT.TITLE}</Typography>

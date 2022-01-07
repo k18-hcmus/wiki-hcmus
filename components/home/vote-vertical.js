@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { IconButton, Typography } from '@mui/material'
+import { IconButton, Typography, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import isEmpty from 'lodash/isEmpty'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
@@ -8,10 +8,6 @@ import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import { getUser } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 
-const StyledVote = styled('div')`
-  align-items: center;
-  padding: 5px;
-`
 const UpdownText = styled(Typography)({
   fontSize: '14px',
   align: 'center',
@@ -61,18 +57,56 @@ const VoteVertical = ({ upvoteCount, downvoteCount, userVote, handleDownVote, ha
   }
 
   return (
-    <StyledVote>
-      <UpDownVoteButton color={isUpVote ? 'error' : 'default'} onClick={() => handleClickUpVote()}>
-        <ArrowCircleUpIcon />
-      </UpDownVoteButton>
-      <UpdownText>{vote}</UpdownText>
-      <UpDownVoteButton
-        color={isDownVote ? 'error' : 'default'}
-        onClick={() => handleClickDownVote()}
+    <Grid container>
+      <Grid
+        item
+        lg={12}
+        md={12}
+        xl={12}
+        xs={12}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
       >
-        <ArrowCircleDownIcon />
-      </UpDownVoteButton>
-    </StyledVote>
+        {' '}
+        <IconButton
+          color={isUpVote ? 'error' : 'default'}
+          onClick={() => handleClickUpVote()}
+        >
+          <ArrowCircleUpIcon />
+        </IconButton>
+      </Grid>
+      <Grid
+        item
+        lg={12}
+        md={12}
+        xl={12}
+        xs={12}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography>{vote}</Typography>
+      </Grid>
+      <Grid
+        item
+        lg={12}
+        md={12}
+        xl={12}
+        xs={12}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {' '}
+        <IconButton
+          color={isDownVote ? 'error' : 'default'}
+          onClick={() => handleClickDownVote()}
+        >
+          <ArrowCircleDownIcon />
+        </IconButton>
+      </Grid>
+    </Grid>
   )
 }
 

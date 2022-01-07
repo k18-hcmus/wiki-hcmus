@@ -20,13 +20,13 @@ const Home = () => {
             postNum: tag.Posts.length,
             createdDate: format(new Date(tag.created_at), 'MMM dd, yyyy'),
             majors: tag.Majors,
+            color: tag.ColorTag
           }
         })
         await tagDetails.forEach(async (tag, index) => {
           const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagArray[index])
           tagDetails[index].voteNum = upvoteSum - downvoteSum
         })
-        console.log(tagDetails)
         setTagData(tagDetails)
       }
     }

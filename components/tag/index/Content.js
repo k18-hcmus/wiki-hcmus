@@ -3,6 +3,7 @@ import { Paper, Box, LinearProgress } from '@mui/material'
 import AbstractPost from '../../commons/abstract-post'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import SortPost from '../../commons/sort-post-controller'
+import PostNoImageCard from '../../home/post-no-image-card'
 
 const Content = ({ data, callbackSetDataOption, ownUserId, hasMoreData, callbackLoadData }) => {
   const [checked, setChecked] = useState([true, false, false])
@@ -24,10 +25,8 @@ const Content = ({ data, callbackSetDataOption, ownUserId, hasMoreData, callback
         loader={<LinearProgress />}
       >
         <Box sx={{ px: 1 }}>
-          {data.map((record, index) => (
-            <Paper key={index} sx={{ mb: 3, p: 1 }} elevation={3}>
-              <AbstractPost key={index} data={record} ownUserId={ownUserId} />
-            </Paper>
+          {data.map((post, index) => (
+            <PostNoImageCard key={index} post={post} />
           ))}
         </Box>
       </InfiniteScroll>
