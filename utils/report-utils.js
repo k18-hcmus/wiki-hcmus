@@ -1,5 +1,5 @@
 import axiosClient from '../axiosClient'
-import { REPORT_CONST, HISTORY_CONST } from '../shared/constants'
+import { REPORT_CONST, HISTORY_CONST, DELETE_CONST } from '../shared/constants'
 import { addHistory } from './history-utils'
 
 export const addReport = async (type, reporterId, targetId, reasonString, description) => {
@@ -35,4 +35,38 @@ export const addReport = async (type, reporterId, targetId, reasonString, descri
       { const: targetHistoryConst, id: targetId }
     )
   }
+}
+
+export const addDelete = async (type, userId, targetId, description) => {
+  let targetProperty = ''
+  let targetHistoryConst = null
+  let targetUrl = ''
+  switch (type) {
+    case DELETE_CONST.TYPE.POST:
+      targetProperty = 'Post'
+      targetHistoryConst = HISTORY_CONST.TARGET.POST
+      targetUrl = '/posts'
+      break
+    case DELETE_CONST.TYPE.COMMENT:
+      targetProperty = 'Comment'
+      targetHistoryConst = HISTORY_CONST.TARGET.COMMENT
+      targetUrl = '/comments'
+      break
+  }
+  //This is future feature
+  // const data = {
+  //   Type: type,
+  //   Status: DELETE_CONST.STATUS.PENDING,
+  //   Description: description,
+  //   [targetProperty]: targetId,
+  //   Remover: removerId,
+  // }
+  const result = await axiosClient.delete(`${targetUrl}/${targetId}`)
+  // if (result) {
+  //   addHistory(
+  //     { const: HISTORY_CONST.ACTOR.OTHER, id: userId },
+  //     { const: HISTORY_CONST.ACTION.DELETE },
+  //     { const: targetHistoryConst, id: targetId }
+  //   )
+  // }
 }

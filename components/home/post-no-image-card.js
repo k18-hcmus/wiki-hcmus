@@ -1,6 +1,16 @@
-import { Avatar, Box, Button, Card, Chip, Grid, Typography } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Chip,
+  Grid,
+  Typography,
+  styled,
+  IconButton,
+} from '@mui/material'
 import draftToHtml from 'draftjs-to-html'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useRef, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import isEmpty from 'lodash/isEmpty'
@@ -12,13 +22,15 @@ import VoteVertical from './vote-vertical'
 import Link from 'next/link'
 import PostActionButtons from '../commons/post-action-buttons'
 import { formatDistanceToNow } from 'date-fns'
+import { DELETE_CONST } from '../../shared/constants'
+import DeleteDialog from '../commons/delete-dialog'
 
 const SeeMoreButton = styled(Button)({
   borderRadius: '15px',
   zIndex: 10,
 })
 
-const PostNoImageCard = ({ post }) => {
+const PostNoImageCard = ({ post, isAdmin, deletePost }) => {
   const [widthPost, setWidthPost] = useState()
   const draftContent = JSON.parse(post.Content)
   const htmlContent = draftToHtml(draftContent)
@@ -92,6 +104,13 @@ const PostNoImageCard = ({ post }) => {
       setVotes((prevState) => [response.data, ...prevState])
     }
   }
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const handleDeletePost = () => {
+    setOpenDeleteDialog(true)
+  }
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false)
+  }
   return (
     <Card ref={ref} sx={{ mb: 3 }}>
       <Grid container>
@@ -139,9 +158,44 @@ const PostNoImageCard = ({ post }) => {
                       </Typography>
                     </a>
                   </Link>
-                  <Typography color="text.secondary" variant="caption">
-                    {formatDistanceToNow(new Date(post.published_at))} ago
-                  </Typography>
+                  <Grid container>
+                    {isAdmin && (
+                      <Grid
+                        item
+                        lg={12}
+                        md={12}
+                        xl={12}
+                        xs={12}
+                        display="flex"
+                        justifyContent="flex-end"
+                      >
+                        <IconButton onClick={handleDeletePost}>
+                          <DeleteForeverIcon />
+                        </IconButton>
+                        <DeleteDialog
+                          open={openDeleteDialog}
+                          type={DELETE_CONST.TYPE.POST}
+                          data={data}
+                          callbackClose={handleDeleteClose}
+                          userId={16}
+                          deletePost={deletePost}
+                        />
+                      </Grid>
+                    )}
+                    <Grid
+                      item
+                      lg={12}
+                      md={12}
+                      xl={12}
+                      xs={12}
+                      display="flex"
+                      justifyContent="flex-end"
+                    >
+                      <Typography color="text.secondary" variant="caption">
+                        {formatDistanceToNow(new Date(post.published_at))} ago
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

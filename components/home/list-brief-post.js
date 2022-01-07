@@ -9,6 +9,11 @@ import axiosClient from '../../axiosClient'
 import { POST_CONST } from '../../shared/post-constants'
 import { VIEWOTHER_CONST } from '../../shared/profile-constants'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useSelector } from 'react-redux'
+import { getUser } from '../../redux/slices/userSlice'
+import { ROLE_STATUS } from '../../shared/moderator-constants'
+import isEmpty from 'lodash/isEmpty'
+
 const HorizoneFeature = styled(Box)({
   width: '100%',
   display: 'flex',
@@ -110,6 +115,19 @@ const ListBriefPost = () => {
     setChecked(newChecked)
     handleDataOptionChange(options[id])
   }
+
+  const [isAdmin, setIsAdmin] = useState(false)
+  const userState = useSelector(getUser)
+  useEffect(() => {
+    if (!isEmpty(userState)) {
+      if (userState.role.id.toString() === ROLE_STATUS.ADMINSTRATOR.value) {
+        setIsAdmin(true)
+      }
+    }
+  }, [userState])
+  const deletePost = (postId) => {
+    setPostsData(postsData.filter(post => post.id === postId))
+  }
   const renderPosts = (
     <>
       <InfiniteScroll
@@ -119,9 +137,13 @@ const ListBriefPost = () => {
         loader={<LinearProgress />}
       >
         <HorizoneFeature>
-          {postsData.map((post, index) => (
-            <PostNoImageCard key={index} post={post} />
-          ))}
+          {postsData.map((post, index) =>
+            isAdmin ? (
+              <PostNoImageCard deletePost={deletePost} key={index} post={post} isAdmin />
+            ) : (
+              <PostNoImageCard deletePost={deletePost} key={index} post={post} />
+            )
+          )}
           {visible && (
             <BackToTopButton color="primary" variant="contained" onClick={scrollToTop}>
               Back To Top

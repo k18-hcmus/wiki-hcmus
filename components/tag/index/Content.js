@@ -5,7 +5,15 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import SortPost from '../../commons/sort-post-controller'
 import PostNoImageCard from '../../home/post-no-image-card'
 
-const Content = ({ data, callbackSetDataOption, ownUserId, hasMoreData, callbackLoadData }) => {
+const Content = ({
+  data,
+  callbackSetDataOption,
+  ownUserId,
+  hasMoreData,
+  callbackLoadData,
+  isAdmin,
+  deletePost
+}) => {
   const [checked, setChecked] = useState([true, false, false])
   const options = ['new', 'hot', 'best']
   const handleCheck = (event) => {
@@ -25,9 +33,13 @@ const Content = ({ data, callbackSetDataOption, ownUserId, hasMoreData, callback
         loader={<LinearProgress />}
       >
         <Box sx={{ px: 1 }}>
-          {data.map((post, index) => (
-            <PostNoImageCard key={index} post={post} />
-          ))}
+          {data.map((post, index) =>
+            isAdmin ? (
+              <PostNoImageCard deletePost={deletePost} key={index} post={post} isAdmin />
+            ) : (
+              <PostNoImageCard deletePost={deletePost} key={index} post={post} />
+            )
+          )}
         </Box>
       </InfiniteScroll>
     </div>

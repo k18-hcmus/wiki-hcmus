@@ -22,11 +22,14 @@ export const TAG_DETAIL = {
 }
 
 export const TAG_COLOR = {
-  DEFAULT: { color: '#C4CDD5', name: 'default' },
+  DEFAULT: { color: '#2091EB', name: 'default' },
   RED: { color: '#FF4842', name: 'red' },
-  BLUE: { color: '#1890FF', name: 'blue' },
+  BLUE: { color: '#3D4EAF', name: 'blue' },
   GREEN: { color: '#54D62C', name: 'green' },
-  YELLOW: { color: '#FFE16A', name: 'yellow' },
+  MAGENDA: { color: '#E21D60', name: 'magenda'},
+  TEAL: { color: '#009184', name: 'teal'},
+  PURPLE: { color: '#9726AA', name: 'purple'},
+  ORANGE: { color: '#F79300', name: 'orange'},
 }
 
 export const CATEGORY_CONST = {
