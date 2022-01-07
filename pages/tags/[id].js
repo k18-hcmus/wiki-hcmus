@@ -8,9 +8,11 @@ import Content from '../../components/tag/index/Content'
 import SidebarDetail from '../../components/tag/index/SidebarDetail'
 import { getTagTotalVote } from '../../utils/vote-utils'
 import { VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
-import { getAccUser } from '../../redux/slices/userSlice'
+import { getAccUser, getUser } from '../../redux/slices/userSlice'
 import { getTags } from '../../redux/slices/tagSlice'
 import { useSelector } from 'react-redux'
+import { ROLE_STATUS } from '../../shared/moderator-constants'
+import isEmpty from 'lodash/isEmpty'
 
 const Tag = () => {
   const router = useRouter()
@@ -22,7 +24,7 @@ const Tag = () => {
     voteNum: 0,
     relatedTags: [],
     majors: [],
-    color: null
+    color: null,
   })
   const [headerData, setHeaderData] = useState({
     avatarURL: '/static/avatars/avatar_1.jpg',
@@ -40,6 +42,13 @@ const Tag = () => {
       setOwnUserData(userDataObject)
     }
   }, [userDataObject])
+  const [isAdmin, setIsAdmin] = useState(false)
+  const userState = useSelector(getUser)
+  useEffect(() => {
+    if (!isEmpty(userState) && userState.role.id.toString() === ROLE_STATUS.ADMINSTRATOR.value) {
+      setIsAdmin(true)
+    }
+  }, [userState])
   const [tagData, setTagData] = useState([])
   const tagObject = useSelector(getTags)
   useEffect(() => {
@@ -66,7 +75,7 @@ const Tag = () => {
           voteNum: upvoteSum - downvoteSum,
           relatedTags: Object.keys(relatedTags).map((key) => relatedTags[key]),
           majors: tagObject.Majors,
-          color: tagObject.ColorTag
+          color: tagObject.ColorTag,
         }
         setSidebarDetailData(sidebarDetail)
         const headerDetail = {
@@ -137,6 +146,9 @@ const Tag = () => {
     }
     fetchData()
   }, [dataOrder])
+  const deletePost = (postId) => {
+    setPostData(postData.filter(post => post.id = postId))
+  }
   return (
     <div>
       <Header data={headerData} />
@@ -144,13 +156,26 @@ const Tag = () => {
         <Container>
           <Grid container spacing={3}>
             <Grid item lg={8} md={8} xl={9} xs={6}>
-              <Content
-                data={postData}
-                ownUserId={ownUserData.id}
-                callbackSetDataOption={handleDataOptionChange}
-                hasMoreData={hasMoreData}
-                callbackLoadData={getMoreData}
-              />
+              {isAdmin ? (
+                <Content
+                  data={postData}
+                  ownUserId={ownUserData.id}
+                  callbackSetDataOption={handleDataOptionChange}
+                  hasMoreData={hasMoreData}
+                  callbackLoadData={getMoreData}
+                  isAdmin
+                  deletePost={deletePost}
+                />
+              ) : (
+                <Content
+                  data={postData}
+                  ownUserId={ownUserData.id}
+                  callbackSetDataOption={handleDataOptionChange}
+                  hasMoreData={hasMoreData}
+                  callbackLoadData={getMoreData}
+                  deletePost={deletePost}
+                />
+              )}
             </Grid>
             <Grid item lg={4} md={4} xl={3} xs={6}>
               <SidebarDetail data={sidebarDetailData} />

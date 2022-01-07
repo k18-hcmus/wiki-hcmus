@@ -8,14 +8,16 @@ import TabPanel from '../../components/profile/commons/tab-panel'
 import { getTotalContribution } from '../../utils/contribution-utils'
 import axiosClient from '../../axiosClient'
 import { CONTRIBUTION_CONST, VIEWOTHER_CONST, POST_CONST } from '../../shared/constants'
-import { getAccUser, fetchUser } from '../../redux/slices/userSlice'
+import { getAccUser, fetchUser, getUser } from '../../redux/slices/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import SortPost from '../../components/commons/sort-post-controller'
 import { getUserTier } from '../../utils/contribution-utils'
 import { styled } from '@mui/material/styles'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import LinearProgress from '@mui/material/LinearProgress'
-import PostNoImageCard from '../../components/home/post-no-image-card'
+import AbstractPost from '../../components/commons/abstract-post'
+import isEmpty from 'lodash/isEmpty'
+import { ROLE_STATUS } from '../../shared/moderator-constants'
 const HorizoneFeature = styled(Box)({
   width: '100%',
   display: 'flex',
@@ -144,8 +146,20 @@ const Profile = () => {
       setOwnUserData(userDataObject)
     }
   }, [userDataObject])
+  const [isAdmin, setIsAdmin] = useState(false)
+  const userState = useSelector(getUser)
+  useEffect(() => {
+    if (!isEmpty(userState)) {
+      if (userState.role.id.toString() === ROLE_STATUS.ADMINSTRATOR.value) {
+        setIsAdmin(true)
+      }
+    }
+  }, [userState])
   const updateReduxUserDetail = () => {
     dispatch(fetchUser())
+  }
+  const deletePost = (postId) => {
+    setOverviewData(overviewData.filter(post => post.id = postId))
   }
   const renderPosts = (
     <>
@@ -155,10 +169,15 @@ const Profile = () => {
         hasMore={hasMoreData}
         loader={<LinearProgress />}
       >
-        <HorizoneFeature>
-          {overviewData.map((post, index) => (
-            <PostNoImageCard key={index} post={post} />
-          ))}
+        <HorizoneFeature sx={{ px: 1 }}>
+          {isAdmin &&
+            overviewData.map((post, index) => (
+              <AbstractPost deletePost={deletePost} key={index} data={post} ownUserId={ownUserData.id} isAdmin />
+            ))}
+          {!isAdmin &&
+            overviewData.map((post, index) => (
+              <AbstractPost deletePost={deletePost} key={index} data={post} ownUserId={ownUserData.id} />
+            ))}
         </HorizoneFeature>
       </InfiniteScroll>
     </>

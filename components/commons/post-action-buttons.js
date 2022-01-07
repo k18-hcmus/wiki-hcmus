@@ -58,15 +58,11 @@ const PostActionButtons = ({ post }) => {
   const handleClickReport = () => {
     if (!isEmpty(userState)) {
       setOpenReportDialog(true)
-    }
-    else {
+    } else {
       dispatch(toggleLoginForm())
     }
   }
   const handleReportClose = () => {
-    setOpenReportDialog(false)
-  }
-  const handleReportConfirm = (reasons, description) => {
     setOpenReportDialog(false)
   }
   return (

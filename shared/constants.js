@@ -1,7 +1,7 @@
 import { INFORMATION_CONST, DASHBOARD_CONST, VIEWOTHER_CONST } from './profile-constants'
 import { POST_CONST, POST_STATUS } from './post-constants'
 import { FEATURE_MESSAGE } from './notification-constants'
-import { REPORT_CONST } from './report-constants'
+import { REPORT_CONST, DELETE_CONST } from './report-constants'
 import { TAG_DETAIL, CATEGORY_CONST, TAG_STATUS, TAG_COLOR, MAJOR_CONST } from './tag-constants'
 
 export const HISTORY_CONST = {
@@ -231,6 +231,7 @@ export {
   POST_CONST,
   FEATURE_MESSAGE,
   REPORT_CONST,
+  DELETE_CONST,
   TAG_DETAIL,
   CATEGORY_CONST,
   TAG_STATUS,

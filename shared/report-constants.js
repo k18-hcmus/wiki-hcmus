@@ -29,3 +29,16 @@ export const REPORT_CONST = {
     NEGATIVE_LANGUAGE: 'Negative Language',
   },
 }
+
+export const DELETE_CONST = {
+  TYPE: {
+    POST: 'Post',
+    COMMENT: 'Comment',
+    USERL: 'User',
+  },
+  STATUS: {
+    PENDING: 'Pending',
+    REQUEST_RECOVER: 'RequestRecover',
+    RECOVERED: 'Recovered'
+  },
+}

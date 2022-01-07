@@ -7,8 +7,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import { useRouter } from 'next/router'
 import { CardActions, Grid } from '@mui/material'
 import { BUTTON_POST } from '../../../shared/constants'
-import { formatDistanceToNow } from 'date-fns'
 import { TAG_STATUS } from '../../../shared/tag-constants'
+import { formatDistanceToNow, format } from 'date-fns'
 
 function ListPost() {
   const router = useRouter()
@@ -24,17 +24,35 @@ function ListPost() {
   const [selectionTag, setSelectionTag] = useState()
   useEffect(() => {
     async function FetchPost() {
-      const result = await axiosClient.get('/posts')
-      setListPost(result.data)
-      setCachedPost(result.data)
-      setFormatDate(result.data.map((post) => formatDistanceToNow(new Date(post.created_at))))
+      try {
+        const result = await axiosClient.get('/posts')
+        const postData = result.data.map((post) => {
+          return {
+            ...post,
+            created_at: format(new Date(post.created_at), 'MMM dd, yyyy'),
+            updated_at: format(new Date(post.updated_at), 'MMM dd, yyyy'),
+          }
+        })
+        setListPost(postData)
+        setCachedPost(postData)
+        setFormatDate(postData.map((post) => formatDistanceToNow(new Date(post.created_at))))
+      } catch (error) {
+        console.log(error)
+      }
     }
     FetchPost()
   }, [])
   useEffect(() => {
     async function FetchTags() {
       const result = await axiosClient.get('/tags')
-      setTags(result.data)
+      const tagData = result.data.map((tag) => {
+        return {
+          ...tag,
+          created_at: format(new Date(tag.created_at), 'MMM dd, yyyy'),
+          updated_at: format(new Date(tag.updated_at), 'MMM dd, yyyy'),
+        }
+      })
+      setTags(tagData)
     }
     FetchTags()
   }, [])
