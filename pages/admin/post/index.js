@@ -133,30 +133,7 @@ function ListPost() {
     setDisable(true)
     setDisableDelete(true)
   }
-  const handleChangeStatusTag = async () => {
-    try {
-      let tagId = selectionTag[0]
-      const result = await axiosClient.put(`/tags/${tagId}`, {
-        Status: TAG_STATUS.PUBLISH,
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const handleChangeStatusTagUnpublish = async () => {
-    try {
-      let tagId = selectionTag[0]
-      const result = await axiosClient.put(`/tags/${tagId}`, {
-        Status: TAG_STATUS.UNPUBLISH,
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const handleDeleteTag = async () => {
-    let tagId = selectionTag[0]
-    await axiosClient.delete(`/tags/${tagId}`)
-  }
+
   const handleChangeStatusTag = async () => {
     try {
       let tagId = selectionTag[0]
