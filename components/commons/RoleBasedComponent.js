@@ -1,19 +1,19 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { getUser } from '../../redux/slices/userSlice'
+import { getUser, getLoadingUser } from '../../redux/slices/userSlice'
 import { useRouter } from 'next/router'
+import { CircularProgress } from '@mui/material'
 
 const RoleBasedComponent = ({ Component, pageProps }) => {
   const user = useSelector(getUser)
+  const loading = useSelector(getLoadingUser)
   const router = useRouter()
 
   let role
   let allowed = true
-
   if (user) {
     role = user.role
   }
-
   if (router.pathname.startsWith('/admin') && !role) {
     allowed = false
   } else if (
@@ -24,11 +24,15 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
     allowed = false
   }
 
-  // useEffect(() => {
-  //   if (!allowed) {
-  //     router.push('/')
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (!loading && !allowed) {
+      router.push('/')
+    }
+  }, [])
+
+  if (loading) {
+    return <CircularProgress />
+  }
 
   return <Component {...pageProps} />
 }
