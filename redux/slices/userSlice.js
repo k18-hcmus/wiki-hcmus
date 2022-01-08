@@ -19,7 +19,7 @@ const initialState = {
   user: {},
   accUser: {},
   isLogged: false,
-  loading: false,
+  loading: true,
 }
 
 export const userSlice = createSlice({
@@ -31,12 +31,16 @@ export const userSlice = createSlice({
       state.isLogged = true
       state.user = action.payload.user
       state.accUser = action.payload.accUser
+      state.loading = false
     },
     userLogout: (state) => {
       state.user = undefined
       state.accUser = undefined
       state.isLogged = false
       state.loading = true
+    },
+    changeLoadedUser: (state) => {
+      state.loading = false
     },
   },
   extraReducers: {
@@ -63,6 +67,6 @@ export const getLoadingUser = (state) => state.user.loading
 // Reducers and actions
 const { actions, reducer } = userSlice
 
-export const { userLogin, userLogout } = actions
+export const { userLogin, userLogout, changeLoadedUser } = actions
 
 export default reducer

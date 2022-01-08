@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { getUser, getLoadingUser } from '../../redux/slices/userSlice'
+import { getUser, getLoadingUser, getUserAuth } from '../../redux/slices/userSlice'
 import { useRouter } from 'next/router'
 import { CircularProgress } from '@mui/material'
 
 const RoleBasedComponent = ({ Component, pageProps }) => {
   const user = useSelector(getUser)
   const loading = useSelector(getLoadingUser)
+  const isAuth = useSelector(getUserAuth)
   const router = useRouter()
 
   let role
@@ -25,7 +26,8 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
   } else if (
     router.pathname.startsWith('/admin') &&
     role &&
-    (role.type !== 'moderator' || role.type !== 'adminstrator')
+    role.type !== 'moderator' &&
+    role.type !== 'adminstrator'
   ) {
     allowed = false
   }
@@ -36,7 +38,7 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
     }
   }, [loading])
 
-  if (needAllowed && (loading || (!allowed && needAllowed))) {
+  if (needAllowed && (loading || !allowed)) {
     return <CircularProgress />
   }
 
