@@ -50,7 +50,7 @@ const Profile = () => {
       const newStart = start + limit
       setStart(newStart)
       const postResult = await axiosClient.get(
-        `/posts?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+        `/posts/publish?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
       )
       if (postResult.data.length === 0) setHasMoreData(false)
       else {
@@ -92,7 +92,7 @@ const Profile = () => {
         const newStart = 0
         setStart(newStart)
         const postResult = await axiosClient.get(
-          `/posts?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
+          `/posts/publish?User.id=${id}&_start=${newStart}&_limit=${limit}&${dataOrder}`
         )
         if (postResult.data.length === 0) setHasMoreData(false)
         else {
@@ -123,7 +123,7 @@ const Profile = () => {
         }
         setUserData(userObject)
         const postResult = await axiosClient.get(
-          `/posts?User.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.HOT}`
+          `/posts/publish?User.id=${id}&_start=${start}&_limit=${limit}&${POST_CONST.DATA_ORDER.HOT}`
         )
         if (postResult.data.length === 0) setHasMoreData(false)
         else {
