@@ -172,25 +172,6 @@ export default function PrimarySearchAppBar() {
     setSearch(event.target.value)
   }
 
-  const handleCloseDrop = () => {
-    setSearch('')
-  }
-
-  const handleSearchTitle = () => {
-    router.push(`/search?title=${search}`)
-    setSearch('')
-  }
-
-  const handleSearchTag = () => {
-    router.push(`/search?tag=${search}`)
-    setSearch('')
-  }
-
-  const handleSearchUser = () => {
-    router.push(`/search?userName=${search}`)
-    setSearch('')
-  }
-
   const handleSubmitSearch = (e) => {
     e.preventDefault()
     router.push(`/search?post=${search}`)
@@ -303,33 +284,6 @@ export default function PrimarySearchAppBar() {
               />
             </form>
           </Search>
-          {search !== '' && (
-            <SearchDrop sx={{ boxShadow: 3 }}>
-              <CloseBox onClick={handleCloseDrop}>
-                <CloseIcon />
-              </CloseBox>
-              <List>
-                <ListItem>
-                  <SearchResult onClick={handleSearchTitle}>
-                    <ListItemText primary={search} />
-                    <Tag>Title</Tag>
-                  </SearchResult>
-                </ListItem>
-                <ListItem>
-                  <SearchResult onClick={handleSearchTag}>
-                    <ListItemText primary={search} />
-                    <Tag>Tag</Tag>
-                  </SearchResult>
-                </ListItem>
-                <ListItem>
-                  <SearchResult onClick={handleSearchUser}>
-                    <ListItemText primary={search} />
-                    <Tag>User</Tag>
-                  </SearchResult>
-                </ListItem>
-              </List>
-            </SearchDrop>
-          )}
           {/* TODO: Link Button to direct page */}
           <Box style={{ marginRight: 'auto' }} sx={{ display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
