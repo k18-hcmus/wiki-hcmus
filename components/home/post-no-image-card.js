@@ -175,7 +175,7 @@ const PostNoImageCard = ({ post, isAdmin, deletePost }) => {
                         <DeleteDialog
                           open={openDeleteDialog}
                           type={DELETE_CONST.TYPE.POST}
-                          data={data}
+                          data={post}
                           callbackClose={handleDeleteClose}
                           userId={16}
                           deletePost={deletePost}

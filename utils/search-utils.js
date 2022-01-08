@@ -1,30 +1,6 @@
 import axiosClient from '../axiosClient'
 
-
 export const resultSearch = async (search) => {
-
-    const checkTitle = (post) => {
-        return (post.Title.indexOf(search.title) > -1)
-    }
-
-    const checkTag = (postResult) => {
-        let isTrue = false
-        postResult.Tags.forEach((tag) => {
-            if (tag.Name.indexOf(search.tag) > -1) {
-                isTrue = true
-            }
-        })
-        return isTrue
-    }
-
-    const checkUser = (postResult) => {
-        let isTrue = false
-        if (postResult.User !== null) {
-            if (postResult.User.DisplayName.indexOf(search.userName) > -1)
-                isTrue = true
-        }
-        return isTrue
-    }
 
     const checkPost = (post) => {
         let isTrue = false
@@ -46,21 +22,44 @@ export const resultSearch = async (search) => {
     let result = []
     const postResults = data.data
     if (postResults.length !== 0) {
-        if (search.hasOwnProperty('title')) {
-            result = postResults.filter(checkTitle)
-        } else {
-            if (search.hasOwnProperty('tag')) {
-                result = postResults.filter(checkTag)
-            } else {
-                if (search.hasOwnProperty('userName')) {
-                    result = postResults.filter(checkUser)
-                }
-                else {
-                    result =postResults.filter(checkPost)
-                    console.log(result)
-                }
-            }
+        result = postResults.filter(checkPost)
+    }
+    return result
+}
+
+export const resultUserSearch = async (search) => {
+    const checkUser = (user) => {
+        let isTrue = false
+        if (user !== null) {
+            if (user.DisplayName.indexOf(search.post) > -1)
+                isTrue = true
         }
+        return isTrue
+    }
+
+    const data = await axiosClient.get("/account-users")
+    let result = []
+    const users = data.data
+    if (users.length !== 0) {
+        result = users.filter(checkUser)
+    }
+    return result
+}
+
+export const resultTagSearch = async (search) => {
+    const checkTag = (tag) => {
+        let isTrue = false
+        if (tag.Name.indexOf(search.post) > -1) {
+            isTrue = true
+        }
+        return isTrue
+    }
+
+    const data = await axiosClient.get("/tags")
+    let result = []
+    const tags = data.data
+    if (tags.length !== 0) {
+        result = tags.filter(checkTag)
     }
     return result
 }
