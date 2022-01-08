@@ -1,9 +1,4 @@
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import FlagIcon from '@mui/icons-material/Flag';
-import ShareIcon from '@mui/icons-material/Share';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Avatar, Box, Button, Chip, Grid, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Grid, IconButton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -12,9 +7,8 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import axiosClient from "../../axiosClient";
+import PostActionButtons from "../../components/commons/post-action-buttons";
 import { getUser } from "../../redux/slices/userSlice";
-import { REPORT_CONST } from '../../shared/constants';
-import ReportDialog from './report-dialog';
 import VotePost from './votePost';
 
 const PostCard = styled(Box)({
@@ -142,19 +136,11 @@ const CommentButton = styled(IconButton)({
 
 const PostSearch = ({ post }) => {
     const [votes, setVotes] = useState(post.PostVotes)
-    const [openAlert, setOpenAlert] = useState(false)
     const userState = useSelector(getUser)
     const router = useRouter()
     let upvotes = votes.filter((v) => v.Upvote)
     let downvotes = votes.filter((v) => v.Downvote)
     let userVote = {}
-    const [openReportDialog, setOpenReportDialog] = useState(false)
-    const handleClickReport = () => {
-        setOpenReportDialog(true)
-    }
-    const handleReportClose = () => {
-        setOpenReportDialog(false)
-    }
 
     if (!isEmpty(userState)) {
         userVote = votes.find((v) => {
@@ -216,36 +202,7 @@ const PostSearch = ({ post }) => {
             setVotes((prevState) => [response.data, ...prevState])
         }
     }
-
-    const handleClickComment = () => {
-        router.push(`/posts/${post.id}`)
-    }
-    const handleClickShare = (event) => {
-        setAnchorEl(event.currentTarget)
-    }
-    const handleClickHide = () => {
-        window.setTimeout(() => setOpenAlert(false), 2000)
-        setOpenAlert(true)
-    }
-    const handleClickSave = () => {
-        window.setTimeout(() => setOpenAlert(false), 2000)
-        setOpenAlert(true)
-    }
-
-    const [anchorEl, setAnchorEl] = useState(null)
-    const openShareMenu = Boolean(anchorEl)
-    const handleCloseShareMenu = () => {
-        setAnchorEl(null)
-    }
-    const handleClickShareCopyLink = () => {
-        const link = `${window.location.origin}/posts/${post.id}`
-        window.prompt('Copy to clipboard: Ctrl+C, Enter', link)
-        setAnchorEl(null)
-    }
-    const handleClickShareEmbed = () => {
-        setAnchorEl(null)
-    }
-
+    
     return (
         <PostCard sx={{ boxShadow: 3 }}>
             <VotePost
@@ -308,79 +265,7 @@ const PostSearch = ({ post }) => {
                             )
                         }
                     </TagUserTimeBox>
-                    <ReactBox>
-                        <CommentButton onClick={handleClickComment}>
-                            <CommentBox>
-                                <ChatBubbleOutlineIcon />
-                                <CommentText>
-                                    {post.Comments.length} Comments
-                                </CommentText>
-                            </CommentBox>
-                        </CommentButton>
-                        <IconButton
-                            onClick={handleClickShare}
-                            id="share-button"
-                            aria-controls="share-menu"
-                            aria-haspopup="true"
-                            aria-expanded={openShareMenu ? 'true' : undefined}
-                        >
-                            <ReactCommentBox>
-                                <ShareIcon />
-                                <CommentText>
-                                    Share
-                                </CommentText>
-                            </ReactCommentBox>
-                        </IconButton>
-                        <Menu
-                            id="share-menu"
-                            aria-labelledby="share-button"
-                            anchorEl={anchorEl}
-                            open={openShareMenu}
-                            onClose={handleCloseShareMenu}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <MenuItem onClick={handleClickShareCopyLink}>Copy Link</MenuItem>
-                            <MenuItem onClick={handleClickShareEmbed}>Embed</MenuItem>
-                        </Menu>
-                        <IconButton onClick={handleClickSave}>
-                            <ReactCommentBox>
-                                <BookmarkBorderIcon />
-                                <CommentText>
-                                    Save
-                                </CommentText>
-                            </ReactCommentBox>
-                        </IconButton>
-                        <IconButton onClick={handleClickHide}>
-                            <ReactCommentBox>
-                                <VisibilityOffIcon />
-                                <CommentText>
-                                    Hide
-                                </CommentText>
-                            </ReactCommentBox>
-                        </IconButton>
-                        <IconButton onClick={handleClickReport}>
-                            <ReactCommentBox>
-                                <FlagIcon />
-                                <CommentText>
-                                    Report
-                                </CommentText>
-                            </ReactCommentBox>
-                        </IconButton>
-                        <ReportDialog
-                            open={openReportDialog}
-                            type={REPORT_CONST.TYPE.POST}
-                            data={post}
-                            callbackClose={handleReportClose}
-                            userId={16}
-                        />
-                    </ReactBox>
+                    <PostActionButtons post={post}/>
                 </ContentCom>
             </MainCom>
         </PostCard >
