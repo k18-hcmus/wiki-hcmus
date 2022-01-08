@@ -11,6 +11,12 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
 
   let role
   let allowed = true
+  let needAllowed = false
+
+  if (router.pathname.startsWith('/admin')) {
+    needAllowed = true
+  }
+
   if (user) {
     role = user.role
   }
@@ -28,9 +34,9 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
     if (!loading && !allowed) {
       router.push('/')
     }
-  }, [])
+  }, [loading])
 
-  if (loading) {
+  if (needAllowed && (loading || (!allowed && needAllowed))) {
     return <CircularProgress />
   }
 

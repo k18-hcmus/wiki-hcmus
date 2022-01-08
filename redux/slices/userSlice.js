@@ -19,7 +19,7 @@ const initialState = {
   user: {},
   accUser: {},
   isLogged: false,
-  loading: true,
+  loading: false,
 }
 
 export const userSlice = createSlice({
