@@ -9,20 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import UserResultSearch from "./userResultSearch"
 import TagResultSearch from "./tagResultSearch"
-
-const HorizoneFeature = styled(Box)({
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-})
-
-const SpinnerLoadding = () => {
-    return (
-        <Typography>There is no post at home</Typography>
-    )
-}
+import LinearProgress from '@mui/material/LinearProgress'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -89,7 +76,7 @@ const Search = () => {
     }
 
     return (
-        isLoading ? <SpinnerLoadding /> :
+        isLoading ? <LinearProgress /> :
             <Box sx={{ width: '100%'}}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider',display:"flex",justifyContent:"center"}}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" > 
@@ -108,6 +95,7 @@ const Search = () => {
                 {
                     (users.length!==0) && (
                         <TabPanel value={value} index={1}>
+                            
                             <UserResultSearch users={users} />
                         </TabPanel>
                     )
