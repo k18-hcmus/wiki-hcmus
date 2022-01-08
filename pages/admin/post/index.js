@@ -125,6 +125,7 @@ function ListPost() {
   const handleClickUndo = () => {
     setListPost(cachedPost)
     setDisable(true)
+    setDisableDelete(true)
   }
   const handleClickSave = async () => {
     let id = delPost[0].id
