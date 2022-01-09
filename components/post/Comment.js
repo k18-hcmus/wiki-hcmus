@@ -146,7 +146,14 @@ const Comment = ({ comment }) => {
               justifyContent: 'center',
             }}
           >
-            <Avatar alt="Remy Sharp" src={user.AvatarURL} />
+            <Avatar
+              alt="user avatar"
+              src={
+                user.AvatarURL && user.AvatarURL !== ''
+                  ? user.AvatarURL
+                  : '/static/avatars/avatar_1.jpg'
+              }
+            />
             <Vote
               upvoteCount={upvotes.length}
               downvoteCount={downvotes.length}

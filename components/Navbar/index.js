@@ -210,7 +210,6 @@ export default function PrimarySearchAppBar() {
       )}
 
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   )
