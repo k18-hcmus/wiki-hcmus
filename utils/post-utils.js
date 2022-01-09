@@ -11,7 +11,7 @@ export const validViewPost = (user, userPostId, Status) => {
   if (
     user.role.name !== 'Moderator' &&
     user.role.name !== 'Adminstrator' &&
-    userid !== userPostId &&
+    userid !== userPostId.id &&
     Status !== STATUS_POST.Publish.value
   ) {
     return false
