@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getUser, getLoadingUser, getUserAuth } from '../../redux/slices/userSlice'
 import { useRouter } from 'next/router'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Box } from '@mui/material'
 
 const RoleBasedComponent = ({ Component, pageProps }) => {
   const user = useSelector(getUser)
@@ -39,7 +39,11 @@ const RoleBasedComponent = ({ Component, pageProps }) => {
   }, [loading])
 
   if (needAllowed && (loading || !allowed)) {
-    return <CircularProgress />
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return <Component {...pageProps} />

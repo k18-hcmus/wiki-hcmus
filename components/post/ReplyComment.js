@@ -112,7 +112,14 @@ const ReplyComment = (props) => {
               justifyContent: 'center',
             }}
           >
-            <Avatar alt="Remy Sharp" src={comment.User && comment.User.AvatarURL} />
+            <Avatar
+              alt="Remy Sharp"
+              src={
+                comment.User && comment.User.AvatarURL && comment.User.AvatarURL !== ''
+                  ? comment.User.AvatarURL
+                  : '/static/avatars/avatar_1.jpg'
+              }
+            />
             <Vote
               upvoteCount={upvotes.length}
               downvoteCount={downvotes.length}

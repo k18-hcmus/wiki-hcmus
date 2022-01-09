@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import { Box, Grid, Avatar, Paper, Button, TextField } from '@mui/material'
 import { ChatBubbleOutline as ChatBubbleOutlineIcon } from '@mui/icons-material'
@@ -10,6 +10,7 @@ import trim from 'lodash/trim'
 
 import axiosClient from '../../axiosClient'
 import { getUser } from '../../redux/slices/userSlice'
+import { toggleLoginForm } from '../../redux/slices/authSlice'
 import Vote from './Vote'
 import ReplyComment from './ReplyComment'
 
@@ -33,6 +34,7 @@ const Comment = ({ comment }) => {
   const [replyCommentContent, setReplyCommentContent] = useState('')
   const { enqueueSnackbar } = useSnackbar()
   const userState = useSelector(getUser)
+  const dispatch = useDispatch()
 
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
@@ -95,7 +97,11 @@ const Comment = ({ comment }) => {
   }
 
   const handleOpenReply = () => {
-    setIsOpenReplyComment(true)
+    if (isEmpty(userState)) {
+      dispatch(toggleLoginForm())
+    } else {
+      setIsOpenReplyComment(true)
+    }
   }
 
   const handleCloseReply = () => {

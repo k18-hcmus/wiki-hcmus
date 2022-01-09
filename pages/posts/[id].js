@@ -168,8 +168,6 @@ const Post = ({ post }) => {
         tagDetails[index].voteNum = upvoteSum - downvoteSum
       })
 
-      console.log('detail', tagDetails)
-
       setTagData(tagDetails)
     }
     fetchData()
