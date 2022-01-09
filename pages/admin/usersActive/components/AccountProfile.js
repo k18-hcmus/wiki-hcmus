@@ -17,7 +17,7 @@ import { ROLE_STATUS } from '../../../../shared/moderator-constants'
 import { CONTRIBUTION_CONST } from '../../../../shared/constants'
 import { getTotalContribution, getUserTier } from '../../../../utils/contribution-utils'
 
-export const AccountProfile = (props) => {
+const AccountProfile = (props) => {
   const [user, setUser] = useState([])
   const [posts, setPosts] = useState()
   const router = useRouter()
@@ -85,7 +85,6 @@ export const AccountProfile = (props) => {
           <Button
             color="primary"
             fullWidth
-            variant="text"
             variant="outlined"
             onClick={handleClick}
             disabled={disable}
@@ -99,3 +98,5 @@ export const AccountProfile = (props) => {
     </Card>
   )
 }
+
+export default AccountProfile

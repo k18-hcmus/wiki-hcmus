@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField } from '@mui/material'
-//import { useSnackbar } from 'notistack'
+// import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import axiosClient from '../../../../axiosClient'
 import { STATES_CONST } from '../../../../shared/constants'
 
-export const AccountProfileDetails = (props) => {
+const AccountProfileDetails = (props) => {
   const router = useRouter()
   const [user, setUser] = useState({})
-  //const { enqueueSnackbar } = useSnackbar()
+  // const { enqueueSnackbar } = useSnackbar()
   const { id } = router.query
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export const AccountProfileDetails = (props) => {
   }, [])
   const handleClickVariant = (variant) => () => {
     // variant could be success, error, warning, info, or default
-    enqueueSnackbar('This is a success message!', { variant })
+    // enqueueSnackbar('This is a success message!', { variant })
   }
 
   const handleChange = (e) => {
@@ -148,3 +148,5 @@ export const AccountProfileDetails = (props) => {
     </form>
   )
 }
+
+export default AccountProfileDetails

@@ -19,7 +19,7 @@ import axiosClient from '../../../axiosClient'
 import { showErrMsg, showSuccessMsg } from '../../../utils/Notifications'
 import { convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import { POST_STATUS } from '../../../shared/constants'
+import { POST_STATUS } from '../../../shared/post-constants'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), {
   ssr: false,

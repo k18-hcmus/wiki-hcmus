@@ -4,8 +4,8 @@ import { Box, Container, Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { AccountProfile } from './components/AccountProfile'
-import { AccountProfileDetails } from './components/AccountProfileDetails'
+import AccountProfile from './components/AccountProfile'
+import AccountProfileDetails from './components/AccountProfileDetails'
 const DetailUser = () => {
   const [user, setUser] = useState({})
   const router = useRouter()
