@@ -52,8 +52,8 @@ function DetailPost() {
     async function FetchPost() {
       const response = await axiosClient.get(`/posts/${id}`)
       setPostDetail(response.data)
-      const user = await axiosClient.get(`/account-users/${response.data.User}`)
-      setUserDetail(user.data)
+      let idUser = response.data.User
+      setUserDetail(idUser)
       const content = response.data.Content
       setChangeContent(draftToHtml(JSON.parse(content)))
     }
