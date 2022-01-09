@@ -200,7 +200,7 @@ const PostNoImageCard = ({ post, isAdmin, deletePost }) => {
               </Grid>
             </Grid>
             <Grid item lg={12} md={12} xl={12} xs={12}>
-              <Typography color="text.primary" variant="body1">
+              <Typography color="text.primary" variant="h6">
                 {post.Title}
                 <Box style={{ marginTop: '-5px' }} display="flex" flexDirection="row">
                   <Grid container direction="row" spacing={1}>

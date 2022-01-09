@@ -24,14 +24,15 @@ import { useSnackbar } from 'notistack'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 import trim from 'lodash/trim'
+import { format } from 'date-fns'
 
-import TagCard from '../../components/post/TagCard'
 import Comment from '../../components/post/Comment'
 import Vote from '../../components/post/Vote'
 import ReportDialog from '../../components/commons/report-dialog'
 import axiosClient from '../../axiosClient'
 import draftToHtml from 'draftjs-to-html'
-import { getUser, getUserAuth } from '../../redux/slices/userSlice'
+import { getUser } from '../../redux/slices/userSlice'
+import { getTags } from '../../redux/slices/tagSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 import { getPostById, getCommentsByPostId, validViewPost } from '../../utils/post-utils'
 import { addNewComment } from '../../utils/comment-utils'
@@ -40,6 +41,8 @@ import { REPORT_CONST } from '../../shared/report-constants'
 import { POST_STATUS } from '../../shared/post-constants'
 import { STATUS_POST } from '../../shared/constants'
 import { useRouter } from 'next/router'
+import { getTagTotalVote } from '../../utils/vote-utils'
+import AbstractTag from '../../components/commons/abstract-tag'
 
 const PostStatisticSection = styled('div')`
   display: flex;
@@ -124,13 +127,16 @@ const Post = ({ post }) => {
   const [isloading, setIsloading] = useState(true)
   const router = useRouter()
   const userState = useSelector(getUser)
-  const islogged = useSelector(getUserAuth)
   const dispatch = useDispatch()
+  const tagArray = useSelector(getTags)
+  const [tagData, setTagData] = useState([])
+
   const htmlContent = Content ? draftToHtml(JSON.parse(Content)) : ''
 
   let upvotes = votes.filter((v) => v.Upvote)
   let downvotes = votes.filter((v) => v.Downvote)
   let userVote
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const isAuth = !!localStorage.getItem('token')
@@ -140,6 +146,33 @@ const Post = ({ post }) => {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const postTagIds = tags.map((t) => t.id)
+
+      const postTags = tagArray.filter((t) => postTagIds.includes(t.id))
+      let tagDetails = postTags.map((tag) => {
+        return {
+          id: tag.id,
+          name: tag.Name,
+          description: tag.Description,
+          postNum: tag.Posts.length,
+          createdDate: format(new Date(tag.created_at), 'MMM dd, yyyy'),
+          majors: tag.Majors,
+          color: tag.ColorTag,
+        }
+      })
+      await tagDetails.forEach(async (tag, index) => {
+        const [upvoteSum, downvoteSum] = await getTagTotalVote('object', tagArray[index])
+        tagDetails[index].voteNum = upvoteSum - downvoteSum
+      })
+
+      setTagData(tagDetails)
+    }
+    fetchData()
+  }, [tagArray])
+
   if (!isEmpty(userState)) {
     if (!validViewPost(userState, user, Status)) {
       //Except Mod and Admin or user who post this post, no one can can see this post with status !== publish
@@ -295,6 +328,7 @@ const Post = ({ post }) => {
       }
     })
   }, [])
+
   const showStatusPost = (
     <>
       {Status === STATUS_POST.Unpublish.value && (
@@ -323,6 +357,7 @@ const Post = ({ post }) => {
               {Title}
             </Typography>
             {Status !== STATUS_POST.Publish && showStatusPost}
+
             {/* Post Statistics: vote, comments */}
             <PostStatisticSection>
               <Vote
@@ -359,7 +394,15 @@ const Post = ({ post }) => {
 
             {/* User info section */}
             <UserSection>
-              <Avatar alt="user avatar" src={user.avatar} sx={{ width: 56, height: 56, mr: 2 }} />
+              <Avatar
+                alt="user avatar"
+                src={
+                  user.AvatarURL && user.AvatarURL !== ''
+                    ? user.AvatarURL
+                    : '/static/avatars/avatar_1.jpg'
+                }
+                sx={{ width: 56, height: 56, mr: 2 }}
+              />
               <Username>{user.DisplayName}</Username>
               <FollowButton variant="contained">
                 <AddIcon />
@@ -403,7 +446,7 @@ const Post = ({ post }) => {
             <Divider variant="fullWidth" sx={{ mb: 5 }} />
 
             {/* Comments sections */}
-            <Typography variant="h4">Bình luận</Typography>
+            <Typography variant="h4">Comments</Typography>
 
             <InputCommentField onSubmit={handleSubmitComment}>
               <TextField
@@ -438,8 +481,8 @@ const Post = ({ post }) => {
           </ContentSection>
           {/* Tag Section */}
           <TagSection item md={3}>
-            {tags.map((tag) => (
-              <TagCard key={tag.id} tag={tag} />
+            {tagData.map((tag) => (
+              <AbstractTag key={tag.id} data={tag} isDetailPage={false} />
             ))}
           </TagSection>
 

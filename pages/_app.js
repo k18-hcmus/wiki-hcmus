@@ -17,6 +17,7 @@ NProgress.configure({
   easing: 'ease',
   speed: 800,
   showSpinner: false,
+  template: '<div class="bar" role="bar" style="background-color: white;"></div>',
 })
 
 Router.events.on('routeChangeStart', () => NProgress.start())

@@ -19,6 +19,7 @@ const initialState = {
   user: {},
   accUser: {},
   isLogged: false,
+  loading: true,
 }
 
 export const userSlice = createSlice({
@@ -30,18 +31,30 @@ export const userSlice = createSlice({
       state.isLogged = true
       state.user = action.payload.user
       state.accUser = action.payload.accUser
+      state.loading = false
     },
     userLogout: (state) => {
       state.user = undefined
       state.accUser = undefined
       state.isLogged = false
+      state.loading = true
+    },
+    changeLoadedUser: (state) => {
+      state.loading = false
     },
   },
   extraReducers: {
+    [fetchUser.pending]: (state, action) => {
+      state.loading = true
+    },
     [fetchUser.fulfilled]: (state, action) => {
       state.user = action.payload.user
       state.accUser = action.payload.accUser
       state.isLogged = true
+      state.loading = false
+    },
+    [fetchUser.rejected]: (state, action) => {
+      state.loading = false
     },
   },
 })
@@ -50,9 +63,10 @@ export const userSlice = createSlice({
 export const getUser = (state) => state.user.user
 export const getUserAuth = (state) => state.user.isLogged
 export const getAccUser = (state) => state.user.accUser
+export const getLoadingUser = (state) => state.user.loading
 // Reducers and actions
 const { actions, reducer } = userSlice
 
-export const { userLogin, userLogout } = actions
+export const { userLogin, userLogout, changeLoadedUser } = actions
 
 export default reducer
