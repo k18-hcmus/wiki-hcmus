@@ -187,8 +187,6 @@ export default function PrimarySearchAppBar() {
     role = user.role
   }
 
-  console.log(accUser)
-
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -206,12 +204,14 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem component="div" onClick={() => router.push('/profile')}>
-        <Box sx={{ minWidth: '120px' }}>
-          Signed in as <br />
-          <b>{accUser.DisplayName}</b>
-        </Box>
-      </MenuItem>
+      {accUser && (
+        <MenuItem component="div" onClick={() => router.push('/profile')}>
+          <Box sx={{ minWidth: '120px' }}>
+            Signed in as <br />
+            <b>{accUser.DisplayName}</b>
+          </Box>
+        </MenuItem>
+      )}
 
       <Divider />
 
