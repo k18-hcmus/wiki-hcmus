@@ -17,6 +17,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Avatar,
 } from '@mui/material'
 import {
   Search as SearchIcon,
@@ -29,7 +30,7 @@ import Login from './Login'
 import Register from './Register'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogout, getUserAuth, getUser } from '../../redux/slices/userSlice'
+import { userLogout, getUserAuth, getUser, getAccUser } from '../../redux/slices/userSlice'
 import { toggleLoginForm } from '../../redux/slices/authSlice'
 import axiosClient from '../../axiosClient'
 import CloseIcon from '@mui/icons-material/Close'
@@ -124,6 +125,7 @@ export default function PrimarySearchAppBar() {
   const [search, setSearch] = useState('')
   const [isAuth, setIsAuth] = useState(false)
   const user = useSelector(getUser)
+  const accUser = useSelector(getAccUser)
   const router = useRouter()
   const dispatch = useDispatch()
 
@@ -185,6 +187,8 @@ export default function PrimarySearchAppBar() {
     role = user.role
   }
 
+  console.log(accUser)
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -202,6 +206,15 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+      <MenuItem component="div" onClick={() => router.push('/profile')}>
+        <Box sx={{ minWidth: '120px' }}>
+          Signed in as <br />
+          <b>{accUser.DisplayName}</b>
+        </Box>
+      </MenuItem>
+
+      <Divider />
+
       {role && (role.type === 'moderator' || role.type === 'adminstrator') && (
         <>
           <MenuItem onClick={() => router.push('/admin')}> Admin </MenuItem>
@@ -209,7 +222,7 @@ export default function PrimarySearchAppBar() {
         </>
       )}
 
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={() => router.push('/profile')}>Profile</MenuItem>
       <MenuItem onClick={handleLogOut}>Log out</MenuItem>
     </Menu>
   )
@@ -262,15 +275,17 @@ export default function PrimarySearchAppBar() {
       <Register open={isRegisterOpen} handleClose={handleCloseRegister} />
       <AppBar position="static">
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+          <IconButton
+            size="large"
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={() => router.push('/')}
+            color="inherit"
           >
-            {/* TODO: Change to icon */}
-            ICON PLACE
-          </Typography>
+            <Avatar src={'/static/icons/logo_hcmus.png'} />
+          </IconButton>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -327,7 +342,13 @@ export default function PrimarySearchAppBar() {
                   onClick={handleProfileMenuOpen}
                   color="inherit"
                 >
-                  <AccountCircle />
+                  <Avatar
+                    src={
+                      accUser.AvatarURL && accUser.AvatarURL !== ''
+                        ? accUser.AvatarURL
+                        : '/static/avatars/avatar_1.jpg'
+                    }
+                  />
                 </IconButton>
               </Box>
               {/* Mobile Nav */}
