@@ -130,7 +130,7 @@ const ListBriefPost = () => {
     }
   }, [userState])
   const deletePost = (postId) => {
-    setPostsData(postsData.filter(post => post.id === postId))
+    setPostsData(postsData.filter((post) => post.id === postId))
   }
   const renderPosts = (
     <>

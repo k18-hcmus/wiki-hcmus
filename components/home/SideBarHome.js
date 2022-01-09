@@ -1,11 +1,49 @@
-import React from 'react'
-import { Card, CardContent, Typography, CardHeader, Grid, Avatar } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Card,
+  CardContent,
+  Typography,
+  CardHeader,
+  Grid,
+  Avatar,
+  LinearProgress,
+} from '@mui/material'
 import { COLOR_SET } from '../../shared/constants'
 import { HOME_DETAIL } from '../../shared/home-constants'
 import AbstractTag from '../commons/abstract-tag'
-
+import InfiniteScroll from 'react-infinite-scroll-component'
 const SidebarHome = ({ tagData }) => {
   const DETAIL_CONST = HOME_DETAIL.SIDEBAR_DETAIL
+  const [Tags, setTags] = useState([])
+  const [hasMoreData, setHasMoreData] = useState(true)
+  const [start, setStart] = useState(0)
+  const limit = 5
+  const getMoreData = () => {
+    try {
+      const end = start + limit
+      setStart(end)
+      if (tagData.length <= start) setHasMoreData(false)
+      else {
+        const tagArr = tagData.slice(start, end)
+        setTags([...Tags, ...tagArr])
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const newStart = 0
+        setStart(newStart)
+        setHasMoreData(true)
+        setTags(tagData.slice(newStart, limit))
+      } catch {
+        console.log('Error get Post at Home')
+      }
+    }
+    fetchData()
+  }, [tagData])
   return (
     <>
       <Card sx={{ mb: 3 }}>
@@ -36,9 +74,16 @@ const SidebarHome = ({ tagData }) => {
           </Typography>
         </CardContent>
       </Card>
-      {tagData.map((tag, index) => (
-        <AbstractTag key={index} data={tag} />
-      ))}
+      <InfiniteScroll
+        dataLength={Tags.length}
+        next={getMoreData}
+        hasMore={hasMoreData}
+        loader={<LinearProgress />}
+      >
+        {Tags.map((tag, index) => (
+          <AbstractTag key={index} data={tag} />
+        ))}
+      </InfiniteScroll>
     </>
   )
 }
