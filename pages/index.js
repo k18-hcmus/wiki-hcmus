@@ -20,7 +20,7 @@ const Home = () => {
             postNum: tag.Posts.length,
             createdDate: format(new Date(tag.created_at), 'MMM dd, yyyy'),
             majors: tag.Majors,
-            color: tag.ColorTag
+            color: tag.ColorTag,
           }
         })
         await tagDetails.forEach(async (tag, index) => {
