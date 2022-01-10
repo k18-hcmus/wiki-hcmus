@@ -44,7 +44,7 @@ const CardContentText = styled(Typography)({
   fontWeight: 500,
 })
 export async function getStaticProps() {
-  const res = await fetch(`${process.env.STRAPI_API_URL}tags`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}tags`)
   const Tags = await res.json()
   return {
     props: {

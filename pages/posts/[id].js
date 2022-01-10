@@ -503,8 +503,9 @@ export async function getServerSideProps(context) {
   } = context
 
   try {
-    const response = await getPostById(postId)
-    const post = response.data
+    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}posts/${postId}`)
+    const post = await response.json()
+
     if (!post) {
       return {
         redirect: {
